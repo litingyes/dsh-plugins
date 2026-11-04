@@ -1,0 +1,67 @@
+{
+  "name": "@litingyes/dsh-context7",
+  "version": "0.1.0",
+  "description": "Context7 documentation for DeepSeek Harness: connects the official Context7 MCP server so agents can resolve libraries and fetch current documentation and code examples.",
+  "type": "module",
+  "license": "MIT",
+  "author": {
+    "name": "Liting",
+    "url": "https://github.com/litingyes"
+  },
+  "homepage": "https://github.com/litingyes/dsh-plugins/tree/main/dsh-context7",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/litingyes/dsh-plugins.git",
+    "directory": "dsh-context7"
+  },
+  "bugs": {
+    "url": "https://github.com/litingyes/dsh-plugins/issues"
+  },
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "mcp",
+    "context7",
+    "documentation"
+  ],
+  "engines": {
+    "dsh": ">=0.2.1-rc.5 <0.3.0-0"
+  },
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml",
+    "icon.svg",
+    "locale/*.json",
+    "README.md",
+    "README.en.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "icon": "./icon.svg",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dsh": {
+    "manifestVersion": 1,
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-tool"
+      ]
+    }
+  }
+}

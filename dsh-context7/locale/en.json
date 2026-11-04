@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Context7 Documentation",
+    "description": "Connects the official Context7 MCP server so the agent can resolve libraries and fetch current documentation and code examples."
+  }
+}

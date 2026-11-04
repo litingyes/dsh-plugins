@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Context7 文档查询",
+    "description": "接入官方 Context7 MCP 服务，让智能体解析库 ID 并获取最新的库文档与代码示例。"
+  }
+}

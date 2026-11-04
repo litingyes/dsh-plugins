@@ -1,0 +1,32 @@
+# @litingyes/dsh-context7 — Context7 documentation through the official MCP server.
+#
+# Inserts one instance of the DSH-shipped MCP client against Context7's hosted
+# Streamable HTTP endpoint. Context7 exposes two tools there:
+#   - resolve-library-id  (library name -> Context7 library ID)
+#   - query-docs          (library ID + question -> current docs and snippets)
+# They appear as mcp__context7__resolve-library-id and mcp__context7__query-docs.
+#
+# Context7 works without a key under an anonymous, IP-based rate limit. Set
+# CONTEXT7_API_KEY in the launch environment or in $DSH_HOME/.env to send
+# "Authorization: Bearer <key>" for higher limits. The expression below is
+# evaluated when this row's config loads: the key is never stored in this file,
+# and a key added later needs a plugin reload or Host restart.
+#
+# Data sent to Context7 leaves this machine. Override this row in the profile
+# patch layer (by id `context7`) when you need different timeouts, reconnect
+# behavior, or a non-default endpoint; a row override replaces `config`
+# wholesale, so restate every field this row needs.
+#
+# The second row mounts this package's trivial Host half only so the browser
+# bundle declared by `dsh.client` loads and registers the Context7 tool rows.
+- insert:
+    - id: context7
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: context7
+        transport: streamable-http
+        url: https://mcp.context7.com/mcp
+        headers: !!js "(process.env.CONTEXT7_API_KEY && process.env.CONTEXT7_API_KEY.trim() ? { Authorization: 'Bearer ' + process.env.CONTEXT7_API_KEY.trim() } : {})"
+        failOnStartupError: true
+    - id: context7-ui
+      name: '@litingyes/dsh-context7'
