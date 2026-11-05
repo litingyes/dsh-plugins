@@ -1,6 +1,6 @@
 {
   "name": "@litingyes/dsh-context7",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Context7 documentation for DeepSeek Harness: connects the official Context7 MCP server so agents can resolve libraries and fetch current documentation and code examples.",
   "type": "module",
   "license": "MIT",
@@ -27,6 +27,12 @@
   "engines": {
     "dsh": ">=0.2.1-rc.5 <0.3.0-0"
   },
+  "scripts": {
+    "test": "node --test test/",
+    "check": "node --check index.js && node --check client.js && node --check scripts/usage-report.mjs",
+    "usage-report": "node scripts/usage-report.mjs",
+    "prepublishOnly": "node --check index.js && node --check client.js"
+  },
   "exports": {
     ".": "./index.js",
     "./client": "./client.js",
@@ -41,15 +47,13 @@
     "cordis.patch.yml",
     "icon.svg",
     "locale/*.json",
+    "scripts/usage-report.mjs",
     "README.md",
     "README.en.md",
     "LICENSE",
     "THIRD_PARTY_NOTICES.md"
   ],
   "icon": "./icon.svg",
-  "scripts": {
-    "prepublishOnly": "node --check index.js && node --check client.js"
-  },
   "publishConfig": {
     "access": "public"
   },

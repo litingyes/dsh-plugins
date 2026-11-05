@@ -17,8 +17,16 @@
 # behavior, or a non-default endpoint; a row override replaces `config`
 # wholesale, so restate every field this row needs.
 #
-# The second row mounts this package's trivial Host half only so the browser
-# bundle declared by `dsh.client` loads and registers the Context7 tool rows.
+# The second row mounts this package's Host half, which does two things: it
+# carries the browser bundle declared by `dsh.client` (the Context7 tool rows in
+# the conversation), and it adds a short always-on prompt section that names the
+# two tools and says when they should beat memory or `web_fetch`. The MCP client
+# above already re-publishes Context7's own `instructions`, but that text never
+# names a callable tool, so on its own it is easy for the model to skip.
+#
+# `serverName` on the second row must match the one above: it is how the
+# guidance names the tools and how it decides whether they are registered.
+# `guidance: false` turns the prompt section off without touching the connector.
 - insert:
     - id: context7
       name: '@deepseek-ai/dsh-mcp-client'
@@ -30,3 +38,6 @@
         failOnStartupError: true
     - id: context7-ui
       name: '@litingyes/dsh-context7'
+      config:
+        guidance: true
+        serverName: context7

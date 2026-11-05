@@ -63,8 +63,12 @@ dsh-plugins/
 ├── .github/workflows/      # 推 tag 触发 npm 发布
 ├── scripts/release.mjs     # 打 tag / 推送
 ├── dsh-context7/           # 纯手写 JS，无需构建
-│   ├── package.json        # bundle manifest（dsh.bundle.patch）
-│   ├── cordis.patch.yml    # 插入 MCP 客户端配置
+│   ├── package.json        # bundle manifest（dsh.bundle.patch + dsh.client）
+│   ├── cordis.patch.yml    # 插入 MCP 客户端配置与引导行配置
+│   ├── index.js            # Host 入口：浏览器半边载体 + 常驻触发引导
+│   ├── client.js           # 浏览器半边（手写，无构建）
+│   ├── scripts/            # usage-report.mjs：统计本机会话的工具使用占比
+│   ├── test/               # node --test
 │   ├── icon.svg            # 插件图标
 │   ├── locale/             # 插件管理器显示用标题与描述（en / zh）
 │   ├── README.md           # 中文说明
