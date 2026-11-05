@@ -1,14 +1,14 @@
 # @litingyes/dsh-git
 
-给 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 的 Git 面板：**开在右侧栏里，跟着当前会话的工作区走**。以多分支提交树为主视图，节点显示 description / author / date / commit，点开看提交详情；旁边是变更暂存、提交与分支管理。同一套操作也以工具形式提供给智能体。
+给 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 的 Git 面板：**开在右侧栏里，跟着当前会话的工作区走**。以多分支提交树为主视图，节点显示 description / author / date / commit，点开看提交详情；旁边是变更暂存、提交，以及分支与工作树管理。面板是插件唯一的界面：0.3.0 起不再注册智能体工具。
 
-> 只读写本机的 Git 仓库，不做任何网络操作（没有 fetch / pull / push）。
+> 只读写本机的 Git 仓库，不做任何网络操作（没有 fetch / pull / push / clone）。
 
 ## 界面
 
 在右侧栏点「+」打开起始页，选 **工作区 Git**，它作为一个右栏页签出现（每个会话各自记住自己的页签布局）。面板不让你选工作区：它显示的就是**当前会话工作区**的仓库，切换会话即切换仓库。
 
-右栏很窄，面板按**容器宽度**而不是窗口宽度排版：窄时单列、该省略的省略、该换行的换行，不会出现横向滚动条；把右栏切成全屏（右侧栏的展开按钮）后，变更页会自动回到左右两栏。
+右栏很窄，面板按**容器宽度**而不是窗口宽度排版：分支行与文件行采用自适应两段式，行尾的按钮与徽标不会被右边缘裁掉；窄时单列、该省略的省略、该换行的换行，不会出现横向滚动条；把右栏切成全屏（右侧栏的展开按钮）后，变更页会自动回到左右两栏。
 
 面板内分三个页签：
 
@@ -36,8 +36,15 @@
 ### 分支
 
 - 本地分支列表（当前分支标记、上游、最近提交时间），一键切换。
+- 已被某个工作树检出的分支不能再次切换：行上标注「工作树」，切换按钮禁用（git 会拒绝重复检出）。
 - 新建分支并切换；分支名交给 `git check-ref-format --branch` 校验。
 - 折叠显示远程分支。
+- **工作树列表**：列出该仓库的全部工作树——路径（仓库内用相对路径，仓库外尽量用 `~` 缩写）、分支、短 HEAD，以及「当前 / locked / prunable」徽标。
+- **新建工作树**：填分支名与路径，选「新建分支」（`git worktree add -b`）或「检出已有分支」；默认路径 `<工作区根>/.agents/worktrees/<分支名>`（工作区根通常就是仓库根；相对路径按工作区根解析），可改。
+- 默认目录 `.agents/worktrees/` 若还没有 `.gitignore`，创建时会补一行 `*`（与智能体的工作树工具写入的是同一个标记文件），否则新工作树会在主仓库里显示成未跟踪文件。
+- **移除工作树**：必须二次确认；勾选「强制移除」会丢弃该工作树里未提交的改动。
+- **prune**：仅当列表里存在 prunable 项时出现，清理目录已消失但登记还在的失效工作树。
+- 面板不移动会话目录：新建出来的工作树要你自己进去（在新目录里开会话）；面板始终读写已注册工作区的根仓库。
 
 ## 安装
 
@@ -50,10 +57,10 @@ plugin_manager action=install_bundle target=/absolute/path/to/dsh-plugins/dsh-gi
 发布到 npm 后可按包名安装：
 
 ```text
-plugin_manager action=install_bundle target=@litingyes/dsh-git@0.2.0
+plugin_manager action=install_bundle target=@litingyes/dsh-git@0.3.0
 ```
 
-安装后左侧栏不再有 Git 图标：入口在右侧栏「+」的起始页里。Host 半边（`git.js` / `api.js`）由 Loader 在启动时载入，**升级后需要重启 DSH** 才生效。卸载：`plugin_manager action=remove_bundle target=@litingyes/dsh-git`。
+安装后左侧栏不再有 Git 图标：入口在右侧栏「+」的起始页里。Host 半边（`index.js` / `git.js` / `api.js`）由 Loader 在启动时载入，**升级后需要重启 DSH** 才生效。卸载：`plugin_manager action=remove_bundle target=@litingyes/dsh-git`。
 
 ### 前提
 
@@ -65,40 +72,29 @@ plugin_manager action=install_bundle target=@litingyes/dsh-git@0.2.0
 
 配置写在 `cordis.patch.yml` 的挂载行里；**覆盖这一行会整体替换 `config`**，需要重述所有字段。非法值会在挂载时直接报错，不会静默降级。
 
+> 0.3.0 移除了四个智能体工具（`git_status` / `git_diff` / `git_commit` / `git_branch`）与 `tools`、`defaultWorkspaceId` 两个配置项。profile patch 里遗留的这两个键会被忽略，不会报错。
+
 | 字段 | 默认 | 说明 |
 | --- | --- | --- |
-| `defaultWorkspaceId` | `''` | 智能体工具省略 `workspace` 时用哪个工作区；空 = 最近更新的已注册工作区。面板按会话解析，不受它影响 |
 | `refs` | `all` | `all` = 提交图追踪全部分支；`head` = 只追踪当前分支 |
 | `maxCommits` | `200` | 提交图抓取的提交数，20–500 |
 | `maxDiffBytes` | `400000` | 单个补丁返回给浏览器的字节上限，10KB–2MB，超出截断并提示 |
 | `commandTimeoutMs` | `15000` | 单次 git 调用的超时，500–120000 |
-| `tools` | `true` | 是否注册四个智能体工具；`false` 时只保留面板 |
-
-## 智能体工具
-
-四个工具与面板调用同一个 Host 服务，行为完全一致：
-
-| 工具 | 参数 | 作用 |
-| --- | --- | --- |
-| `git_status` | `workspace?`, `refs?`, `limit?` | 分支与领先/落后、四类变更文件、跨分支最近提交、本地分支 |
-| `git_diff` | `target` (`worktree`\|`index`\|`commit`), `workspace?`, `path?`, `commit?` | 一个统一 diff；二进制与超大补丁会被标注 |
-| `git_commit` | `message`, `workspace?`, `paths?` | 先暂存给定路径（省略则提交已暂存内容）再提交 |
-| `git_branch` | `action` (`list`\|`checkout`\|`create`), `workspace?`, `branch?` | 列出 / 切换 / 新建分支 |
-
-`workspace` 省略时使用配置中的默认工作区。
 
 ## 安全模型
 
 - **工作区白名单**：浏览器能传的只有工作区 id，或一个「会话工作目录」；后者必须在已注册工作区路径之内，Host 才会采用它，并且 git 命令的 cwd 始终取注册路径，绝不直接使用浏览器给的绝对路径。
 - **无 shell**：`execFile('git', args)`，参数逐个传递，分支名、路径、提交信息都无法被解释成命令。
 - **路径校验**：所有落在 git 命令里的路径先过 `assertRelativePath`（拒绝空串、绝对路径、`..` 段、NUL）。
+- **工作树路径校验**：新建的路径必须在已注册工作区根内、不在 `.git` 内、且目标尚不存在；移除只接受该仓库 `worktree list` 里登记过的路径，永远不碰主工作树与当前工作树。
 - **鉴权前置**：路由先跑 `connection.requestRejection(req)`，未通过时连工作区列表都不返回。
-- **破坏性操作两次确认**：UI 弹框，Host 侧还要求请求体带 `confirm: true` 且路径确实处于变更状态，否则拒绝。
+- **破坏性操作两次确认**：丢弃改动、移除工作树都先弹确认框，请求体必须带 `confirm: true`；丢弃还会复核路径确实处于变更状态，否则拒绝。
 - **可观测的失败**：git 非零退出、超时、`index.lock` 冲突等都会以结构化 code + git 自己的报错首行返回，不吞错。
 
 ## 限制
 
 - 不做网络操作：没有 fetch / pull / push / clone。
+- 面板不移动会话目录：新建工作树只是登记一个目录，进去开会话要你自己操作。
 - 不做 stash、rebase、merge、cherry-pick、冲突解决。
 - 提交历史一次最多 500 条；文件列表一次最多 400 个。
 - 泳道超过 8 条会折叠并提示，不会横向撑破布局。
@@ -121,7 +117,7 @@ npm run check        # node --check 四个运行期入口
 
 ```
 dsh-git/
-├── index.js               # Host 入口：配置校验、路由与工具装配
+├── index.js               # Host 入口：配置校验与路由装配
 ├── git.js                 # git 执行、解析与唯一实现
 ├── api.js                 # /dsh-git/api/* 路由与鉴权
 ├── client.js              # 构建产物（浏览器半边）

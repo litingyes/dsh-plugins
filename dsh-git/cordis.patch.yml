@@ -1,10 +1,11 @@
 # @litingyes/dsh-git — Git for the current workspace.
 #
-# Mounts one Host row. That row registers two things:
-#   - a prefix route `/dsh-git/api/...` served by `ctx.webServer`, which the
-#     browser half calls to read Git state and to run explicit actions;
-#   - four agent tools (git_status / git_diff / git_commit / git_branch) that
-#     call the very same service the route calls.
+# Mounts exactly one Host row, and that row registers one thing: a prefix route
+# `/dsh-git/api/...` served by `ctx.webServer`, which the right-Sidebar panel
+# calls to read Git state and to run explicit actions (staging, committing,
+# branch and worktree management).
+# There are no agent tools: 0.3.0 removed git_status / git_diff / git_commit /
+# git_branch, so the panel is the only surface.
 # The browser half declared by `dsh.client` registers a right-Sidebar tab type:
 # the panel opens beside the conversation, follows the Session it belongs to,
 # and resolves that Session's working directory to a registered workspace.
@@ -13,18 +14,15 @@
 # invalid value fails the row loudly at mount instead of silently degrading.
 #
 # Overriding this row in the profile patch layer replaces `config` wholesale,
-# so restate every field you still want when you override it.
+# so restate every field you still want when you override it. Legacy `tools` and
+# `defaultWorkspaceId` keys left in an override are ignored.
 #
 # Requires a `git` executable on PATH. It performs no network operations: there
-# is no fetch, pull, or push in this version.
+# is no fetch, pull, push, or clone in this version.
 - insert:
     - id: dsh-git
       name: '@litingyes/dsh-git'
       config:
-        # Which workspace the panel opens first. '' = the most recently updated
-        # registered workspace. A value that is not a registered workspace id is
-        # ignored at request time and the panel falls back to that default.
-        defaultWorkspaceId: ''
         # Whether the commit graph tracks every local and remote branch, or only
         # HEAD's history. 'all' | 'head'.
         refs: all
@@ -34,5 +32,3 @@
         maxDiffBytes: 400000
         # Timeout for one git invocation in milliseconds (500-120000).
         commandTimeoutMs: 15000
-        # Register the four agent tools. false leaves only the panel.
-        tools: true

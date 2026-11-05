@@ -80,7 +80,7 @@ export const CSS = `
 .dgit-lanes{position:absolute;left:0;top:0;bottom:0;pointer-events:none}
 /* A row grows instead of clipping: the lane svg measures its element, so a
    wrapped subject or meta line keeps the through-lines continuous. */
-.dgit-node-head{display:flex;align-items:center;gap:10px;width:100%;min-height:56px;box-sizing:border-box;text-align:left;background:none;border:0;padding:6px 20px 6px 4px;cursor:pointer;font:inherit;color:inherit;border-radius:0}
+.dgit-node-head{display:flex;align-items:center;gap:10px;width:100%;min-width:0;min-height:56px;box-sizing:border-box;text-align:left;background:none;border:0;padding:6px 20px 6px 4px;cursor:pointer;font:inherit;color:inherit;border-radius:0}
 .dgit-node-head:hover{background:var(--dsw-alias-bg-layer-1)}
 .dgit-node-head:focus-visible{outline:2px solid var(--dsw-alias-brand-primary);outline-offset:-2px}
 .dgit-node-body{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1 1 auto}
@@ -90,7 +90,8 @@ export const CSS = `
 .dgit-node-meta-author{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:min(180px,100%)}
 .dgit-chevron{flex:none;width:14px;height:14px;color:var(--dsw-alias-label-secondary);transition:transform .12s ease;margin-top:2px}
 .dgit-node[data-open] .dgit-chevron{transform:rotate(90deg)}
-.dgit-badge{display:inline-flex;align-items:center;height:17px;max-width:180px;overflow:hidden;padding:0 6px;border-radius:4px;font-size:10.5px;line-height:1;white-space:nowrap;border:.5px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-secondary)}
+.dgit-badge{display:inline-flex;align-items:center;height:17px;max-width:180px;min-width:0;overflow:hidden;padding:0 6px;border-radius:4px;font-size:10.5px;line-height:1;white-space:nowrap;border:.5px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-secondary)}
+.dgit-badge-text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dgit-badge[data-tone=head]{border-color:color-mix(in srgb, var(--dsw-alias-brand-primary) 55%, transparent);color:var(--dsw-alias-brand-primary)}
 .dgit-badge[data-tone=tag]{border-color:color-mix(in srgb, var(--dsw-alias-state-warn-primary) 55%, transparent);color:var(--dsw-alias-state-warn-primary)}
 
@@ -103,7 +104,11 @@ export const CSS = `
 .dgit-message{margin:0;padding:10px 12px;border-radius:8px;border:.5px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-layer-1);font-family:inherit;font-size:12.5px;white-space:pre-wrap;word-break:break-word;color:var(--dsw-alias-label-primary);max-height:220px;overflow:auto}
 .dgit-detail-title{font-size:11.5px;font-weight:600;color:var(--dsw-alias-label-secondary);text-transform:uppercase;letter-spacing:.03em}
 .dgit-filelist{display:flex;flex-direction:column;border:.5px solid var(--dsw-alias-border-l1);border-radius:8px;overflow:hidden}
-.dgit-filerow{display:flex;align-items:center;gap:8px;width:100%;padding:5px 10px;background:none;border:0;border-bottom:.5px solid var(--dsw-alias-border-l1);font:inherit;font-size:12px;color:var(--dsw-alias-label-primary);cursor:pointer;text-align:left}
+/* No fixed width: the row is a block-level flex box, so it already fills the
+   list. Fixing it to 100% without border-box made the padding push the row's
+   right edge past the scroll container, which clips (overflow-x:hidden) the
+   action button at the end of every row. */
+.dgit-filerow{display:flex;align-items:center;gap:8px;box-sizing:border-box;min-width:0;padding:5px 10px;background:none;border:0;border-bottom:.5px solid var(--dsw-alias-border-l1);font:inherit;font-size:12px;color:var(--dsw-alias-label-primary);cursor:pointer;text-align:left}
 .dgit-filerow:last-child{border-bottom:0}
 .dgit-filerow:hover{background:var(--dsw-alias-bg-layer-1)}
 .dgit-filerow[data-selected]{background:var(--dsw-alias-bg-layer-2)}
@@ -124,11 +129,24 @@ export const CSS = `
 .dgit-split-list{width:360px;flex:none;display:flex;flex-direction:column;min-height:0;border-right:.5px solid var(--dsw-alias-border-l1)}
 .dgit-split-main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;min-height:0}
 .dgit-group{border-bottom:.5px solid var(--dsw-alias-border-l1)}
-.dgit-group-head{display:flex;align-items:center;gap:8px;row-gap:4px;flex-wrap:wrap;padding:7px 12px;font-size:11.5px;color:var(--dsw-alias-label-secondary);background:var(--dsw-alias-bg-layer-1);position:sticky;top:0;z-index:1}
-.dgit-group-name{font-weight:600;letter-spacing:.02em}
+.dgit-group-head{display:flex;align-items:center;gap:8px;row-gap:4px;flex-wrap:wrap;min-width:0;padding:7px 12px;font-size:11.5px;color:var(--dsw-alias-label-secondary);background:var(--dsw-alias-bg-layer-1);position:sticky;top:0;z-index:1}
+.dgit-group-name{font-weight:600;letter-spacing:.02em;min-width:0}
+.dgit-group-icon{flex:none;display:inline-flex;align-items:center;color:var(--dsw-alias-label-secondary)}
 .dgit-count{color:var(--dsw-alias-label-secondary);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.dgit-branch-upstream{flex:0 1 auto;max-width:45%}
 .dgit-branch-time{flex:0 0 auto}
+
+/* ---- branch and worktree rows ---- */
+/* A branch row is two lines on purpose. In a right-Sidebar column a single-line
+   row cannot hold the name, its upstream, the worktree that checked it out, and
+   the age at once: whichever part is last loses to the pane's clipping edge.
+   The name keeps its own line, the slower facts share a meta line that
+   ellipsizes as a whole, and the controls live in a non-shrinking third column
+   so a switch button or state pill is never squeezed out. */
+.dgit-branchrow{display:flex;align-items:center;gap:8px;min-width:0;padding:6px 10px}
+.dgit-branchrow-main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:1px}
+.dgit-branchrow-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left}
+.dgit-branchrow-meta{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;font-size:11px;color:var(--dsw-alias-label-secondary)}
+.dgit-branchrow-actions{flex:none;display:flex;align-items:center;gap:4px;min-width:0}
 
 /* ---- diff ---- */
 .dgit-diff{flex:1 1 auto;min-height:0;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;line-height:1.55;background:var(--dsw-alias-bg-base)}
@@ -150,6 +168,20 @@ export const CSS = `
 .dgit-dialog-title{font-size:14px;font-weight:600;margin:0 0 8px}
 .dgit-dialog-body{font-size:12.5px;color:var(--dsw-alias-label-secondary);line-height:1.6;margin:0 0 16px;word-break:break-word}
 .dgit-dialog-actions{display:flex;justify-content:flex-end;gap:8px}
+/* Dialogs stay inside the viewport: a long worktree path can push the form past
+   the screen on a short window, and a cut-off confirm button is a dead end. */
+.dgit-dialog{max-height:calc(100vh - 48px);overflow-y:auto}
+.dgit-dialog-form{display:flex;flex-direction:column;gap:10px;margin:0 0 16px;min-width:0}
+.dgit-dialog-field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.dgit-dialog-label{font-size:11.5px;color:var(--dsw-alias-label-secondary)}
+.dgit-dialog-hint{min-width:0;font-size:11px;line-height:1.5;color:var(--dsw-alias-label-secondary);overflow-wrap:anywhere}
+.dgit-dialog .dgit-input{width:100%;box-sizing:border-box}
+.dgit-dialog-modes{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
+.dgit-dialog-modes .dgit-btn{flex:1 1 auto;min-width:0}
+.dgit-dialog-check{display:flex;align-items:flex-start;gap:8px;min-width:0;margin:0 0 16px}
+.dgit-dialog-check .dgit-check{margin-top:2px}
+.dgit-dialog-check-text{display:flex;flex-direction:column;gap:2px;min-width:0}
+.dgit-dialog-check-label{font-size:12.5px;color:var(--dsw-alias-label-primary)}
 
 /* ---- controls owned by this plugin ---- */
 .dgit-icon{display:block;width:14px;height:14px;flex:none}
@@ -164,6 +196,9 @@ export const CSS = `
 .dgit-path-btn:focus-visible{outline:2px solid var(--dsw-alias-brand-primary);outline-offset:2px;border-radius:4px}
 .dgit-row-actions{flex:none;display:none;align-items:center;gap:2px}
 .dgit-filerow:hover .dgit-row-actions,.dgit-filerow:focus-within .dgit-row-actions{display:inline-flex}
+/* The tail of a row never shrinks: the name/meta column absorbs every pixel of
+   pressure, so a state pill or a switch button is always fully drawn. */
+.dgit-filerow .dgit-btn,.dgit-filerow .dgit-pill{flex:0 0 auto}
 .dgit-filerow .dgit-btn{height:20px;font-size:11px;padding:0 6px}
 
 /* ---- marks ---- */
@@ -191,8 +226,24 @@ export const CSS = `
   .dgit-commitbox{padding:8px 12px 12px}
   .dgit-split{flex-direction:column}
   .dgit-split-list{width:auto;max-height:45%;border-right:0;border-bottom:.5px solid var(--dsw-alias-border-l1)}
-  .dgit-branch-time{display:none}
   .dgit-node-meta-author{max-width:100%}
+}
+
+@container dgit (max-width:520px){
+  /* A phone-width Sidebar: padding yields first, so the last control in a row
+     still lands inside the pane instead of under the clipping edge. */
+  .dgit-header{padding:9px 10px 8px}
+  .dgit-toolbar{padding:6px 10px}
+  .dgit-tabs{padding:0 6px}
+  .dgit-tab{padding:8px 6px}
+  .dgit-banner{margin:8px 10px 0}
+  .dgit-empty{padding:28px 12px}
+  .dgit-filerow{padding:5px 8px}
+  .dgit-branchrow{padding:6px 8px}
+  .dgit-group-head{padding:6px 8px;column-gap:6px}
+  .dgit-node-head{padding:6px 8px 6px 2px}
+  .dgit-detail{padding:2px 8px 12px 2px}
+  .dgit-commitbox{padding:8px 10px 10px}
 }
 
 @media (prefers-reduced-motion:reduce){.dgit-chevron{transition:none}}

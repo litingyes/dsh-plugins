@@ -6,25 +6,7 @@
 
 import * as React from 'react'
 import { CopyIcon } from './icons.jsx'
-import { absoluteTime, relativeTime, splitPath, statusLetter } from './format.js'
-
-/**
- * Copy text to the clipboard, tolerating a denied or missing clipboard.
- *
- * @param {string} text text to copy.
- * @returns {Promise<boolean>} whether the copy succeeded.
- */
-async function copyText(text) {
-  try {
-    if (navigator.clipboard?.writeText !== undefined) {
-      await navigator.clipboard.writeText(text)
-      return true
-    }
-  } catch {
-    return false
-  }
-  return false
-}
+import { absoluteTime, copyText, relativeTime, splitPath, statusLetter } from './format.js'
 
 /**
  * One labelled field.

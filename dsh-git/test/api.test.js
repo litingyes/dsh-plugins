@@ -74,6 +74,8 @@ function makeGit(overrides = {}) {
     branch: { head: 'main', upstream: null, ahead: 0, behind: 0, detached: false, unborn: false, oid: 'a'.repeat(40) },
     changes: { staged: [], unstaged: [], untracked: [], conflicted: [] },
     branches: [],
+    worktrees: [],
+    worktree: null,
     commits: [],
     isEmpty: false,
     limits: { maxCommits: 200, maxDiffBytes: 400000, refs: 'all' },
@@ -89,6 +91,9 @@ function makeGit(overrides = {}) {
     commit: record('commit', {}),
     checkout: record('checkout', {}),
     createBranch: record('createBranch', {}),
+    createWorktree: record('createWorktree', {}),
+    removeWorktree: record('removeWorktree', {}),
+    pruneWorktrees: record('pruneWorktrees', {}),
     ...overrides,
   }
 }
@@ -343,4 +348,87 @@ test('no connection service means no auth plane, not no route', async () => {
   const res = makeRes()
   await handler(makeReq({ url: `${API_PREFIX}/api/state` }), res)
   assert.equal(res.statusCode, 200)
+})
+
+test('worktree actions reach the service with their flags', async () => {
+  const git = makeGit()
+  const handler = createApi({ git, authorize: ok })
+
+  const create = makeRes()
+  await handler(
+    makeReq({
+      method: 'POST',
+      url: `${API_PREFIX}/api/action`,
+      body: JSON.stringify({
+        action: 'create-worktree',
+        workspace: 'w1',
+        branch: 'feat/x',
+        path: '.agents/worktrees/feat/x',
+        createBranch: true,
+      }),
+    }),
+    create,
+  )
+  assert.equal(create.statusCode, 200)
+  assert.equal(create.json.ok, true)
+  assert.equal(git.calls[0].name, 'createWorktree')
+  assert.equal(git.calls[0].request.workspaceId, 'w1')
+  assert.equal(git.calls[0].request.branch, 'feat/x')
+  assert.equal(git.calls[0].request.path, '.agents/worktrees/feat/x')
+  assert.equal(git.calls[0].request.createBranch, true)
+
+  const remove = makeRes()
+  await handler(
+    makeReq({
+      method: 'POST',
+      url: `${API_PREFIX}/api/action`,
+      body: JSON.stringify({ action: 'remove-worktree', path: '/tmp/tree', confirm: true, force: true }),
+    }),
+    remove,
+  )
+  assert.equal(remove.statusCode, 200)
+  assert.equal(git.calls[2].name, 'removeWorktree')
+  assert.equal(git.calls[2].request.path, '/tmp/tree')
+  assert.equal(git.calls[2].request.confirm, true)
+  assert.equal(git.calls[2].request.force, true)
+
+  const prune = makeRes()
+  await handler(
+    makeReq({ method: 'POST', url: `${API_PREFIX}/api/action`, body: JSON.stringify({ action: 'prune-worktrees' }) }),
+    prune,
+  )
+  assert.equal(prune.statusCode, 200)
+  assert.equal(git.calls[4].name, 'pruneWorktrees')
+  // Every mutation answers with the state it produced, worktrees included.
+  assert.deepEqual(prune.json.worktrees, [])
+})
+
+test('worktree failures map to their own statuses', async () => {
+  const cases = [
+    ['invalid_worktree_path', 400],
+    ['unknown_worktree', 400],
+    ['worktree_exists', 409],
+    ['worktree_in_use', 409],
+    ['branch_in_worktree', 409],
+  ]
+  for (const [code, status] of cases) {
+    const git = makeGit({
+      removeWorktree: async () => {
+        throw new GitError(code, `${code} happened`, { path: '/tmp/tree' })
+      },
+    })
+    const handler = createApi({ git, authorize: ok })
+    const res = makeRes()
+    await handler(
+      makeReq({
+        method: 'POST',
+        url: `${API_PREFIX}/api/action`,
+        body: JSON.stringify({ action: 'remove-worktree', path: '/tmp/tree', confirm: true }),
+      }),
+      res,
+    )
+    assert.equal(res.statusCode, status, code)
+    assert.equal(res.json.error.code, code)
+    assert.equal(res.json.error.path, '/tmp/tree')
+  }
 })

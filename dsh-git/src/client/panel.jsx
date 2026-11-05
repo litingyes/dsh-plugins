@@ -40,6 +40,29 @@ const FAILURE_KEYS = {
   outside_workspace: 'panel.outsideWorkspace',
   unknown_workspace: 'panel.outsideWorkspace',
   no_workspace: 'panel.noWorkspace',
+  branch_in_worktree: 'panel.branchInWorktree',
+  unknown_worktree: 'panel.unknownWorktree',
+  worktree_in_use: 'panel.worktreeInUse',
+  worktree_exists: 'panel.worktreeExists',
+  invalid_worktree_path: 'panel.invalidWorktreePath',
+}
+
+/**
+ * The path a refusal is about, when the Host names one.
+ *
+ * `GitError.detail` is spread into the wire error, so `detail.path` arrives as a
+ * top-level `path`; the nested read keeps a Host that sends the bare `detail`
+ * object working too.
+ *
+ * @param {unknown} failure the thrown value.
+ * @returns {string | null} the absolute path, or null when absent.
+ */
+function failurePath(failure) {
+  const detail = failure?.detail
+  const nested = typeof detail?.path === 'string' ? detail.path : undefined
+  const flat = typeof failure?.path === 'string' ? failure.path : undefined
+  const found = nested ?? flat
+  return found === '' || found === undefined ? null : found
 }
 
 /**
@@ -52,7 +75,12 @@ const FAILURE_KEYS = {
 function failureText(failure, t) {
   const code = failure?.code
   const key = typeof code === 'string' ? FAILURE_KEYS[code] : undefined
-  if (key !== undefined) return t(key)
+  if (key !== undefined) {
+    // The path is the actionable half of a worktree refusal: name the directory
+    // the Host rejected so the banner can be acted on without retrying blindly.
+    const at = failurePath(failure)
+    return at === null ? t(key) : `${t(key)} (${at})`
+  }
   return failure instanceof Error ? failure.message : String(failure)
 }
 
@@ -369,6 +397,7 @@ export function GitPanel({ api, locale, sessionId, useSessions }) {
         { className: 'dgit-tabpanel', value: 'branches', keepMounted: true },
         React.createElement(BranchesView, {
           branches: snapshot.branches ?? [],
+          worktrees: snapshot.worktrees ?? [],
           t,
           language,
           busy,

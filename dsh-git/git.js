@@ -2,9 +2,8 @@
  * `@litingyes/dsh-git` host Git layer.
  *
  * One service answers every read and every mutation. The HTTP route
- * (`api.js`) and the agent tools (`index.js`) both call this module, so the
- * panel and the model never diverge in behaviour or in the way they report a
- * failure.
+ * (`api.js`) is its only caller, so the panel never diverges from the module in
+ * behaviour or in the way a failure reaches the screen.
  *
  * Design constraints, all of them deliberate:
  *   - `git` is spawned with `execFile` and an argument array. There is no
@@ -23,7 +22,8 @@
  */
 
 import { execFile } from 'node:child_process'
-import { existsSync } from 'node:fs'
+import { existsSync, realpathSync, writeFileSync } from 'node:fs'
+import { homedir } from 'node:os'
 import path from 'node:path'
 
 /** Errors carry a stable machine code plus the message shown to a human. */
@@ -531,6 +531,86 @@ export function parseBranches(text) {
 export const BRANCH_FORMAT = `--format=%(refname:short)${FIELD}%(refname)${FIELD}%(HEAD)${FIELD}%(upstream:short)${FIELD}%(committerdate:iso-strict)`
 
 /* ------------------------------------------------------------------ *
+ * Worktrees
+ * ------------------------------------------------------------------ */
+
+/**
+ * Parse `git worktree list --porcelain`.
+ *
+ * One block per worktree, blocks separated by a blank line, one `key [value]`
+ * per line. The main working tree is always first, and every other entry is
+ * either on a branch or detached. `locked` / `prunable` are optional and may or
+ * may not carry a reason, so the value separates "not flagged" (null) from
+ * "flagged with no reason" ('').
+ *
+ * @param {string} text raw stdout.
+ * @returns {{path: string, branch: string|null, head: string, detached: boolean, bare: boolean, locked: string|null, prunable: string|null}[]}
+ */
+export function parseWorktrees(text) {
+  if (typeof text !== 'string' || text === '') return []
+  const worktrees = []
+  let entry = null
+  for (const rawLine of text.split('\n')) {
+    const line = rawLine.replace(/\r$/u, '')
+    if (line === '') {
+      // A blank line closes the current block; the next `worktree` opens a new one.
+      entry = null
+      continue
+    }
+    // A worktree path may contain spaces, so only the first space splits the line.
+    const space = line.indexOf(' ')
+    const key = space === -1 ? line : line.slice(0, space)
+    const value = space === -1 ? '' : line.slice(space + 1)
+    if (key === 'worktree') {
+      if (value === '') continue
+      entry = { path: value, branch: null, head: '', detached: false, bare: false, locked: null, prunable: null }
+      worktrees.push(entry)
+      continue
+    }
+    // Every other key only means something inside a block that already opened.
+    if (entry === null) continue
+    if (key === 'HEAD') entry.head = value
+    else if (key === 'branch') entry.branch = value.startsWith('refs/heads/') ? value.slice(11) : value
+    else if (key === 'detached') entry.detached = true
+    else if (key === 'bare') entry.bare = true
+    else if (key === 'locked') entry.locked = value
+    else if (key === 'prunable') entry.prunable = value
+  }
+  return worktrees
+}
+
+/**
+ * Attach the worktree that holds each local branch to that branch's row.
+ *
+ * `git switch` refuses a branch another worktree has checked out, so the panel
+ * needs the same fact before it offers the button. Remote branches carry no
+ * such state and are returned untouched, which keeps their shape as it was.
+ *
+ * @param {object[]} branches from {@link parseBranches}.
+ * @param {object[]} worktrees from {@link parseWorktrees}.
+ * @param {string} root the repository root this snapshot was read at.
+ * @returns {object[]} branches with `worktreePath` and `worktreeCurrent` added.
+ */
+export function annotateBranches(branches, worktrees, root) {
+  const holders = new Map()
+  for (const worktree of Array.isArray(worktrees) ? worktrees : []) {
+    if (worktree.branch === null || worktree.bare === true) continue
+    holders.set(worktree.branch, worktree)
+  }
+  const here = typeof root === 'string' && root !== '' ? canonicalPath(root) : ''
+  const source = Array.isArray(branches) ? branches : []
+  return source.map(branch => {
+    if (branch.type !== 'local') return branch
+    const holder = holders.get(branch.name)
+    return {
+      ...branch,
+      worktreePath: holder === undefined ? null : holder.path,
+      worktreeCurrent: holder !== undefined && here !== '' && canonicalPath(holder.path) === here,
+    }
+  })
+}
+
+/* ------------------------------------------------------------------ *
  * Diff helpers
  * ------------------------------------------------------------------ */
 
@@ -618,6 +698,89 @@ export function directoryContains(root, child) {
   return child.startsWith(prefix)
 }
 
+/**
+ * Canonical form of a path that may not exist yet.
+ *
+ * git prints back the path it was handed, while a workspace can reach the same
+ * place through a symlinked prefix (`/var` versus `/private/var` on macOS). The
+ * existing prefix of a path is therefore resolved through symlinks and the rest
+ * is appended verbatim, so two spellings of one directory compare equal — even
+ * for a worktree directory that has not been created yet, which is exactly the
+ * comparison the containment checks need.
+ *
+ * @param {string} value path, existing or not.
+ * @returns {string} the canonical path.
+ */
+function canonicalPath(value) {
+  const normalized = normalizeDirectory(value)
+  const tail = []
+  let current = normalized
+  for (;;) {
+    try {
+      const resolved = normalizeDirectory(realpathSync.native(current))
+      return tail.length === 0 ? resolved : normalizeDirectory(path.join(resolved, ...tail))
+    } catch {
+      const parent = path.dirname(current)
+      if (parent === current) return normalized
+      tail.unshift(path.basename(current))
+      current = parent
+    }
+  }
+}
+
+/**
+ * Render one worktree path for a narrow sidebar.
+ *
+ * Inside the repository the path is relative to its root, which is the only form
+ * that fits in a column this narrow; outside it falls back to a `~`-abbreviated
+ * home path so a worktree kept next to the repository stays readable.
+ *
+ * @param {string} target worktree path as git printed it.
+ * @param {string} root repository root.
+ * @returns {string} the printable path.
+ */
+export function displayPathOf(target, root) {
+  if (typeof target !== 'string' || target === '') return ''
+  const resolved = normalizeDirectory(target)
+  if (typeof root === 'string' && root !== '') {
+    const base = normalizeDirectory(root)
+    if (directoryContains(base, resolved)) {
+      return resolved === base ? '.' : resolved.slice(base.length + 1)
+    }
+  }
+  try {
+    const home = normalizeDirectory(homedir())
+    if (home !== '' && directoryContains(home, resolved)) return `~${resolved.slice(home.length)}`
+  } catch {
+    // No home directory in this environment: the absolute path is still correct.
+  }
+  return resolved
+}
+
+/**
+ * Project raw worktree records into the shape the panel consumes.
+ *
+ * @param {object[]} worktrees from {@link parseWorktrees}.
+ * @param {string} root the repository root this snapshot was read at.
+ * @returns {object[]} worktrees with display, `current`, and `main` markers.
+ */
+export function presentWorktrees(worktrees, root) {
+  const here = typeof root === 'string' && root !== '' ? canonicalPath(root) : ''
+  const source = Array.isArray(worktrees) ? worktrees : []
+  return source.map((worktree, index) => ({
+    path: worktree.path,
+    displayPath: displayPathOf(worktree.path, root),
+    branch: worktree.branch ?? null,
+    head: typeof worktree.head === 'string' ? worktree.head.slice(0, 7) : '',
+    detached: worktree.detached === true,
+    bare: worktree.bare === true,
+    locked: worktree.locked ?? null,
+    prunable: worktree.prunable ?? null,
+    current: here !== '' && canonicalPath(worktree.path) === here,
+    main: index === 0,
+  }))
+}
+
 /* ------------------------------------------------------------------ *
  * Service
  * ------------------------------------------------------------------ */
@@ -629,6 +792,9 @@ const DEFAULTS = {
   commandTimeoutMs: 15000,
   maxCommitFiles: 400,
 }
+
+/** Where a worktree goes when the caller names no path: the agent tool's own home. */
+const WORKTREE_DIR = path.join('.agents', 'worktrees')
 
 /**
  * Create the Git service.
@@ -684,10 +850,8 @@ export function createGitService(options) {
       if (found === undefined) throw new GitError('unknown_workspace', `unknown workspace id: ${workspaceId}`)
       return found
     }
-    if (config.defaultWorkspaceId !== '' && config.defaultWorkspaceId !== undefined) {
-      const found = list.find(entry => entry.id === config.defaultWorkspaceId)
-      if (found !== undefined) return found
-    }
+    // Nothing named a workspace: the registry's own order decides, and the panel
+    // never depends on it because it always sends its Session's directory.
     return list[0]
   }
 
@@ -737,6 +901,11 @@ export function createGitService(options) {
     })
   }
 
+  const readWorktrees = async (root, signal) => {
+    const result = await run(['worktree', 'list', '--porcelain'], { cwd: root, signal })
+    return parseWorktrees(result.stdout)
+  }
+
   const readLog = async (root, refs, limit, signal) => {
     const args = ['log', '--no-color', '--date-order', `-n${limit}`, LOG_FORMAT]
     if (refs === 'all') {
@@ -775,15 +944,24 @@ export function createGitService(options) {
         branch: null,
         changes: { staged: [], unstaged: [], untracked: [], conflicted: [] },
         branches: [],
+        worktrees: [],
+        worktree: null,
         commits: [],
         isEmpty: true,
         limits: publicLimits(),
       }
     }
 
-    const empty = !(await hasCommit(repo.root, request.signal))
-    const status = await readStatus(repo.root, request.signal)
-    const branches = await readBranches(repo.root, request.signal)
+    // The four reads are independent, so one round of latency covers all of them.
+    const [hasHead, status, rawBranches, rawWorktrees] = await Promise.all([
+      hasCommit(repo.root, request.signal),
+      readStatus(repo.root, request.signal),
+      readBranches(repo.root, request.signal),
+      readWorktrees(repo.root, request.signal),
+    ])
+    const empty = !hasHead
+    const worktrees = presentWorktrees(rawWorktrees, repo.root)
+    const branches = annotateBranches(rawBranches, rawWorktrees, repo.root)
     const refs = request.refs === 'head' ? 'head' : 'all'
     const commits = empty ? [] : await readLog(repo.root, refs, clampLimit(request.limit), request.signal)
 
@@ -794,6 +972,8 @@ export function createGitService(options) {
       branch: status.branch,
       changes: presentChanges(status.changes),
       branches,
+      worktrees,
+      worktree: worktrees.find(entry => entry.current) ?? null,
       commits,
       isEmpty: empty,
       limits: publicLimits(),
@@ -1065,6 +1245,18 @@ export function createGitService(options) {
     if (!branches.some(entry => entry.type === 'local' && entry.name === branch)) {
       throw new GitError('unknown_branch', `no such local branch: ${branch}`)
     }
+    // The same branch cannot be checked out twice; git would refuse after the
+    // fact with a message the panel cannot turn into a disabled button.
+    const holder = (await readWorktrees(root, request.signal)).find(
+      entry => entry.branch === branch && entry.bare !== true,
+    )
+    if (holder !== undefined && canonicalPath(holder.path) !== canonicalPath(root)) {
+      throw new GitError(
+        'branch_in_worktree',
+        `branch ${branch} is already checked out in the worktree at ${holder.path}`,
+        { branch, path: holder.path },
+      )
+    }
     await run(['switch', branch], { cwd: root, signal: request.signal })
     return { branch }
   }
@@ -1086,6 +1278,171 @@ export function createGitService(options) {
     return { branch }
   }
 
+  /**
+   * Resolve where a new worktree will be created.
+   *
+   * The default mirrors what the agent's own worktree tool does —
+   * `<workspace>/.agents/worktrees/<branch>` — so both routes land in the same
+   * place and the same `.gitignore` marker covers them. A caller-supplied path
+   * may be absolute or relative to the workspace, but it has to stay inside the
+   * workspace: this service never creates a directory outside the tree the user
+   * opened, and never inside git's own bookkeeping.
+   *
+   * @param {{path: string}} workspace the registered workspace.
+   * @param {string} root repository root.
+   * @param {string} branch validated branch name.
+   * @param {unknown} requested caller-supplied path, if any.
+   * @returns {string} the absolute target path.
+   */
+  const worktreeTarget = (workspace, root, branch, requested) => {
+    const asked = typeof requested === 'string' ? requested.trim() : ''
+    const base = asked === ''
+      ? path.join(workspace.path, WORKTREE_DIR, branch)
+      : (path.isAbsolute(asked) ? asked : path.join(workspace.path, asked))
+    const target = canonicalPath(base)
+    if (!directoryContains(canonicalPath(workspace.path), target)) {
+      throw new GitError(
+        'invalid_worktree_path',
+        `a worktree must stay inside the workspace at ${workspace.path}`,
+        { path: target },
+      )
+    }
+    if (directoryContains(canonicalPath(path.join(root, '.git')), target)) {
+      throw new GitError('invalid_worktree_path', 'a worktree may not be created inside .git', { path: target })
+    }
+    return target
+  }
+
+  /**
+   * Keep the conventional worktree container out of `git status`.
+   *
+   * A worktree created inside the repository is just a directory as far as the
+   * main working tree is concerned, so it would show up as untracked until
+   * something ignores it. The agent's worktree tool writes this one-line marker;
+   * the panel writes the same file so both routes leave a clean status. The
+   * marker always sits at the container (`<workspace>/.agents/worktrees/`), not
+   * next to the worktree, because a branch name may nest one level deeper. Any
+   * other parent directory belongs to the user and is left alone.
+   *
+   * @param {{path: string}} workspace the registered workspace.
+   * @param {string} target the worktree path that was just created.
+   */
+  const ensureWorktreeIgnored = (workspace, target) => {
+    const container = canonicalPath(path.join(workspace.path, WORKTREE_DIR))
+    if (!directoryContains(container, canonicalPath(target))) return
+    const marker = path.join(container, '.gitignore')
+    if (existsSync(marker)) return
+    try {
+      writeFileSync(marker, '*\n', 'utf8')
+    } catch {
+      // A read-only checkout must not fail a worktree that already exists.
+    }
+  }
+
+  /**
+   * Create a worktree, on a branch that is new or already there.
+   *
+   * @param {{workspaceId?: string, branch: string, path?: string, createBranch?: boolean, base?: string, signal?: AbortSignal}} request
+   * @returns {Promise<{path: string, branch: string}>}
+   */
+  async function createWorktree(request) {
+    const { workspace, root } = await requireRepo(request.workspaceId, request.signal)
+    const branch = await assertBranchName(run, root, request.branch)
+    const target = worktreeTarget(workspace, root, branch, request.path)
+    if (existsSync(target)) {
+      throw new GitError('worktree_exists', `the target path already exists: ${target}`, { path: target })
+    }
+    const wantsNewBranch = request.createBranch === true
+    const [branches, worktrees] = await Promise.all([
+      readBranches(root, request.signal),
+      readWorktrees(root, request.signal),
+    ])
+    const exists = branches.some(entry => entry.type === 'local' && entry.name === branch)
+    if (wantsNewBranch && exists) {
+      throw new GitError('branch_exists', `branch already exists: ${branch}`, { branch })
+    }
+    if (!wantsNewBranch && !exists) {
+      throw new GitError('unknown_branch', `no such local branch: ${branch}`, { branch })
+    }
+    // One branch can hold at most one worktree, and git refuses the second one.
+    const holder = worktrees.find(entry => entry.branch === branch && entry.bare !== true)
+    if (holder !== undefined) {
+      throw new GitError(
+        'branch_in_worktree',
+        `branch ${branch} is already checked out in the worktree at ${holder.path}`,
+        { branch, path: holder.path },
+      )
+    }
+
+    const args = ['worktree', 'add']
+    if (wantsNewBranch) args.push('-b', branch)
+    args.push(target)
+    if (wantsNewBranch) {
+      // `base` is a revision, never an option: a leading dash is refused here so
+      // it cannot be reinterpreted as one.
+      const base = typeof request.base === 'string' ? request.base.trim() : ''
+      if (base !== '' && base.startsWith('-')) {
+        throw new GitError('invalid_branch', 'base must be a revision, not an option')
+      }
+      if (base !== '') args.push(base)
+    } else {
+      args.push(branch)
+    }
+    await run(args, { cwd: root, signal: request.signal })
+    ensureWorktreeIgnored(workspace, target)
+    return { path: target, branch }
+  }
+
+  /**
+   * Remove one linked worktree, never the one this panel reads.
+   *
+   * The path is matched against git's own list rather than passed through, so a
+   * crafted string can never reach `git worktree remove` unvalidated. Removal
+   * needs the same explicit confirmation the discard action needs: it deletes a
+   * directory, and with `force` it deletes uncommitted work with it.
+   *
+   * @param {{workspaceId?: string, path: string, confirm?: boolean, force?: boolean, signal?: AbortSignal}} request
+   * @returns {Promise<{path: string}>}
+   */
+  async function removeWorktree(request) {
+    const { root } = await requireRepo(request.workspaceId, request.signal)
+    if (request.confirm !== true) {
+      throw new GitError('confirm_required', 'removing a worktree requires confirm: true')
+    }
+    if (typeof request.path !== 'string' || request.path.trim() === '') {
+      throw new GitError('invalid_worktree_path', 'path must be a non-empty string')
+    }
+    const wanted = canonicalPath(request.path.trim())
+    const worktrees = await readWorktrees(root, request.signal)
+    const target = worktrees.find(entry => canonicalPath(entry.path) === wanted)
+    if (target === undefined) {
+      throw new GitError('unknown_worktree', `no such worktree: ${request.path}`, { path: request.path })
+    }
+    if (canonicalPath(target.path) === canonicalPath(root)) {
+      throw new GitError('worktree_in_use', 'the worktree this panel reads cannot be removed', { path: target.path })
+    }
+    if (target.main === true || worktrees[0] === target) {
+      throw new GitError('worktree_in_use', 'the main worktree cannot be removed', { path: target.path })
+    }
+    const args = ['worktree', 'remove']
+    if (request.force === true) args.push('--force')
+    args.push(target.path)
+    await run(args, { cwd: root, signal: request.signal })
+    return { path: target.path }
+  }
+
+  /**
+   * Forget worktrees whose directory disappeared, leaving their branches alone.
+   *
+   * @param {{workspaceId?: string, signal?: AbortSignal}} [request]
+   * @returns {Promise<{pruned: true}>}
+   */
+  async function pruneWorktrees(request = {}) {
+    const { root } = await requireRepo(request.workspaceId, request.signal)
+    await run(['worktree', 'prune'], { cwd: root, signal: request.signal })
+    return { pruned: true }
+  }
+
   return {
     state,
     commitDetail,
@@ -1096,6 +1453,9 @@ export function createGitService(options) {
     commit,
     checkout,
     createBranch,
+    createWorktree,
+    removeWorktree,
+    pruneWorktrees,
     listWorkspaces: () => readWorkspaces().map(entry => ({
       id: entry.id,
       title: entry.title ?? path.basename(entry.path),

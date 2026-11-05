@@ -191,6 +191,12 @@ test('apply contributes the dictionary, one stylesheet, and one right-Sidebar ta
   assert.ok(harness.localeDicts[0].dictionaries.zh['guide.title'])
   assert.ok(harness.localeDicts[0].dictionaries.en['guide.title'])
 
+  // Both dictionaries must describe the same panel: a key that exists in only
+  // one language renders as its own name in the other.
+  const zhKeys = Object.keys(harness.localeDicts[0].dictionaries.zh).sort()
+  const enKeys = Object.keys(harness.localeDicts[0].dictionaries.en).sort()
+  assert.deepEqual(zhKeys, enKeys)
+
   assert.equal(styles.length, 1)
   assert.equal(styles[0].dataset.plugin, '@litingyes/dsh-git')
   assert.match(styles[0].textContent, /\.dgit-panel\{/u)
@@ -257,4 +263,46 @@ test('the bundle declares no external module outside the shared table', () => {
   const found = new Set()
   for (const match of source.matchAll(/require\(\s*["']([^"']+)["']\s*\)/gu)) found.add(match[1])
   assert.deepEqual([...found].sort(), ['react', 'react-dom', 'react/jsx-runtime'])
+})
+
+/** One declaration block from the panel stylesheet, or '' when absent. */
+function styleBlock(css, selector) {
+  const at = css.indexOf(`${selector}{`)
+  if (at === -1) return ''
+  const end = css.indexOf('}', at)
+  return end === -1 ? '' : css.slice(at, end)
+}
+
+test('the row layout cannot overflow the right sidebar', () => {
+  const { registered, styles } = loadBundle()
+  const react = makeReact()
+  const exports = registered[0].factory(name => {
+    if (name === 'react' || name === 'react/jsx-runtime') return react
+    if (name === 'react-dom') return {}
+    throw new Error(`unexpected external module: ${name}`)
+  })
+
+  const harness = makeCtx('zh')
+  exports.apply(harness.ctx)
+  const css = styles[0].textContent
+
+  // A `width:100%` row with horizontal padding is wider than its own container:
+  // the trailing control then lands outside the scroller's clip box, which is
+  // exactly the cut-off "Switch" button the panel started with.
+  const row = styleBlock(css, '.dgit-filerow')
+  assert.ok(row !== '', 'the file row must be styled')
+  assert.match(row, /box-sizing:border-box/u)
+  assert.equal(/width:100%/u.test(row), false)
+
+  // The branch row keeps its text in a column that may shrink and its control
+  // in a slot that may not, so the button is never pushed out of view.
+  assert.match(css, /\.dgit-branchrow\{/u)
+  const main = styleBlock(css, '.dgit-branchrow-main')
+  assert.match(main, /min-width:0/u)
+  const actions = styleBlock(css, '.dgit-branchrow-actions')
+  assert.match(actions, /flex:0 0 auto|flex:none/u)
+
+  // The narrow tier exists, so a very thin sidebar drops padding rather than
+  // clipping content.
+  assert.match(css, /@container dgit \(max-width:\s*(?:520|4[0-9]0|3[0-9]0)px\)/u)
 })
