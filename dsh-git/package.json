@@ -8,7 +8,7 @@
     "name": "Liting",
     "url": "https://github.com/litingyes"
   },
-  "homepage": "https://github.com/litingyes/dsh-plugins/tree/main/dsh-git",
+  "homepage": "https://dsh-plugins.vercel.app",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/litingyes/dsh-plugins.git",
@@ -72,7 +72,8 @@
   "scripts": {
     "build": "node scripts/build-client.mjs",
     "test": "node --test test/",
-    "check": "node --check index.js && node --check git.js && node --check api.js && node --check client.js"
+    "check": "node --check index.js && node --check git.js && node --check api.js && node --check client.js",
+    "prepublishOnly": "npm run build && npm run check"
   },
   "devDependencies": {
     "@base-ui-components/react": "1.0.0-rc.0",

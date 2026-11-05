@@ -30,7 +30,7 @@
 plugin_manager action=install_bundle target=/absolute/path/to/dsh-plugins/dsh-context7
 ```
 
-发布到 npm 之后也可以按包名安装：
+已发布到 npm，可直接按包名安装：
 
 ```text
 plugin_manager action=install_bundle target=@litingyes/dsh-context7@0.1.0

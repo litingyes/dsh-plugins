@@ -30,7 +30,7 @@ Install through the plugin manager (the Web **Plugins** page or the `plugin_mana
 plugin_manager action=install_bundle target=/absolute/path/to/dsh-plugins/dsh-context7
 ```
 
-Once published to npm:
+From npm:
 
 ```text
 plugin_manager action=install_bundle target=@litingyes/dsh-context7@0.1.0

@@ -1,0 +1,104 @@
+# Publish one package to npm when its release tag is pushed.
+#
+#   dsh-context7-v0.1.0  ->  @litingyes/dsh-context7@0.1.0
+#   dsh-git-v0.2.0       ->  @litingyes/dsh-git@0.2.0
+#
+# The tag must point at a commit whose package.json already declares that exact
+# version. Versions already on npm are skipped, so a local `npm publish`
+# followed by a tag push is safe: the run finishes green without republishing.
+name: Publish to npm
+
+on:
+  push:
+    tags:
+      - 'dsh-context7-v*'
+      - 'dsh-git-v*'
+
+permissions:
+  contents: read
+  id-token: write # npm provenance
+
+concurrency:
+  group: npm-publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the tagged commit
+        uses: actions/checkout@v4
+
+      - name: Resolve the package and version from the tag
+        id: target
+        run: |
+          set -euo pipefail
+
+          tag="${GITHUB_REF_NAME}"
+          case "$tag" in
+            dsh-context7-v*) dir="dsh-context7" ;;
+            dsh-git-v*) dir="dsh-git" ;;
+            *)
+              echo "::error::unexpected release tag ${tag}"
+              exit 1
+              ;;
+          esac
+
+          name="$(node -p "require('./${dir}/package.json').name")"
+          declared="$(node -p "require('./${dir}/package.json').version")"
+          version="${tag##*-v}"
+
+          if [ "${version}" != "${declared}" ]; then
+            echo "::error::tag ${tag} does not match ${dir}/package.json version ${declared}; bump the manifest or retag"
+            exit 1
+          fi
+
+          echo "dir=${dir}" >> "$GITHUB_OUTPUT"
+          echo "name=${name}" >> "$GITHUB_OUTPUT"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        working-directory: ${{ steps.target.outputs.dir }}
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            echo "no lockfile; nothing to install"
+          fi
+
+      - name: Skip when this version is already on npm
+        id: existing
+        env:
+          PACKAGE_NAME: ${{ steps.target.outputs.name }}
+          PACKAGE_VERSION: ${{ steps.target.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          if npm view "${PACKAGE_NAME}@${PACKAGE_VERSION}" version > /dev/null 2>&1; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::${PACKAGE_NAME}@${PACKAGE_VERSION} is already published; nothing to do."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish
+        if: steps.existing.outputs.skip != 'true'
+        working-directory: ${{ steps.target.outputs.dir }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${NODE_AUTH_TOKEN:-}" ]; then
+            echo "::error::NPM_TOKEN is not configured for this repository. Add an npm automation token as the NPM_TOKEN secret, or switch to npm trusted publishing."
+            exit 1
+          fi
+
+          # prepublishOnly rebuilds client.js (dsh-git) and re-checks the package before packing.
+          npm publish --access public --provenance

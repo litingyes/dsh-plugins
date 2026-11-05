@@ -11,25 +11,57 @@
 
 ## 安装
 
-每个插件都是一个独立的 Cordis bundle，用 DSH 的插件管理器安装，**不要手改** profile 的 `package.json` 或 `cordis.patch.yml`。以本地目录安装为例：
+每个插件都是一个独立的 Cordis bundle，用 DSH 的插件管理器安装，**不要手改** profile 的 `package.json` 或 `cordis.patch.yml`。
 
-```text
-plugin_manager action=install_bundle target=/absolute/path/to/dsh-plugins/dsh-context7
-```
-
-也可以在 Web 侧边栏的 **Plugins** 页面选择本地包目录。发布到 npm 后可以按包名安装，例如：
+从 npm 安装（推荐）：
 
 ```text
 plugin_manager action=install_bundle target=@litingyes/dsh-context7@0.1.0
+plugin_manager action=install_bundle target=@litingyes/dsh-git@0.2.0
 ```
 
-各插件的安装前提、配置项与限制见对应目录下的 README。
+本地开发时按目录安装：
+
+```text
+plugin_manager action=install_bundle target=/absolute/path/to/dsh-plugins/dsh-git
+```
+
+不发 npm 也可以直接从 GitHub 装；这是 monorepo，必须用 `path:` 指到子目录：
+
+```text
+plugin_manager action=install_bundle target=git+https://github.com/litingyes/dsh-plugins.git#release&path:/dsh-git
+```
+
+Web 侧边栏的 **Plugins** 页面同样接受包名、Git 地址、压缩包和本地绝对路径。各插件的安装前提、配置项与限制见对应目录下的 README。
+
+## 发布
+
+发布由 tag 触发 GitHub Actions（[`.github/workflows/publish.yml`](./.github/workflows/publish.yml)），tag 名形如 `dsh-git-v0.2.1`、`dsh-context7-v0.1.1`：
+
+1. 改版本并提交（`npm version` 只改 manifest，不打 tag）：
+
+   ```bash
+   (cd dsh-git && npm version patch --no-git-tag-version)
+   git add -A && git commit -m "release: dsh-git 0.2.1"
+   ```
+
+2. 打 tag 并推送，CI 随即发布：
+
+   ```bash
+   node scripts/release.mjs dsh-git --push
+   ```
+
+3. 工作流校验 tag 与 `package.json` 版本一致后执行 `npm publish --access public --provenance`。该版本已在 npm 上时跳过，所以先手动 `npm publish` 再推 tag 也不会失败。
+
+仓库需要配置 `NPM_TOKEN` secret（npm automation token，或改用 npm trusted publishing）。本地手动发布时，`prepublishOnly` 会先跑构建与检查（`dsh-git` 是 `npm run build && npm run check`），避免把旧的 `client.js` 发出去。
 
 ## 目录结构
 
 ```
 dsh-plugins/
 ├── README.md
+├── .github/workflows/      # 推 tag 触发 npm 发布
+├── scripts/release.mjs     # 打 tag / 推送
 ├── dsh-context7/           # 纯手写 JS，无需构建
 │   ├── package.json        # bundle manifest（dsh.bundle.patch）
 │   ├── cordis.patch.yml    # 插入 MCP 客户端配置

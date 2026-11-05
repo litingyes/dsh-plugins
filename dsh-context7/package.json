@@ -8,7 +8,7 @@
     "name": "Liting",
     "url": "https://github.com/litingyes"
   },
-  "homepage": "https://github.com/litingyes/dsh-plugins/tree/main/dsh-context7",
+  "homepage": "https://dsh-plugins.vercel.app",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/litingyes/dsh-plugins.git",
@@ -47,6 +47,9 @@
     "THIRD_PARTY_NOTICES.md"
   ],
   "icon": "./icon.svg",
+  "scripts": {
+    "prepublishOnly": "node --check index.js && node --check client.js"
+  },
   "publishConfig": {
     "access": "public"
   },
