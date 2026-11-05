@@ -1,0 +1,84 @@
+{
+  "name": "@litingyes/dsh-git",
+  "version": "0.2.0",
+  "description": "Git for DeepSeek Harness: a right-sidebar tab with a multi-branch commit graph, expandable nodes, working-tree staging and committing, and branch management for the Session's workspace — plus matching agent tools.",
+  "type": "module",
+  "license": "MIT",
+  "author": {
+    "name": "Liting",
+    "url": "https://github.com/litingyes"
+  },
+  "homepage": "https://github.com/litingyes/dsh-plugins/tree/main/dsh-git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/litingyes/dsh-plugins.git",
+    "directory": "dsh-git"
+  },
+  "bugs": {
+    "url": "https://github.com/litingyes/dsh-plugins/issues"
+  },
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "git",
+    "commit-graph",
+    "base-ui"
+  ],
+  "engines": {
+    "dsh": ">=0.2.1-rc.5 <0.3.0-0"
+  },
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "git.js",
+    "api.js",
+    "cordis.patch.yml",
+    "icon.svg",
+    "locale/*.json",
+    "src",
+    "scripts",
+    "README.md",
+    "README.en.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "icon": "./icon.svg",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dsh": {
+    "manifestVersion": 1,
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-ui-sidebar-right"
+      ]
+    }
+  },
+  "scripts": {
+    "build": "node scripts/build-client.mjs",
+    "test": "node --test test/",
+    "check": "node --check index.js && node --check git.js && node --check api.js && node --check client.js"
+  },
+  "devDependencies": {
+    "@base-ui-components/react": "1.0.0-rc.0",
+    "esbuild": "^0.25.12"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true
+  }
+}

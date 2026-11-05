@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Workspace Git",
+    "description": "Opens in the right sidebar: this Session's workspace Git history as a multi-branch commit graph with expandable commit details, plus staging, commits, and branch switching."
+  }
+}
