@@ -2,6 +2,11 @@
  * Branch and worktree list: switch to an existing local branch, create one at
  * HEAD, and manage the worktrees that hold branches.
  *
+ * The sections fold. A repository usually carries more worktrees than branches a
+ * reader cares about at one moment, so each section's header is a button that
+ * shows or hides its rows, and the worktree section — the one this panel exists
+ * for — sits above the remote branches that nobody checks out.
+ *
  * Branch rows are two lines by design. A right-Sidebar column is narrow and
  * resizable, and a single-line row cannot hold the name, its upstream, the
  * worktree that checked it out, and the age at once: whichever part is last
@@ -18,7 +23,7 @@
 
 import * as React from 'react'
 import { Input } from '@base-ui-components/react/input'
-import { BranchIcon, CopyIcon, PlusIcon, WorktreeIcon } from './icons.jsx'
+import { BranchIcon, ChevronRight, CopyIcon, PlusIcon, WorktreeIcon } from './icons.jsx'
 import { absoluteTime, copyText, relativeTime } from './format.js'
 import { WorktreeCreateDialog, WorktreeRemoveDialog, worktreeLabel } from './worktree-dialog.jsx'
 
@@ -30,6 +35,50 @@ import { WorktreeCreateDialog, WorktreeRemoveDialog, worktreeLabel } from './wor
  */
 function hasText(value) {
   return typeof value === 'string' && value !== ''
+}
+
+/**
+ * One collapsible section header.
+ *
+ * The name and the count are a button so the whole section folds with one click.
+ * A section's own actions are passed as children instead of being nested inside
+ * that button, because a button inside a button is not a control the browser can
+ * lay out — the actions stay siblings, separated by the spacer.
+ *
+ * @param {object} props header props.
+ * @param {React.ReactNode} [props.icon] mark shown before the name.
+ * @param {string} props.name section name.
+ * @param {number} props.count rows in the section.
+ * @param {boolean} props.open whether the rows are visible.
+ * @param {() => void} props.onToggle fold request.
+ * @param {(key: string, vars?: object) => string} props.t translator.
+ * @param {React.ReactNode} [props.children] the section's own actions.
+ * @returns {React.ReactElement} the header.
+ */
+function GroupHeader({ icon, name, count, open, onToggle, t, children }) {
+  return React.createElement(
+    'div',
+    { className: 'dgit-group-head' },
+    React.createElement(
+      'button',
+      {
+        type: 'button',
+        className: 'dgit-group-toggle',
+        'aria-expanded': open === true,
+        title: open === true ? t('groups.collapse') : t('groups.expand'),
+        'data-open': open === true ? '' : undefined,
+        onClick: onToggle,
+      },
+      React.createElement(ChevronRight, { className: 'dgit-group-chevron' }),
+      icon === undefined || icon === null
+        ? null
+        : React.createElement('span', { className: 'dgit-group-icon' }, icon),
+      React.createElement('span', { className: 'dgit-group-name' }, name),
+      React.createElement('span', { className: 'dgit-count' }, String(count)),
+    ),
+    React.createElement('span', { className: 'dgit-spacer' }),
+    children,
+  )
 }
 
 /**
@@ -239,6 +288,10 @@ export function BranchesView({ branches, worktrees, t, language, busy, onAction 
   const [name, setName] = React.useState('')
   const [creating, setCreating] = React.useState(false)
   const [removing, setRemoving] = React.useState(null)
+  // Sections start open: the lists are short enough that hiding them by default
+  // would cost a click to see anything. Folding is remembered per view, so the
+  // panel reopens in the shape the reader left it in.
+  const [open, setOpen] = React.useState({ local: true, worktrees: true, remote: true })
 
   const list = Array.isArray(branches) ? branches : []
   const locals = list.filter(branch => branch.type === 'local')
@@ -247,6 +300,8 @@ export function BranchesView({ branches, worktrees, t, language, busy, onAction 
   // `worktree prune` only has work to do when git reports a stale record, so the
   // button is absent rather than permanently disabled.
   const prunable = worktreeRows.some(entry => entry.prunable !== null && entry.prunable !== undefined)
+
+  const toggle = (key) => setOpen(previous => ({ ...previous, [key]: previous[key] !== true }))
 
   const create = async () => {
     const trimmed = name.trim()
@@ -293,56 +348,45 @@ export function BranchesView({ branches, worktrees, t, language, busy, onAction 
       React.createElement(
         'div',
         { className: 'dgit-group' },
-        React.createElement('div', { className: 'dgit-group-head' },
-          React.createElement('span', { className: 'dgit-group-name' }, t('branches.local')),
-          React.createElement('span', { className: 'dgit-count' }, String(locals.length))),
-        locals.length === 0
-          ? React.createElement('div', { className: 'dgit-empty' }, t('branches.none'))
-          : locals.map(branch => React.createElement(BranchRow, {
-              key: branch.name,
-              branch,
-              busy,
-              language,
-              t,
-              onSwitch: branchName => onAction({ action: 'checkout', branch: branchName }),
-            })),
+        React.createElement(GroupHeader, {
+          name: t('branches.local'),
+          count: locals.length,
+          open: open.local === true,
+          onToggle: () => toggle('local'),
+          t,
+        }),
+        open.local === true
+          ? (locals.length === 0
+              ? React.createElement('div', { className: 'dgit-empty' }, t('branches.none'))
+              : locals.map(branch => React.createElement(BranchRow, {
+                  key: branch.name,
+                  branch,
+                  busy,
+                  language,
+                  t,
+                  onSwitch: branchName => onAction({ action: 'checkout', branch: branchName }),
+                })))
+          : null,
       ),
-      remotes.length === 0
-        ? null
-        : React.createElement(
-            'div',
-            { className: 'dgit-group' },
-            React.createElement('div', { className: 'dgit-group-head' },
-              React.createElement('span', { className: 'dgit-group-name' }, t('branches.remote')),
-              React.createElement('span', { className: 'dgit-count' }, String(remotes.length))),
-            remotes.map(branch => React.createElement('div', {
-              key: branch.name,
-              className: 'dgit-filerow',
-              style: { cursor: 'default' },
-            },
-            React.createElement('span', { className: 'dgit-status', 'data-code': 'M' }, React.createElement(BranchIcon, null)),
-            React.createElement('span', { className: 'dgit-path', style: { direction: 'ltr' }, title: branch.name }, branch.name),
-            hasText(branch.commitTime)
-              ? React.createElement('span', { className: 'dgit-count dgit-branch-time' },
-                  relativeTime(branch.commitTime, language))
-              : null)),
-          ),
-      // A repository always has at least the worktree this panel reads, so an
-      // empty list means the Host could not enumerate them: render nothing
-      // rather than an empty section that looks like a failure.
+      // The worktree section sits above Remote: it describes this machine and is
+      // actionable, while a remote branch is a name nobody switches to from here.
+      // An empty list means the Host could not enumerate them, so the section is
+      // absent rather than an empty-looking failure.
       worktreeRows.length === 0
         ? null
         : React.createElement(
             'div',
             { className: 'dgit-group' },
             React.createElement(
-              'div',
-              { className: 'dgit-group-head' },
-              React.createElement('span', { className: 'dgit-group-icon' },
-                React.createElement(WorktreeIcon, null)),
-              React.createElement('span', { className: 'dgit-group-name' }, t('worktree.title')),
-              React.createElement('span', { className: 'dgit-count' }, String(worktreeRows.length)),
-              React.createElement('span', { className: 'dgit-spacer' }),
+              GroupHeader,
+              {
+                icon: React.createElement(WorktreeIcon, null),
+                name: t('worktree.title'),
+                count: worktreeRows.length,
+                open: open.worktrees === true,
+                onToggle: () => toggle('worktrees'),
+                t,
+              },
               React.createElement('button', {
                 type: 'button',
                 className: 'dgit-btn',
@@ -350,9 +394,7 @@ export function BranchesView({ branches, worktrees, t, language, busy, onAction 
                 disabled: busy,
                 title: t('worktree.create'),
                 onClick: () => setCreating(true),
-              },
-              React.createElement(PlusIcon, null),
-              t('worktree.create')),
+              }, React.createElement(PlusIcon, null), t('worktree.create')),
               prunable
                 ? React.createElement('button', {
                     type: 'button',
@@ -364,13 +406,41 @@ export function BranchesView({ branches, worktrees, t, language, busy, onAction 
                   }, t('worktree.prune'))
                 : null,
             ),
-            worktreeRows.map(entry => React.createElement(WorktreeRow, {
-              key: entry.path,
-              worktree: entry,
-              busy,
+            open.worktrees === true
+              ? worktreeRows.map(entry => React.createElement(WorktreeRow, {
+                  key: entry.path,
+                  worktree: entry,
+                  busy,
+                  t,
+                  onRemove: target => setRemoving(target),
+                }))
+              : null,
+          ),
+      remotes.length === 0
+        ? null
+        : React.createElement(
+            'div',
+            { className: 'dgit-group' },
+            React.createElement(GroupHeader, {
+              name: t('branches.remote'),
+              count: remotes.length,
+              open: open.remote === true,
+              onToggle: () => toggle('remote'),
               t,
-              onRemove: target => setRemoving(target),
-            })),
+            }),
+            open.remote === true
+              ? remotes.map(branch => React.createElement('div', {
+                  key: branch.name,
+                  className: 'dgit-filerow',
+                  style: { cursor: 'default' },
+                },
+                React.createElement('span', { className: 'dgit-status', 'data-code': 'M' }, React.createElement(BranchIcon, null)),
+                React.createElement('span', { className: 'dgit-path', style: { direction: 'ltr' }, title: branch.name }, branch.name),
+                hasText(branch.commitTime)
+                  ? React.createElement('span', { className: 'dgit-count dgit-branch-time' },
+                      relativeTime(branch.commitTime, language))
+                  : null))
+              : null,
           ),
       React.createElement(WorktreeCreateDialog, {
         open: creating,

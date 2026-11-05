@@ -38,7 +38,9 @@ test('two lanes converging on one commit report an incoming merge', () => {
   const layout = layoutGraph(commits(['x', 'a', 'b'], ['a', 'p'], ['b', 'p'], ['p']))
   const merge = layout.rows[3]
   assert.equal(merge.lane, 0)
-  assert.deepEqual(merge.incoming, [{ from: 1, color: 1 }])
+  // Lane 0 is the edge that was already waiting for this commit — the top half of
+  // its own lane — and lane 1 is the merge arriving beside it.
+  assert.deepEqual(merge.incoming, [{ from: 0, color: 0 }, { from: 1, color: 1 }])
   // Both lanes were consumed, so nothing continues below the merged commit.
   assert.deepEqual(merge.outgoing, [])
 })
@@ -97,4 +99,39 @@ test('colorForRef is stable and bounded', () => {
 test('missing parent arrays are tolerated', () => {
   const layout = layoutGraph([{ sha: 'a' }, { sha: 'b', parents: ['a'] }])
   assert.equal(layout.rows.length, 2)
+})
+
+test('a commit reports the lane edge arriving from the row above', () => {
+  const layout = layoutGraph(commits(['b', 'a'], ['a']))
+  // The tip has nothing above it; every commit below it is reached through the
+  // lane that was already waiting for it. Without that edge a row draws only the
+  // half of its lane below the node, and the graph reads as one dash per commit.
+  assert.deepEqual(layout.rows[0].incoming, [])
+  assert.deepEqual(layout.rows[1].incoming, [{ from: 0, color: 0 }])
+})
+
+test('every lane leaving one row arrives at the next one', () => {
+  const shapes = [
+    // A merge whose two sides rejoin, then a chain.
+    commits(['m', 'a', 'b'], ['a', 'c'], ['b', 'c'], ['c', 'd'], ['d']),
+    // A plain chain.
+    commits(['h', 'p1'], ['p1', 'p2'], ['p2']),
+    // A fork that is never merged back.
+    commits(['m', 'a', 'b'], ['a', 'c'], ['b', 'c'], ['c']),
+  ]
+  for (const history of shapes) {
+    const layout = layoutGraph(history)
+    for (let index = 0; index + 1 < layout.rows.length; index += 1) {
+      const row = layout.rows[index]
+      const next = layout.rows[index + 1]
+      // Lanes carrying a line at this row's bottom edge...
+      const below = new Set([...row.through.map(segment => segment.lane), ...row.outgoing.map(segment => segment.to)])
+      // ...must carry one at the next row's top edge, or the seam has a hole.
+      const above = new Set([...next.through.map(segment => segment.lane), ...next.incoming.map(segment => segment.from)])
+      const seam = `${row.sha}->${next.sha}`
+      for (const lane of below) assert.ok(above.has(lane), `seam ${seam} drops lane ${lane}`)
+      // And a line never starts at the top of a row that had none below the last.
+      for (const lane of above) assert.ok(below.has(lane), `seam ${seam} starts lane ${lane} from nothing`)
+    }
+  }
 })

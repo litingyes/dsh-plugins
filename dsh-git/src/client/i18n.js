@@ -96,6 +96,9 @@ export const zh = {
   'branches.none': '没有本地分支。',
   'branches.upstream': '跟踪',
 
+  'groups.expand': '展开',
+  'groups.collapse': '收起',
+
   'worktree.title': '工作树',
   'worktree.current': '当前',
   'worktree.locked': '已锁定',
@@ -215,6 +218,9 @@ export const en = {
   'branches.createAction': 'Create and switch',
   'branches.none': 'No local branches.',
   'branches.upstream': 'tracks',
+
+  'groups.expand': 'Expand',
+  'groups.collapse': 'Collapse',
 
   'worktree.title': 'Worktrees',
   'worktree.current': 'current',

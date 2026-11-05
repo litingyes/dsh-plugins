@@ -38,7 +38,7 @@ Inside the panel there are three tabs.
 - Local branches with the current marker, upstream, and last-commit time, each with a one-click switch.
 - A branch already checked out in a worktree cannot be switched again: the row is badged "worktree" and its switch is disabled (git refuses a second checkout).
 - Create-and-switch, with the name validated by `git check-ref-format --branch`.
-- Remote branches listed below.
+- Three sections in the order Local → Worktrees → Remote; click a section header to fold or unfold it (all start unfolded).
 - **Worktree list**: every worktree of the repository — path (relative inside the repository, `~`-abbreviated outside when possible), branch, short HEAD, plus current / locked / prunable badges.
 - **Create a worktree**: fill in a branch and a path, then either create the branch (`git worktree add -b`) or check out an existing one; the default path is `<workspace root>/.agents/worktrees/<branch>` (usually the repository root; relative paths resolve against the workspace root) and can be edited.
 - If the default `.agents/worktrees/` container has no `.gitignore` yet, creating a worktree writes a single `*` line there (the same marker the agent's worktree tool writes); without it the new worktree would show up as untracked in the main repository.

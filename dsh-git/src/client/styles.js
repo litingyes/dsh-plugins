@@ -47,8 +47,16 @@ export const CSS = `
 .dgit-btn:hover:not(:disabled){background:var(--dsw-alias-bg-layer-2)}
 .dgit-btn:focus-visible{outline:2px solid var(--dsw-alias-brand-primary);outline-offset:1px}
 .dgit-btn:disabled{opacity:.45;cursor:default}
-.dgit-btn[data-variant=primary]{background:var(--dsw-alias-brand-primary);border-color:transparent;color:#fff}
+/* brand-primary is a *surface* token: it is near-white in the dark theme and
+   near-black in the light one. Its label is therefore whatever the host paints on
+   a primary fill — a hard-coded white disappears on the light fill, which is
+   exactly how the create button lost its text. */
+.dgit-btn[data-variant=primary]{background:var(--dsw-alias-brand-primary);border-color:transparent;color:var(--dsw-alias-label-primary-foreground,#fff)}
 .dgit-btn[data-variant=primary]:hover:not(:disabled){background:var(--dsw-alias-brand-primary);opacity:.9}
+/* A disabled primary drops the brand fill entirely: dimming an inverted fill to
+   the generic 45% leaves grey text on a grey block. A neutral surface with the
+   secondary label is both readable and unmistakably not pressable. */
+.dgit-btn[data-variant=primary]:disabled{background:var(--dsw-alias-bg-layer-2);border-color:var(--dsw-alias-border-l1);color:var(--dsw-alias-label-secondary);opacity:1}
 .dgit-btn[data-variant=ghost]{background:transparent;border-color:transparent;color:var(--dsw-alias-label-secondary);padding:0 6px}
 .dgit-btn[data-variant=ghost]:hover:not(:disabled){background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary)}
 .dgit-btn[data-variant=danger]{color:var(--dsw-alias-state-error-primary);border-color:color-mix(in srgb, var(--dsw-alias-state-error-primary) 40%, transparent)}
@@ -77,6 +85,10 @@ export const CSS = `
 /* ---- commit graph ---- */
 .dgit-graph{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;padding:6px 0 28px}
 .dgit-node{position:relative;padding-left:var(--dgit-gutter,44px)}
+/* The svg fills the node so an expanding row is drawn at full height in the very
+   frame it grows, before the measured height arrives. It turns off aspect
+   correction (see graph-view.jsx), so filling the box never re-centres the lane
+   drawing and no seam appears while the two heights differ. */
 .dgit-lanes{position:absolute;left:0;top:0;bottom:0;pointer-events:none}
 /* A row grows instead of clipping: the lane svg measures its element, so a
    wrapped subject or meta line keeps the through-lines continuous. */
@@ -131,6 +143,13 @@ export const CSS = `
 .dgit-group{border-bottom:.5px solid var(--dsw-alias-border-l1)}
 .dgit-group-head{display:flex;align-items:center;gap:8px;row-gap:4px;flex-wrap:wrap;min-width:0;padding:7px 12px;font-size:11.5px;color:var(--dsw-alias-label-secondary);background:var(--dsw-alias-bg-layer-1);position:sticky;top:0;z-index:1}
 .dgit-group-name{font-weight:600;letter-spacing:.02em;min-width:0}
+/* The header is a button so a whole section folds with one click; the section's
+   own actions stay siblings, because a button inside a button is not a control. */
+.dgit-group-toggle{flex:1 1 auto;display:flex;align-items:center;gap:8px;min-width:0;padding:0;margin:0;background:none;border:0;font:inherit;font-size:11.5px;color:inherit;cursor:pointer;text-align:left}
+.dgit-group-toggle:hover{color:var(--dsw-alias-label-primary)}
+.dgit-group-toggle:focus-visible{outline:2px solid var(--dsw-alias-brand-primary);outline-offset:2px;border-radius:4px}
+.dgit-group-chevron{flex:none;width:12px;height:12px;color:var(--dsw-alias-label-secondary);transition:transform .12s ease}
+.dgit-group-toggle[data-open] .dgit-group-chevron{transform:rotate(90deg)}
 .dgit-group-icon{flex:none;display:inline-flex;align-items:center;color:var(--dsw-alias-label-secondary)}
 .dgit-count{color:var(--dsw-alias-label-secondary);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dgit-branch-time{flex:0 0 auto}
@@ -187,7 +206,7 @@ export const CSS = `
 .dgit-icon{display:block;width:14px;height:14px;flex:none}
 .dgit-check{width:14px;height:14px;flex:none;display:inline-flex;align-items:center;justify-content:center;padding:0;border-radius:4px;border:.5px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-base);color:transparent;cursor:pointer}
 .dgit-check:hover{border-color:var(--dsw-alias-label-secondary)}
-.dgit-check[data-checked],.dgit-check[data-indeterminate]{background:var(--dsw-alias-brand-primary);border-color:transparent;color:#fff}
+.dgit-check[data-checked],.dgit-check[data-indeterminate]{background:var(--dsw-alias-brand-primary);border-color:transparent;color:var(--dsw-alias-label-primary-foreground,#fff)}
 .dgit-check:focus-visible{outline:2px solid var(--dsw-alias-brand-primary);outline-offset:1px}
 .dgit-check-ind{display:inline-flex;align-items:center;justify-content:center;line-height:0}
 .dgit-check-ind .dgit-icon{width:11px;height:11px}
@@ -246,5 +265,5 @@ export const CSS = `
   .dgit-commitbox{padding:8px 10px 10px}
 }
 
-@media (prefers-reduced-motion:reduce){.dgit-chevron{transition:none}}
+@media (prefers-reduced-motion:reduce){.dgit-chevron,.dgit-group-chevron{transition:none}}
 `

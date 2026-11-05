@@ -306,3 +306,80 @@ test('the row layout cannot overflow the right sidebar', () => {
   // clipping content.
   assert.match(css, /@container dgit \(max-width:\s*(?:520|4[0-9]0|3[0-9]0)px\)/u)
 })
+
+test('fills that invert with the theme paint their label from a host token', () => {
+  const { registered, styles } = loadBundle()
+  const react = makeReact()
+  const exports = registered[0].factory(name => {
+    if (name === 'react' || name === 'react/jsx-runtime') return react
+    if (name === 'react-dom') return {}
+    throw new Error(`unexpected external module: ${name}`)
+  })
+
+  const harness = makeCtx('zh')
+  exports.apply(harness.ctx)
+  const css = styles[0].textContent
+
+  // `brand-primary` is near-white in the dark theme, so a hard-coded white label
+  // vanished on it. The label must come from the token the host paints on a
+  // primary fill, which inverts with the theme.
+  const primary = styleBlock(css, '.dgit-btn[data-variant=primary]')
+  assert.ok(primary !== '')
+  assert.match(primary, /color:var\(--dsw-alias-label-primary-foreground/u)
+  assert.equal(/color:#fff/u.test(primary), false)
+
+  // The checkbox shares the same fill, and its rule is a grouped selector.
+  const check = /\.dgit-check\[data-checked\][^{]*\{([^}]*)\}/u.exec(css)
+  assert.ok(check !== null)
+  assert.match(check[1], /color:var\(--dsw-alias-label-primary-foreground/u)
+  assert.equal(/color:#fff/u.test(check[1]), false)
+})
+
+test('lane rows fill their node without re-centring the drawing', () => {
+  const { registered, styles } = loadBundle()
+  const react = makeReact()
+  const exports = registered[0].factory(name => {
+    if (name === 'react' || name === 'react/jsx-runtime') return react
+    if (name === 'react-dom') return {}
+    throw new Error(`unexpected external module: ${name}`)
+  })
+
+  const harness = makeCtx('zh')
+  exports.apply(harness.ctx)
+  const css = styles[0].textContent
+
+  // The svg stretches over the node so a row that just grew is drawn at full
+  // height immediately; without that, an expanding row shows lanes cut short
+  // until the measured height arrives.
+  const lanes = styleBlock(css, '.dgit-lanes')
+  assert.ok(lanes !== '')
+  assert.match(lanes, /top:0/u)
+  assert.match(lanes, /bottom:0/u)
+
+  // Stretching a viewBox with the default preserveAspectRatio would scale the
+  // drawing down and centre it whenever the two heights disagree, which shows up
+  // as a hairline break at the seam. The svg opts out of aspect correction.
+  const source = readFileSync(path.join(packageRoot, 'client.js'), 'utf8')
+  assert.match(source, /preserveAspectRatio\s*:\s*["']none["']/u)
+})
+
+test('section headers fold their rows', () => {
+  const { registered, styles } = loadBundle()
+  const react = makeReact()
+  const exports = registered[0].factory(name => {
+    if (name === 'react' || name === 'react/jsx-runtime') return react
+    if (name === 'react-dom') return {}
+    throw new Error(`unexpected external module: ${name}`)
+  })
+
+  const harness = makeCtx('zh')
+  exports.apply(harness.ctx)
+  const css = styles[0].textContent
+
+  assert.match(css, /\.dgit-group-toggle\{/u)
+  // The chevron turns when the section is open, so the fold is visible without
+  // relying on the row count alone.
+  assert.match(css, /\.dgit-group-toggle\[data-open\] \.dgit-group-chevron\{transform:rotate\(90deg\)\}/u)
+  // And it is a real button: focus must be visible for keyboard users.
+  assert.match(css, /\.dgit-group-toggle:focus-visible\{/u)
+})
