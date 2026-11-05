@@ -18,7 +18,11 @@ const PACKAGES = ['dsh-context7', 'dsh-git']
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 
 function git(args) {
-  return execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim()
+  return execFileSync('git', args, {
+    cwd: root,
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe'],
+  }).trim()
 }
 
 function fail(message) {
