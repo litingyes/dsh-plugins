@@ -1,0 +1,16 @@
+{
+  "dsh-git": {
+    "name": "@litingyes/dsh-git",
+    "version": "0.2.0",
+    "dsh": ">=0.2.1-rc.5 <0.3.0-0",
+    "description": "Git for DeepSeek Harness: a right-sidebar tab with a multi-branch commit graph, expandable nodes, working-tree staging and committing, and branch management for the Session's workspace — plus matching agent tools.",
+    "homepage": "https://dsh-plugins.vercel.app"
+  },
+  "dsh-context7": {
+    "name": "@litingyes/dsh-context7",
+    "version": "0.2.0",
+    "dsh": ">=0.2.1-rc.5 <0.3.0-0",
+    "description": "Context7 documentation for DeepSeek Harness: connects the official Context7 MCP server so agents can resolve libraries and fetch current documentation and code examples.",
+    "homepage": "https://dsh-plugins.vercel.app"
+  }
+}

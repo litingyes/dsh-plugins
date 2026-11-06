@@ -1,0 +1,219 @@
+---
+import Base from '../layouts/Base.astro'
+import CommandBlock from './CommandBlock.astro'
+import Context7Rows from './Context7Rows.astro'
+import CommitGraph from './CommitGraph.astro'
+import PanelPreview from './PanelPreview.astro'
+import PluginIndex from './PluginIndex.astro'
+import ToolTable from './ToolTable.astro'
+import { pageCopy, plugins, siteCopy } from '../data/plugins'
+import graphData from '../data/repo-graph.json'
+import { url } from '../lib/i18n'
+import type { Locale, RepoGraph } from '../lib/types'
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const t = siteCopy
+const copy = pageCopy
+const graph = graphData as unknown as RepoGraph
+
+const toolRows = plugins.flatMap((plugin) =>
+  plugin.tools.map((tool) => ({
+    tool,
+    from: {
+      label: plugin.name[locale],
+      href: url(locale, `plugins/${plugin.slug}`),
+      signal: plugin.signal,
+    },
+  })),
+)
+
+const gitPlugin = plugins[0]!
+const context7Plugin = plugins[1]!
+---
+
+<Base locale={locale} path="" title={`${siteCopy.home.meta.title[locale]} | dsh-plugins`} description={siteCopy.home.meta.description[locale]}>
+  <section class="hero">
+    <div class="wrap grid-12 items-center">
+      <div class="col-span-12 xl:col-span-6">
+        <h1 class="display-head">
+          {t.home.hero.headline[locale].split('\n').map((line) => <span class="block">{line}</span>)}
+        </h1>
+        <p class="section-lead mt-[var(--space-lg)]">{t.home.hero.lead[locale]}</p>
+        <div class="mt-[var(--space-xl)] flex flex-wrap items-center gap-[var(--space-sm)]">
+          <a class="btn" href="#plugins">{t.home.hero.primary[locale]}</a>
+          <a class="btn btn-quiet" href="https://github.com/litingyes/dsh-plugins">
+            {t.home.hero.secondary[locale]}
+          </a>
+        </div>
+      </div>
+
+      <div class="col-span-12 xl:col-span-6 xl:col-start-7">
+        <PanelPreview locale={locale} />
+      </div>
+    </div>
+  </section>
+
+  <section id="plugins" class="section border-t border-rule">
+    <div class="wrap">
+      <div class="grid-12 items-end">
+        <h2 class="md:col-span-8">{t.home.index.title[locale]}</h2>
+      </div>
+      <div class="mt-[var(--space-xl)]">
+        <PluginIndex locale={locale} />
+      </div>
+    </div>
+  </section>
+
+  <section id="graph" class="section-wide">
+    <div class="wrap">
+      <div class="grid-12 items-end">
+        <h2 class="md:col-span-6">{t.home.graph.title[locale]}</h2>
+        <p class="section-lead md:col-span-5 md:col-start-8">{t.home.graph.lead[locale]}</p>
+      </div>
+
+      <figure class="mt-[var(--space-xl)]">
+        <div class="panel overflow-hidden" data-slot="repo-graph">
+          <CommitGraph locale={locale} toolbar />
+        </div>
+        <figcaption class="mt-[var(--space-sm)] flex flex-wrap items-baseline justify-between gap-[var(--space-sm)]">
+          <span class="body-copy text-[var(--text-sm)]">{t.home.graph.caption[locale]}</span>
+          <a class="link text-[var(--text-sm)]" href={url(locale, `plugins/${gitPlugin.slug}`)}>
+            {t.home.graph.link[locale]}
+          </a>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="context7" class="section">
+    <div class="wrap grid-12 items-center">
+      <div class="md:col-span-6">
+        <h2>{t.home.context7.title[locale]}</h2>
+        <p class="section-lead mt-[var(--space-lg)]">{t.home.context7.lead[locale]}</p>
+        <p class="body-copy mt-[var(--space-lg)]">{t.home.context7.body[locale]}</p>
+        <p class="mt-[var(--space-lg)]">
+          <a class="link" href={url(locale, `plugins/${context7Plugin.slug}`)}>{t.home.context7.link[locale]}</a>
+        </p>
+      </div>
+
+      <figure class="md:col-span-6">
+        <div class="panel prompt-card" data-slot="context7-row">
+          <Context7Rows locale={locale} />
+        </div>
+        <figcaption class="mt-[var(--space-sm)]">
+          <span class="body-copy text-[var(--text-sm)]">{t.home.context7.caption[locale]}</span>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="tools" class="section-wide">
+    <div class="wrap">
+      <div class="grid-12 items-end">
+        <h2 class="md:col-span-6">{t.home.tools.title[locale]}</h2>
+        <p class="section-lead md:col-span-5 md:col-start-8">{t.home.tools.lead[locale]}</p>
+      </div>
+      <div class="mt-[var(--space-xl)] well rounded-[var(--radius-card)] border border-rule p-[var(--space-lg)]">
+        <ToolTable
+          locale={locale}
+          rows={toolRows}
+          cols={t.home.tools.cols}
+          caption={t.home.tools.lead[locale]}
+          compact
+        />
+      </div>
+    </div>
+  </section>
+
+  <section id="install" class="section band border-y border-rule">
+    <div class="wrap">
+      <div class="grid-12 items-end">
+        <h2 class="md:col-span-5">{t.home.install.title[locale]}</h2>
+        <p class="section-lead md:col-span-6 md:col-start-7">{t.home.install.lead[locale]}</p>
+      </div>
+
+      <div class="mt-[var(--space-xl)] grid grid-cols-1 gap-[var(--space-lg)] lg:grid-cols-2 lg:gap-[var(--gap-columns)]">
+        <CommandBlock
+          id="install-git"
+          locale={locale}
+          label={gitPlugin.packageName}
+          command={gitPlugin.install}
+        />
+        <CommandBlock
+          id="install-context7"
+          locale={locale}
+          label={context7Plugin.packageName}
+          command={context7Plugin.install}
+        />
+      </div>
+
+      <ul class="install-notes mt-[var(--space-lg)]">
+        {t.home.install.notes.map((note) => <li>{note[locale]}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section id="boundaries" class="section">
+    <div class="wrap grid-12">
+      <div class="md:col-span-4">
+        <h2>{t.home.boundaries.title[locale]}</h2>
+        <p class="section-lead mt-[var(--space-lg)]">{t.home.boundaries.lead[locale]}</p>
+      </div>
+      <div class="md:col-span-7 md:col-start-6">
+        <div class="hairlines">
+          {
+            t.home.boundaries.items.map((item) => (
+              <div class="boundary-row">
+                <h3>{item.title[locale]}</h3>
+                <p class="body-copy text-[var(--text-sm)]">{item.body[locale]}</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .install-notes {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    margin-inline: 0;
+    padding: 0;
+    list-style: none;
+    color: var(--color-muted);
+    font-size: var(--text-sm);
+  }
+  .install-notes li {
+    padding-inline-start: var(--space-md);
+    border-inline-start: var(--rule-hair) solid var(--color-rule-2);
+    max-width: 80ch;
+  }
+  .boundary-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2xs);
+    padding-block: var(--space-lg);
+  }
+  @media (min-width: 48rem) {
+    .boundary-row {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 9fr);
+      gap: var(--gap-columns);
+      align-items: baseline;
+    }
+  }
+  .boundary-row h3 {
+    max-width: none;
+    font-size: var(--text-title);
+    line-height: 1.25;
+  }
+  .boundary-row p {
+    margin: 0;
+  }
+</style>

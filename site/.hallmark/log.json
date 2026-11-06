@@ -1,0 +1,20 @@
+[
+ {
+  "shape": "Workbench",
+  "theme": "console",
+  "axes": "dark/grotesk-sans/chromatic-amber",
+  "hero": "stage",
+  "nav": "edge-aligned: wordmark, two plugin links, language pair, GitHub",
+  "footer": "colophon over a hairline",
+  "imagery": "the product rebuilt at fidelity from this repository git data inside data-slots",
+  "photos": [],
+  "entry": "first build",
+  "fingerprint": "Hanging|Single column|Hairline|Solid|None|None",
+  "sections": "hero, plugin index, commit graph showcase, Context7 rows and guidance, six-tool ledger, install band, boundaries",
+  "signature": "the right-sidebar commit graph, drawn by the plugin own lane algorithm from this repository history",
+  "waived": "none",
+  "prompt": "astro + tailwind portal introducing the dsh plugins, Hallmark for the style",
+  "date": "2026-11-06",
+  "mode": "build"
+ }
+]

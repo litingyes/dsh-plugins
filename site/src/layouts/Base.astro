@@ -1,0 +1,74 @@
+---
+import '../styles/global.css'
+import Footer from '../components/Footer.astro'
+import Nav from '../components/Nav.astro'
+import { url } from '../lib/i18n'
+import { htmlLang, ogLocale } from '../lib/i18n'
+import type { Locale } from '../lib/types'
+
+interface Props {
+  locale: Locale
+  /** Route without a leading or trailing slash, empty for the home page. */
+  path: string
+  title: string
+  description: string
+}
+
+const { locale, path, title, description } = Astro.props
+const origin = Astro.site ?? new URL('https://dsh-plugins.vercel.app')
+const canonical = new URL(url(locale, path), origin).href
+const alternate = (target: Locale) => new URL(url(target, path), origin).href
+---
+
+<!doctype html>
+<html lang={htmlLang(locale)}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="zh-CN" href={alternate('zh')} />
+    <link rel="alternate" hreflang="en" href={alternate('en')} />
+    <link rel="alternate" hreflang="x-default" href={alternate('zh')} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="dsh-plugins" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={ogLocale(locale)} />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline>document.documentElement.dataset.js = 'on'</script>
+  </head>
+  <body>
+    <a class="skip" href="#main">
+      {locale === 'zh' ? '跳到主要内容' : 'Skip to content'}
+    </a>
+    <Nav locale={locale} path={path} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer locale={locale} />
+    <script>
+      document.addEventListener('click', async (event) => {
+        const target = event.target
+        if (!(target instanceof Element)) return
+        const button = target.closest('[data-copy]')
+        if (!(button instanceof HTMLButtonElement)) return
+        const value = button.dataset.copy
+        if (!value) return
+        try {
+          await navigator.clipboard.writeText(value)
+        } catch {
+          // Clipboard blocked: the command stays selectable in the code block.
+        }
+        const original = button.textContent
+        button.textContent = button.dataset.copied ?? 'Copied'
+        window.setTimeout(() => {
+          button.textContent = original
+        }, 1600)
+      })
+    </script>
+  </body>
+</html>

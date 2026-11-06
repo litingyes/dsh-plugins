@@ -1,0 +1,35 @@
+{
+  "generated": "2026-11-06",
+  "target": "site/ (feature/docs worktree)",
+  "signals": {
+    "designMd": null,
+    "framework": "Astro 7.4.5 + Tailwind CSS 4.3.4, introduced by this task",
+    "existingStyles": "none in the repository; dsh-git/src/client/styles.js styles the plugin UI from host tokens and was read, not reused",
+    "fonts": "none supplied; Fontsource Host Grotesk Variable and Atkinson Hyperlegible Mono",
+    "palette": "none supplied; Hallmark Console graphite tokens in src/styles/tokens.css",
+    "product": "the repository itself; the running Harness at 127.0.0.1:63074 answers 401 and shows private sessions, so the panel is rebuilt from open data inside a data-slot",
+    "inspo": null,
+    "togetherKey": false
+  },
+  "preserved": [
+    "the plugin names, tool names, versions, config fields, limits and security model, quoted from README.md and each plugin README",
+    "dsh-git/src/shared/graph.js:1 lane layout, used unchanged for the graph",
+    "dsh-git/src/client/styles.js:17 LANE_PALETTE as the graph's eight lane colours"
+  ],
+  "introduced": [
+    "site/ as a standalone Astro package",
+    "src/data/plugins.ts bilingual copy, derived from the two plugin READMEs",
+    "scripts/sync-repo-data.mjs and its committed JSON output",
+    "the Console theme, its stamp and tokens"
+  ],
+  "citations": [
+    "README.md:7",
+    "dsh-git/README.md:3",
+    "dsh-git/README.md:42",
+    "dsh-context7/README.md:1",
+    "dsh-context7/README.md:13",
+    "dsh-git/src/shared/graph.js:1",
+    "dsh-git/src/client/styles.js:17",
+    "dsh-context7/client.js:19"
+  ]
+}

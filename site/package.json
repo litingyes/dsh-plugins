@@ -1,0 +1,25 @@
+{
+  "name": "dsh-plugins-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Public portal for the dsh-plugins collection: what each DeepSeek Harness plugin adds, for the agent and for the person.",
+  "packageManager": "pnpm@12.16.1",
+  "engines": {
+    "node": ">=22.23.4"
+  },
+  "scripts": {
+    "sync": "node scripts/sync-repo-data.mjs",
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "node scripts/check-data.mjs && node scripts/check-links.mjs && node scripts/check-contrast.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/host-grotesk": "^5.3.0",
+    "@fontsource/atkinson-hyperlegible-mono": "^5.3.0",
+    "@tailwindcss/vite": "^4.3.4",
+    "astro": "^7.4.5",
+    "tailwindcss": "^4.3.4"
+  }
+}

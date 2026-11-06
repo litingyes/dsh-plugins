@@ -1,0 +1,127 @@
+---
+import type { L, Locale, ToolDoc } from '../lib/types'
+
+export interface ToolRow {
+  tool: ToolDoc
+  from: { label: string; href: string; signal: 'accent' | 'cool' }
+}
+
+interface Props {
+  locale: Locale
+  rows: ToolRow[]
+  cols: { name: L; args: L; what: L; from: L }
+  caption: string
+  compact?: boolean
+}
+
+const { locale, rows, cols, caption, compact = false } = Astro.props
+---
+
+<table class="tool-table">
+  <caption class="visually-hidden">{caption}</caption>
+  <thead>
+    <tr>
+      <th scope="col">{cols.name[locale]}</th>
+      <th scope="col">{cols.args[locale]}</th>
+      {!compact && <th scope="col">{cols.what[locale]}</th>}
+      <th scope="col">{cols.from[locale]}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      rows.map((row) => (
+        <tr>
+          <td data-label={cols.name[locale]} class="cell-name">
+            <code>{row.tool.name}</code>
+          </td>
+          <td data-label={cols.args[locale]} class="cell-args">
+            <code>{row.tool.args}</code>
+          </td>
+          {!compact && (
+            <td data-label={cols.what[locale]} class="cell-what">
+              {row.tool.desc[locale]}
+            </td>
+          )}
+          <td data-label={cols.from[locale]} class="cell-from">
+            <a
+              href={row.from.href}
+              class:list={['tag', row.from.signal === 'accent' ? 'tag-accent' : 'tag-cool', 'no-underline']}
+            >
+              {row.from.label}
+            </a>
+          </td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>
+
+<style>
+  .tool-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+    text-align: start;
+  }
+  .tool-table th {
+    padding: var(--space-xs) var(--space-sm) var(--space-xs) 0;
+    border-bottom: var(--rule-hair) solid var(--color-rule-2);
+    color: var(--color-muted);
+    font-size: var(--text-xs);
+    font-weight: 400;
+    text-align: start;
+  }
+  .tool-table td {
+    padding: var(--space-sm) var(--space-sm) var(--space-sm) 0;
+    border-bottom: var(--rule-hair) solid var(--color-rule);
+    vertical-align: baseline;
+    color: var(--color-ink-2);
+  }
+  .tool-table tr:last-child td {
+    border-bottom: 0;
+  }
+  .tool-table code {
+    font-family: var(--font-outlier);
+    font-size: var(--text-xs);
+    color: var(--color-ink);
+    overflow-wrap: anywhere;
+  }
+  .cell-args code {
+    color: var(--color-muted);
+  }
+  .cell-from {
+    white-space: nowrap;
+  }
+
+  @media (max-width: 48rem) {
+    .tool-table thead {
+      display: none;
+    }
+    .tool-table,
+    .tool-table tbody,
+    .tool-table tr,
+    .tool-table td {
+      display: block;
+      width: 100%;
+    }
+    .tool-table tr {
+      padding-block: var(--space-md);
+      border-bottom: var(--rule-hair) solid var(--color-rule);
+    }
+    .tool-table tr:last-child {
+      border-bottom: 0;
+    }
+    .tool-table td {
+      display: grid;
+      grid-template-columns: 7ch minmax(0, 1fr);
+      gap: var(--space-xs);
+      padding: var(--space-2xs) 0;
+      border-bottom: 0;
+    }
+    .tool-table td::before {
+      content: attr(data-label);
+      color: var(--color-muted);
+      font-size: var(--text-xs);
+    }
+  }
+</style>

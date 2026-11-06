@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro'
+import { url } from '../lib/i18n'
+---
+
+<Base
+  locale="zh"
+  path=""
+  title="页面不存在 | dsh-plugins"
+  description="这个地址没有内容。"
+>
+  <section class="hero">
+    <div class="wrap">
+      <p class="mono text-[var(--text-xs)] text-muted">404</p>
+      <h1 class="page-title mt-[var(--space-md)]">这个地址没有内容</h1>
+      <p class="section-lead mt-[var(--space-md)]">
+        页面可能已经改名，或者链接拼错了。
+      </p>
+      <p class="mt-[var(--space-lg)]">
+        <a class="btn" href={url('zh', '')}>回到首页</a>
+      </p>
+    </div>
+  </section>
+</Base>

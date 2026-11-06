@@ -1,0 +1,79 @@
+---
+import type { Locale } from '../lib/types'
+
+interface Props {
+  command: string
+  locale: Locale
+  label: string
+  id: string
+}
+
+const { command, locale, label, id } = Astro.props
+const [head, target] = command.split(' target=')
+const copied = locale === 'zh' ? '已复制' : 'Copied'
+---
+
+<div class="command">
+  <p class="command-label" id={`${id}-label`}>{label}</p>
+  <div class="command-row">
+    <code class="code" id={id}>
+      {head}
+      {target && (
+        <>
+          {' target='}
+          <em>{target}</em>
+        </>
+      )}
+    </code>
+    <button
+      type="button"
+      class="btn btn-quiet btn-small command-copy"
+      data-copy={command}
+      data-copied={copied}
+      aria-controls={id}
+    >
+      {locale === 'zh' ? '复制' : 'Copy'}
+    </button>
+  </div>
+</div>
+
+<style>
+  .command {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    min-width: 0;
+  }
+  .command-label {
+    margin: 0;
+    color: var(--color-muted);
+    font-size: var(--text-sm);
+  }
+  .command-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    min-width: 0;
+  }
+  .command-row .code {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .command-copy {
+    display: none;
+    flex: 0 0 auto;
+  }
+  :global(html[data-js='on']) .command-copy {
+    display: inline-flex;
+  }
+  @media (max-width: 48rem) {
+    .command-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .command-copy {
+      align-self: flex-start;
+    }
+  }
+</style>

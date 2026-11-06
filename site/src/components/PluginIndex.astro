@@ -1,0 +1,117 @@
+---
+import { plugins, pageCopy, siteCopy } from '../data/plugins'
+import { url } from '../lib/i18n'
+import type { Locale } from '../lib/types'
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const t = pageCopy
+const repo = siteCopy.home.index.repoRow
+---
+
+<div class="plugin-index hairlines">
+  {
+    plugins.map((plugin) => (
+      <article class="plugin-row">
+        <div class="plugin-identity">
+          <img src={plugin.icon} alt="" width="22" height="22" />
+          <h3>{plugin.name[locale]}</h3>
+          <span class="plugin-package mono">{plugin.packageName}</span>
+        </div>
+        <p class="plugin-summary">{plugin.summary[locale]}</p>
+        <div class="plugin-facts">
+          <span class="tag">
+            {plugin.tools.length}
+            {locale === 'zh' ? ' 个工具' : ' tools'}
+          </span>
+          <span class="tag">MIT</span>
+          <a class="link plugin-link" href={url(locale, `plugins/${plugin.slug}`)}>
+            {t.open[locale]}
+          </a>
+        </div>
+      </article>
+    ))
+  }
+
+  <article class="plugin-row">
+    <div class="plugin-identity">
+      <img class="repo-mark" src="/favicon.svg" alt="" width="22" height="22" />
+      <h3>{repo.name[locale]}</h3>
+      <span class="plugin-package mono">{repo.package}</span>
+    </div>
+    <p class="plugin-summary">{repo.summary[locale]}</p>
+    <div class="plugin-facts">
+      <span class="tag">MIT</span>
+      <a class="link plugin-link" href="https://github.com/litingyes/dsh-plugins" rel="noopener">{repo.link[locale]}</a>
+    </div>
+  </article>
+</div>
+
+<style>
+  .plugin-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-sm);
+    padding-block: var(--space-lg);
+    align-items: center;
+  }
+  @media (min-width: 60rem) {
+    .plugin-row {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr) minmax(0, 3fr);
+      gap: var(--gap-columns);
+    }
+  }
+
+  .plugin-identity {
+    display: grid;
+    grid-template-columns: 22px minmax(0, 1fr);
+    align-items: center;
+    column-gap: var(--space-sm);
+    row-gap: var(--space-2xs);
+    min-width: 0;
+  }
+  .plugin-identity img {
+    grid-row: span 2;
+  }
+  .repo-mark {
+    border-radius: 4px;
+  }
+  .plugin-identity h3 {
+    grid-column: 2;
+    max-width: none;
+    font-size: var(--text-title);
+    line-height: 1.2;
+  }
+  .plugin-package {
+    grid-column: 2;
+    color: var(--color-muted);
+    font-size: var(--text-xs);
+  }
+
+  .plugin-summary {
+    margin: 0;
+    max-width: 58ch;
+    color: var(--color-ink-2);
+    font-size: var(--text-sm);
+    line-height: 1.55;
+  }
+
+  .plugin-facts {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+  @media (min-width: 60rem) {
+    .plugin-facts {
+      justify-content: flex-end;
+    }
+  }
+  .plugin-link {
+    font-size: var(--text-sm);
+  }
+</style>

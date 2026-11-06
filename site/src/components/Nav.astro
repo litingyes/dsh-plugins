@@ -1,0 +1,56 @@
+---
+import { siteCopy } from '../data/plugins'
+import { htmlLang, otherLocale, url } from '../lib/i18n'
+import type { Locale } from '../lib/types'
+
+interface Props {
+  locale: Locale
+  path: string
+}
+
+const { locale, path } = Astro.props
+const t = siteCopy
+const alt = otherLocale(locale)
+const altHref = url(alt, path)
+const nav = [
+  { href: url(locale, 'plugins/dsh-git'), label: t.nav.git[locale] },
+  { href: url(locale, 'plugins/dsh-context7'), label: t.nav.context7[locale] },
+]
+---
+
+<header class="border-b border-rule">
+  <div class="wrap flex h-[var(--nav-h)] items-center justify-between gap-[var(--space-sm)] md:gap-[var(--space-lg)]">
+    <a href={url(locale, '')} class="font-display text-[var(--text-lg)] font-medium tracking-[var(--tracking-display)] text-ink no-underline whitespace-nowrap">
+      {t.brand}
+    </a>
+
+    <nav aria-label={locale === 'zh' ? '插件' : 'Plugins'} class="hidden items-center gap-[var(--space-md)] min-[360px]:flex md:gap-[var(--space-lg)]">
+      {
+        nav.map((item) => (
+          <a href={item.href} class="whitespace-nowrap text-[var(--text-sm)] text-ink-2 no-underline hover:text-accent">
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="flex items-center gap-[var(--space-sm)]">
+      <a
+        href="https://github.com/litingyes/dsh-plugins"
+        class="hidden text-[var(--text-sm)] text-ink-2 no-underline hover:text-accent lg:inline"
+        rel="noopener"
+      >
+        GitHub
+      </a>
+      <a
+        href={altHref}
+        hreflang={htmlLang(alt)}
+        lang={htmlLang(alt)}
+        class="tag hover:text-accent"
+        aria-label={t.nav.langLabel[locale]}
+      >
+        {t.nav.langShort[locale]}
+      </a>
+    </div>
+  </div>
+</header>

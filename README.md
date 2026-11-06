@@ -9,6 +9,19 @@
 | [`dsh-context7`](./dsh-context7) | `@litingyes/dsh-context7` | 通过官方 MCP 服务接入 [Context7](https://context7.com)，为智能体提供库解析与最新文档查询 |
 | [`dsh-git`](./dsh-git) | `@litingyes/dsh-git` | 右侧栏 Git 页签，跟着会话工作区走：多分支提交树（节点可展开看详情）、变更暂存与提交、分支切换，并把同样的操作提供为智能体工具 |
 
+## 门户网站
+
+[`site/`](./site) 是 Astro + Tailwind 构建的对外门户：介绍两个插件的功能、智能体工具与配置边界，并提供安装命令。中文在 `/`，英文在 `/en/`。提交图用的是本仓库真实的 git 历史，由插件自己的 `layoutGraph` 排版。
+
+```sh
+cd site
+pnpm install
+pnpm sync     # 有新提交后重新生成 site/src/data/*.json 并提交
+pnpm dev      # http://localhost:4321
+```
+
+部署在 Vercel，项目 Root Directory 指到 `site` 即可，仓库里不放部署配置；细节见 [`site/README.md`](./site/README.md)。
+
 ## 安装
 
 每个插件都是一个独立的 Cordis bundle，用 DSH 的插件管理器安装，**不要手改** profile 的 `package.json` 或 `cordis.patch.yml`。
@@ -62,6 +75,7 @@ dsh-plugins/
 ├── README.md
 ├── .github/workflows/      # 推 tag 触发 npm 发布
 ├── scripts/release.mjs     # 打 tag / 推送
+├── site/                   # Astro 门户（独立 pnpm 包，Vercel 的 Root Directory）
 ├── dsh-context7/           # 纯手写 JS，无需构建
 │   ├── package.json        # bundle manifest（dsh.bundle.patch + dsh.client）
 │   ├── cordis.patch.yml    # 插入 MCP 客户端配置与引导行配置

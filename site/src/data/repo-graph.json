@@ -1,0 +1,601 @@
+{
+  "source": {
+    "head": "f66eabaece6e94e0ead680bf460c8299ad4f1565",
+    "headShort": "f66eaba",
+    "headDate": "2026-11-06",
+    "currentBranch": "feature/docs",
+    "total": 9,
+    "limit": 40,
+    "truncated": false
+  },
+  "commits": [
+    {
+      "sha": "f66eabaece6e94e0ead680bf460c8299ad4f1565",
+      "parents": [
+        "bf390414b1508431c0c276c113a147461f5fa304"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-05",
+      "subject": "feat(context7): add always-on guidance so the tools actually get called",
+      "refs": [
+        {
+          "name": "dsh-context7-v0.2.0",
+          "kind": "tag"
+        },
+        {
+          "name": "origin/release",
+          "kind": "remote"
+        },
+        {
+          "name": "release",
+          "kind": "branch"
+        },
+        {
+          "name": "feature/dsh-conext7",
+          "kind": "branch"
+        }
+      ],
+      "onCurrent": true
+    },
+    {
+      "sha": "bf390414b1508431c0c276c113a147461f5fa304",
+      "parents": [
+        "b784bb859b81541f0bf7c79e49f8781a9dedcc9c"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-05",
+      "subject": "chore: ignore the local pnpm store",
+      "refs": [],
+      "onCurrent": true
+    },
+    {
+      "sha": "81cefd61527ae29cd5eab955931620d64992caea",
+      "parents": [
+        "f003889904b904e62f409bc8c3b7ad808c8d0629"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-05",
+      "subject": "feat(git): fold the branch sections and move worktrees above remote",
+      "refs": [
+        {
+          "name": "feature/dsh-git",
+          "kind": "branch"
+        }
+      ],
+      "onCurrent": false
+    },
+    {
+      "sha": "b784bb859b81541f0bf7c79e49f8781a9dedcc9c",
+      "parents": [
+        "e7198d0469065c31df47b0c254d47e800a54f238"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-05",
+      "subject": "chore(release): keep the tag probe from printing git errors",
+      "refs": [],
+      "onCurrent": true
+    },
+    {
+      "sha": "e7198d0469065c31df47b0c254d47e800a54f238",
+      "parents": [
+        "459979e05f70a97aa063356fa94559825b950d7a"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-05",
+      "subject": "chore(release): publish from npm through tag-triggered CI",
+      "refs": [
+        {
+          "name": "dsh-git-v0.2.0",
+          "kind": "tag"
+        },
+        {
+          "name": "dsh-context7-v0.1.0",
+          "kind": "tag"
+        }
+      ],
+      "onCurrent": true
+    },
+    {
+      "sha": "f003889904b904e62f409bc8c3b7ad808c8d0629",
+      "parents": [
+        "459979e05f70a97aa063356fa94559825b950d7a"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-05",
+      "subject": "feat(git)!: manage worktrees and stop clipping the right-sidebar rows",
+      "refs": [],
+      "onCurrent": false
+    },
+    {
+      "sha": "459979e05f70a97aa063356fa94559825b950d7a",
+      "parents": [
+        "0090429bf32ae7bf40e558eacf67ed50385eff16"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-05",
+      "subject": "feat(git): add right-sidebar workspace Git plugin",
+      "refs": [],
+      "onCurrent": true
+    },
+    {
+      "sha": "0090429bf32ae7bf40e558eacf67ed50385eff16",
+      "parents": [
+        "055d49493e9442aa706ff6328eb0022576b9d46b"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-04",
+      "subject": "feat(context7): add Context7 MCP documentation plugin",
+      "refs": [],
+      "onCurrent": true
+    },
+    {
+      "sha": "055d49493e9442aa706ff6328eb0022576b9d46b",
+      "parents": [],
+      "author": "Liting",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-04",
+      "subject": "Initial commit",
+      "refs": [],
+      "onCurrent": true
+    }
+  ],
+  "layout": {
+    "rows": [
+      {
+        "sha": "f66eabaece6e94e0ead680bf460c8299ad4f1565",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "bf390414b1508431c0c276c113a147461f5fa304",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "81cefd61527ae29cd5eab955931620d64992caea",
+        "lane": 1,
+        "color": 1,
+        "through": [
+          {
+            "lane": 0,
+            "color": 0
+          }
+        ],
+        "incoming": [],
+        "outgoing": [
+          {
+            "to": 1,
+            "color": 1
+          }
+        ]
+      },
+      {
+        "sha": "b784bb859b81541f0bf7c79e49f8781a9dedcc9c",
+        "lane": 0,
+        "color": 0,
+        "through": [
+          {
+            "lane": 1,
+            "color": 1
+          }
+        ],
+        "incoming": [],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "e7198d0469065c31df47b0c254d47e800a54f238",
+        "lane": 0,
+        "color": 0,
+        "through": [
+          {
+            "lane": 1,
+            "color": 1
+          }
+        ],
+        "incoming": [],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "f003889904b904e62f409bc8c3b7ad808c8d0629",
+        "lane": 1,
+        "color": 1,
+        "through": [
+          {
+            "lane": 0,
+            "color": 0
+          }
+        ],
+        "incoming": [],
+        "outgoing": [
+          {
+            "to": 1,
+            "color": 1
+          }
+        ]
+      },
+      {
+        "sha": "459979e05f70a97aa063356fa94559825b950d7a",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 1,
+            "color": 1
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "0090429bf32ae7bf40e558eacf67ed50385eff16",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "055d49493e9442aa706ff6328eb0022576b9d46b",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [],
+        "outgoing": []
+      }
+    ],
+    "laneCount": 2,
+    "overflow": false
+  },
+  "branches": [
+    {
+      "name": "feature/docs",
+      "sha": "f66eabaece6e94e0ead680bf460c8299ad4f1565",
+      "short": "f66eaba",
+      "upstream": "",
+      "date": "2026-11-06",
+      "current": true,
+      "symref": ""
+    },
+    {
+      "name": "feature/dsh-conext7",
+      "sha": "f66eabaece6e94e0ead680bf460c8299ad4f1565",
+      "short": "f66eaba",
+      "upstream": "",
+      "date": "2026-11-06",
+      "current": false,
+      "symref": ""
+    },
+    {
+      "name": "feature/dsh-git",
+      "sha": "81cefd61527ae29cd5eab955931620d64992caea",
+      "short": "81cefd6",
+      "upstream": "",
+      "date": "2026-11-06",
+      "current": false,
+      "symref": ""
+    },
+    {
+      "name": "release",
+      "sha": "f66eabaece6e94e0ead680bf460c8299ad4f1565",
+      "short": "f66eaba",
+      "upstream": "origin/release",
+      "date": "2026-11-06",
+      "current": false,
+      "symref": ""
+    }
+  ],
+  "details": {
+    "f66eabaece6e94e0ead680bf460c8299ad4f1565": {
+      "message": "feat(context7): add always-on guidance so the tools actually get called\n\nMeasured on this machine (57 sessions, ~5,900 recorded tool calls): the two\nContext7 tools accounted for ~0.3% of calls, and only 2 of 26 sessions reached\nthem organically after install. The MCP client does republish Context7's own\ninitialize.instructions, but that text never names mcp__context7__*; the only\nactionable line nearby points at list_mcp_resources, and Context7 exposes no\nresources.\n\nThe plugin's Host half now registers one prompt section at MCP_SERVERS + 1\n(3101, directly below the vendor paragraph) that names both tools, says they\nbeat memory and web_fetch, and gives the one case that should skip them. It\nself-hides through tools.get() when the connector row is missing or renamed,\ncosts ~90 tokens per request, and turns off with `guidance: false`. Both rows\ngain documented config.\n\nAlso add node:test coverage for placement, gating, renaming and config\nvalidation, plus scripts/usage-report.mjs so \"it never triggers\" can be read\nas a number from committed session logs.",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-06T00:28:12+08:00",
+      "files": [
+        {
+          "path": "README.md",
+          "status": "M",
+          "added": 6,
+          "deleted": 2,
+          "binary": false
+        },
+        {
+          "path": "dsh-context7/README.en.md",
+          "status": "M",
+          "added": 69,
+          "deleted": 7,
+          "binary": false
+        },
+        {
+          "path": "dsh-context7/README.md",
+          "status": "M",
+          "added": 69,
+          "deleted": 7,
+          "binary": false
+        },
+        {
+          "path": "dsh-context7/cordis.patch.yml",
+          "status": "M",
+          "added": 13,
+          "deleted": 2,
+          "binary": false
+        },
+        {
+          "path": "dsh-context7/index.js",
+          "status": "M",
+          "added": 120,
+          "deleted": 6,
+          "binary": false
+        },
+        {
+          "path": "dsh-context7/package.json",
+          "status": "M",
+          "added": 8,
+          "deleted": 4,
+          "binary": false
+        },
+        {
+          "path": "dsh-context7/scripts/usage-report.mjs",
+          "status": "A",
+          "added": 129,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-context7/test/index.test.js",
+          "status": "A",
+          "added": 135,
+          "deleted": 0,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "README.md",
+        "lines": [
+          "diff --git a/README.md b/README.md",
+          "index f8d40b3..41fa2f7 100644",
+          "--- a/README.md",
+          "+++ b/README.md",
+          "@@ -65,4 +65,8 @@ dsh-plugins/",
+          " ├── dsh-context7/           # 纯手写 JS，无需构建",
+          "-│   ├── package.json        # bundle manifest（dsh.bundle.patch）",
+          "-│   ├── cordis.patch.yml    # 插入 MCP 客户端配置",
+          "+│   ├── package.json        # bundle manifest（dsh.bundle.patch + dsh.client）",
+          "+│   ├── cordis.patch.yml    # 插入 MCP 客户端配置与引导行配置",
+          "+│   ├── index.js            # Host 入口：浏览器半边载体 + 常驻触发引导",
+          "+│   ├── client.js           # 浏览器半边（手写，无构建）",
+          "+│   ├── scripts/            # usage-report.mjs：统计本机会话的工具使用占比",
+          "+│   ├── test/               # node --test",
+          " │   ├── icon.svg            # 插件图标"
+        ],
+        "truncated": false
+      }
+    },
+    "bf390414b1508431c0c276c113a147461f5fa304": {
+      "message": "chore: ignore the local pnpm store",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-06T00:27:13+08:00",
+      "files": [
+        {
+          "path": ".gitignore",
+          "status": "M",
+          "added": 1,
+          "deleted": 0,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": ".gitignore",
+        "lines": [
+          "diff --git a/.gitignore b/.gitignore",
+          "index 600ebda..5c4a4fe 100644",
+          "--- a/.gitignore",
+          "+++ b/.gitignore",
+          "@@ -4 +4,2 @@ node_modules/",
+          " *.log",
+          "+.pnpm-store/"
+        ],
+        "truncated": false
+      }
+    },
+    "81cefd61527ae29cd5eab955931620d64992caea": {
+      "message": "feat(git): fold the branch sections and move worktrees above remote\n\nThe branches tab now reads local -> worktrees -> remote, and each section folds\nwhen its header is clicked: a repository usually carries more worktrees than\nbranches a reader wants at once, and the worktrees describe this machine while a\nremote branch is just a name.\n\nTwo visual defects of the 0.3.0 panel are fixed with it:\n\n- The primary buttons painted a hard-coded white label on\n  `--dsw-alias-brand-primary`, which is near-white in the dark theme, so the text\n  disappeared and the disabled state read as grey on grey. The label now comes\n  from `--dsw-alias-label-primary-foreground`, the token the host paints on a\n  primary fill, and the disabled state drops the brand fill for a neutral surface\n  with the secondary label.\n- The commit graph drew only the half of a lane below its node: the layout never\n  reported the edge arriving from the row above, so every lane was one dash per\n  commit. That edge is now part of `incoming` — a degenerate curve along the same\n  column — and the lane svg opts out of aspect correction, so filling its row can\n  never scale the drawing away from a seam.",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-06T00:26:57+08:00",
+      "files": [
+        {
+          "path": "dsh-git/README.en.md",
+          "status": "M",
+          "added": 1,
+          "deleted": 1,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/README.md",
+          "status": "M",
+          "added": 1,
+          "deleted": 1,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/client.js",
+          "status": "M",
+          "added": 32,
+          "deleted": 13,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/src/client/branches-view.jsx",
+          "status": "M",
+          "added": 123,
+          "deleted": 53,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/src/client/graph-view.jsx",
+          "status": "M",
+          "added": 6,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/src/client/i18n.js",
+          "status": "M",
+          "added": 6,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/src/client/styles.js",
+          "status": "M",
+          "added": 22,
+          "deleted": 3,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/src/shared/graph.js",
+          "status": "M",
+          "added": 6,
+          "deleted": 1,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/test/client.test.js",
+          "status": "M",
+          "added": 77,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/test/graph.test.js",
+          "status": "M",
+          "added": 38,
+          "deleted": 1,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "dsh-git/README.en.md",
+        "lines": [
+          "diff --git a/dsh-git/README.en.md b/dsh-git/README.en.md",
+          "index 6787609..a27b004 100644",
+          "--- a/dsh-git/README.en.md",
+          "+++ b/dsh-git/README.en.md",
+          "@@ -40,3 +40,3 @@ Inside the panel there are three tabs.",
+          " - Create-and-switch, with the name validated by `git check-ref-format --branch`.",
+          "-- Remote branches listed below.",
+          "+- Three sections in the order Local → Worktrees → Remote; click a section header to fold or unfold it (all start unfolded).",
+          " - **Worktree list**: every worktree of the repository — path (relative inside the repository, `~`-abbreviated outside when possible), branch, short HEAD, plus current / locked / prunable badges."
+        ],
+        "truncated": false
+      }
+    },
+    "b784bb859b81541f0bf7c79e49f8781a9dedcc9c": {
+      "message": "chore(release): keep the tag probe from printing git errors",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-06T00:24:27+08:00",
+      "files": [
+        {
+          "path": "scripts/release.mjs",
+          "status": "M",
+          "added": 5,
+          "deleted": 1,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "scripts/release.mjs",
+        "lines": [
+          "diff --git a/scripts/release.mjs b/scripts/release.mjs",
+          "index 653f934..e392ddd 100644",
+          "--- a/scripts/release.mjs",
+          "+++ b/scripts/release.mjs",
+          "@@ -20,3 +20,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')",
+          " function git(args) {",
+          "-  return execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim()",
+          "+  return execFileSync('git', args, {",
+          "+    cwd: root,",
+          "+    encoding: 'utf8',",
+          "+    stdio: ['ignore', 'pipe', 'pipe'],",
+          "+  }).trim()",
+          " }"
+        ],
+        "truncated": false
+      }
+    }
+  }
+}

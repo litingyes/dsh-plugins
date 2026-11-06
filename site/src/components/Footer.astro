@@ -1,0 +1,40 @@
+---
+import { siteCopy } from '../data/plugins'
+import type { Locale } from '../lib/types'
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const t = siteCopy
+const links = [
+  { href: 'https://github.com/litingyes/dsh-plugins', label: t.footer.repo[locale] },
+  { href: 'https://github.com/litingyes/dsh-plugins/blob/release/README.md', label: t.footer.readme[locale] },
+  { href: 'https://github.com/litingyes/dsh-plugins/blob/release/dsh-git/README.md', label: 'dsh-git' },
+  { href: 'https://github.com/litingyes/dsh-plugins/blob/release/dsh-context7/README.md', label: 'dsh-context7' },
+]
+---
+
+<footer class="border-t border-rule">
+  <div class="wrap grid grid-cols-1 gap-[var(--space-lg)] py-[var(--space-2xl)] md:grid-cols-12">
+    <p class="text-[var(--text-sm)] leading-relaxed text-muted md:col-span-5">
+      {t.footer.built[locale]}
+    </p>
+
+    <nav data-credits aria-label={locale === 'zh' ? '相关链接' : 'Related links'} class="flex flex-wrap items-baseline gap-x-[var(--space-lg)] gap-y-[var(--space-xs)] md:col-span-4 md:col-start-7">
+      {
+        links.map((link) => (
+          <a href={link.href} class="link text-[var(--text-sm)]" rel="noopener">
+            {link.label}
+          </a>
+        ))
+      }
+      <span class="text-[var(--text-sm)] text-muted">{t.footer.license[locale]}</span>
+    </nav>
+
+    <p data-credits class="text-[var(--text-xs)] leading-relaxed text-muted md:col-span-12">
+      {t.footer.credits[locale]}
+    </p>
+  </div>
+</footer>

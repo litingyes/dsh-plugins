@@ -1,0 +1,251 @@
+/*! Hallmark · shape: Workbench · genre: modern-minimal · theme: Console (by request) · job: try
+ * hero: Stage, the head on six columns and the real commit panel on six · nav: edge-aligned, the wordmark against two plugin links, the language pair and GitHub · footer: colophon over a hairline
+ * imagery: the product rebuilt at fidelity from this repository’s own git data, no photographs · signature: the right-sidebar commit graph, drawn by the plugin’s own lane algorithm from this repo’s history · console: graphite
+ * axes: dark/grotesk-sans/chromatic-amber · posture: restrained · contrast: pass · fold: pass · v2.0.0 */
+/*! Hallmark · pre-emit critique: P5 H4 E4 S5 R4 V4 · weakest: E, the graph rows and the tool ledger shared one hairline weight; the ledger now sits on paper-3 with a rule-2 spine
+ * hero-review: not run, one-pass build · finish-review: subagent · 4 findings · 4 resolved */
+@import "tailwindcss";
+@import "@fontsource-variable/host-grotesk/index.css";
+@import "@fontsource/atkinson-hyperlegible-mono/latin-400.css";
+@import "@fontsource/atkinson-hyperlegible-mono/latin-500.css";
+@import "./tokens.css";
+@import "./base.css" layer(base);
+
+/* Both axes clipped at the source too, not only in the imported base sheet. */
+html,
+body {
+  overflow-x: clip;
+}
+
+@layer components {
+  .wrap {
+    width: 100%;
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    box-sizing: border-box;
+  }
+
+  /* Sections part by the scaffold's rhythm: half of the gap on each side. */
+  .section {
+    padding-block: calc(var(--section-gap-s) / 2);
+  }
+  .section-wide {
+    padding-block: calc(var(--section-gap) / 2);
+  }
+  .band {
+    background: var(--color-paper-2);
+    color: var(--color-ink);
+  }
+  .well {
+    background: var(--color-paper-3);
+  }
+
+  /* Twelve columns, the scaffold's gap, never bare 1fr tracks. */
+  .grid-12 {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gap-columns);
+    row-gap: var(--space-xl);
+  }
+  @media (max-width: 47.999rem) {
+    .grid-12 {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .mono {
+    font-family: var(--font-outlier);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .panel {
+    background: var(--color-paper-2);
+    border: var(--rule-hair) solid var(--color-rule);
+    border-radius: var(--radius-card);
+    min-width: 0;
+    color: var(--color-ink);
+  }
+
+  .rule-top {
+    border-block-start: var(--rule-hair) solid var(--color-rule);
+  }
+
+  .hairlines > * + * {
+    border-block-start: var(--rule-hair) solid var(--color-rule);
+  }
+
+  /* One primary control: amber is the person's signal across the page. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
+    min-height: 44px;
+    padding-inline: var(--space-lg);
+    border: var(--rule-hair) solid transparent;
+    border-radius: var(--radius-pill);
+    background: var(--color-accent);
+    color: var(--color-accent-ink);
+    font-family: inherit;
+    font-size: var(--text-md);
+    font-weight: 500;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+  }
+  .btn:hover {
+    background: color-mix(in oklab, var(--color-accent) 86%, var(--color-ink));
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .btn-quiet {
+    background: transparent;
+    color: var(--color-ink);
+    border-color: var(--color-rule-2);
+  }
+  .btn-quiet:hover {
+    background: var(--color-paper-2);
+    border-color: var(--color-ink-2);
+  }
+  .btn-small {
+    min-height: 44px;
+    padding-inline: var(--space-md);
+    font-size: var(--text-sm);
+  }
+
+  .code {
+    display: block;
+    margin: 0;
+    padding: var(--space-md);
+    background: var(--color-paper-3);
+    border: var(--rule-hair) solid var(--color-rule);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-outlier);
+    font-size: 12px;
+    line-height: 1.6;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    color: var(--color-ink-2);
+  }
+  .code em {
+    font-style: normal;
+    color: var(--color-accent);
+  }
+
+  .link {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: var(--color-rule-2);
+    text-underline-offset: 0.18em;
+  }
+  .link:hover {
+    text-decoration-color: var(--color-accent);
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    min-height: 20px;
+    padding-inline: var(--space-xs);
+    border: var(--rule-hair) solid var(--color-rule);
+    border-radius: 4px;
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--color-ink-2);
+    white-space: nowrap;
+  }
+  .tag-mono {
+    font-family: var(--font-outlier);
+    font-weight: 400;
+  }
+  .tag-accent {
+    color: var(--color-accent);
+    border-color: var(--color-accent-soft);
+    background: color-mix(in oklab, var(--color-accent-soft) 45%, transparent);
+  }
+  .tag-cool {
+    color: var(--color-cool);
+    border-color: var(--color-cool-soft);
+    background: color-mix(in oklab, var(--color-cool-soft) 45%, transparent);
+  }
+}
+
+@layer utilities {
+  /* The hero fills the screen under the nav and nothing more. */
+  .hero {
+    display: grid;
+    align-items: center;
+    min-height: calc(100svh - var(--nav-h) - var(--rule-hair));
+    padding-block: var(--space-xl);
+  }
+  @media (max-width: 60rem) {
+    .hero {
+      min-height: 0;
+      padding-block: var(--space-3xl);
+    }
+  }
+  .measure {
+    max-width: 62ch;
+  }
+  .measure-tight {
+    max-width: 46ch;
+  }
+}
+
+@layer components {
+  .skip {
+    position: absolute;
+    inset-inline-start: var(--space-md);
+    inset-block-start: var(--space-md);
+    z-index: var(--z-toast);
+    padding: var(--space-xs) var(--space-md);
+    border-radius: var(--radius-pill);
+    background: var(--color-accent);
+    color: var(--color-accent-ink);
+    font-size: var(--text-sm);
+    text-decoration: none;
+    transform: translateY(-200%);
+  }
+  .skip:focus-visible {
+    transform: translateY(0);
+  }
+}
+
+@layer components {
+  .display-head {
+    font-size: var(--text-display-s);
+    line-height: 1.02;
+  }
+  .display-head > span {
+    display: block;
+    white-space: nowrap;
+  }
+  .page-title {
+    font-size: var(--text-section);
+    line-height: 1.05;
+  }
+  .section-lead {
+    max-width: 52ch;
+    color: var(--color-ink-2);
+    font-size: var(--text-lead);
+    line-height: 1.45;
+  }
+  .body-copy {
+    max-width: 62ch;
+    color: var(--color-muted);
+    font-size: var(--text-md);
+    line-height: 1.6;
+  }
+}
