@@ -70,7 +70,7 @@
 plugin_manager action=install_bundle target=/absolute/path/to/dsh-plugins/dsh-git
 ```
 
-发布到 npm 后可按包名安装：
+已发布到 npm，可直接按包名安装：
 
 ```text
 plugin_manager action=install_bundle target=@litingyes/dsh-git@0.5.0

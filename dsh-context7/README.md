@@ -35,7 +35,7 @@
 
 ## 环境要求
 
-- DSH `>= 0.2.1-rc.5 < 0.3.0`（当前在 `0.2.1-rc.5` 上验证）
+- DSH `>= 0.2.1-rc.5 < 0.3.0`（在 `0.2.1-rc.5` 与 `0.2.2-rc.1` 上验证：工具与引导段落都出现在会话里）
 - 能访问 `https://mcp.context7.com/mcp`
 - 仅 `scripts/usage-report.mjs` 与测试需要 Node.js 24+（内置 zstd）
 
@@ -50,7 +50,7 @@ plugin_manager action=install_bundle target=/absolute/path/to/dsh-plugins/dsh-co
 已发布到 npm，可直接按包名安装：
 
 ```text
-plugin_manager action=install_bundle target=@litingyes/dsh-context7@0.2.0
+plugin_manager action=install_bundle target=@litingyes/dsh-context7@0.2.1
 ```
 
 新 bundle 通常经 HMR 直接生效；如果安装结果提示 `restart-required`，重启桌面端即可。**注意**：`index.js` 的改动属于 Host 代码，安装/更新后要重新加载插件行或重启 Host，模型才看得到新的引导段落。
@@ -83,7 +83,7 @@ CONTEXT7_API_KEY=ctx7sk_...
     toolCallTimeoutMs: 90000
 ```
 
-- `failOnStartupError`：默认 `true`，安装/启动时连不上 Context7 会明确报失败（profile 其他插件不受影响）；希望启动完全不被远端影响时改为 `false`，交给重连策略在后台恢复。
+- `failOnStartupError`：这一行设为 `true`（DSH 自身的默认值是 `false`），安装/启动时连不上 Context7 会明确报失败（profile 其他插件不受影响）；希望启动完全不被远端影响时改为 `false`，交给重连策略在后台恢复。
 - `toolCallTimeoutMs`：默认 `60000`。Context7 的检索较重时可以调大。
 - `reconnect`：默认启用（500 ms 起指数退避，最多 10 次），可用对象覆盖。
 

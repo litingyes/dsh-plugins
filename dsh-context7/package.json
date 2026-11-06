@@ -1,6 +1,6 @@
 {
   "name": "@litingyes/dsh-context7",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Context7 documentation for DeepSeek Harness: connects the official Context7 MCP server so agents can resolve libraries and fetch current documentation and code examples.",
   "type": "module",
   "license": "MIT",

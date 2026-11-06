@@ -10,8 +10,8 @@
  *      `initialize.instructions` as a prompt section, but that text never names
  *      the tools (`mcp__context7__resolve-library-id` /
  *      `mcp__context7__query-docs`) and never says when a library answer should
- *      beat memory or `web_fetch`. In practice it loses to both: across ~5,900
- *      recorded tool calls those two tools accounted for ~0.3%. This section
+ *      beat memory or `web_fetch`. In practice it loses to both: across 5,527
+ *      recorded tool calls those two tools accounted for 0.33%. This section
  *      sits one order step below that vendor paragraph, names the tools
  *      literally, and disappears again when they are not registered.
  *

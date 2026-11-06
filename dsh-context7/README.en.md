@@ -35,7 +35,7 @@ About 360 characters (≈90 tokens), mounted at the Host root, so it applies onc
 
 ## Requirements
 
-- DSH `>= 0.2.1-rc.5 < 0.3.0` (verified on `0.2.1-rc.5`)
+- DSH `>= 0.2.1-rc.5 < 0.3.0` (verified on `0.2.1-rc.5` and `0.2.2-rc.1`: both tools and the guidance section show up in a Session)
 - Network access to `https://mcp.context7.com/mcp`
 - Node.js 24+ only for `scripts/usage-report.mjs` and the tests (built-in zstd)
 
@@ -50,7 +50,7 @@ plugin_manager action=install_bundle target=/absolute/path/to/dsh-plugins/dsh-co
 From npm:
 
 ```text
-plugin_manager action=install_bundle target=@litingyes/dsh-context7@0.2.0
+plugin_manager action=install_bundle target=@litingyes/dsh-context7@0.2.1
 ```
 
 A new bundle normally activates through HMR; if the result reports `restart-required`, restart the desktop app. Note that `index.js` is Host code: after installing or updating, reload the plugin row or restart the Host so the model sees the new guidance paragraph.
@@ -83,7 +83,7 @@ Connector row `context7`:
     toolCallTimeoutMs: 90000
 ```
 
-- `failOnStartupError`: defaults to `true`, so a failed connection at install/startup is reported; other profile plugins keep running. Set it to `false` to let the reconnect policy recover in the background instead.
+- `failOnStartupError`: this row sets `true` (DSH's own default is `false`), so a failed connection at install/startup is reported while other profile plugins keep running. Set it to `false` to let the reconnect policy recover in the background instead.
 - `toolCallTimeoutMs`: defaults to `60000`. Raise it when Context7 retrieval is slow.
 - `reconnect`: enabled by default (500 ms initial delay, exponential backoff, 10 attempts); override with an object.
 

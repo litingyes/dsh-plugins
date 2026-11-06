@@ -29,8 +29,8 @@ pnpm dev      # http://localhost:4321
 从 npm 安装（推荐）：
 
 ```text
-plugin_manager action=install_bundle target=@litingyes/dsh-context7@0.1.0
-plugin_manager action=install_bundle target=@litingyes/dsh-git@0.2.0
+plugin_manager action=install_bundle target=@litingyes/dsh-context7@0.2.1
+plugin_manager action=install_bundle target=@litingyes/dsh-git@0.5.0
 ```
 
 本地开发时按目录安装：
@@ -49,13 +49,13 @@ Web 侧边栏的 **Plugins** 页面同样接受包名、Git 地址、压缩包�
 
 ## 发布
 
-发布由 tag 触发 GitHub Actions（[`.github/workflows/publish.yml`](./.github/workflows/publish.yml)），tag 名形如 `dsh-git-v0.2.1`、`dsh-context7-v0.1.1`：
+发布由 tag 触发 GitHub Actions（[`.github/workflows/publish.yml`](./.github/workflows/publish.yml)），tag 名形如 `dsh-git-v0.5.0`、`dsh-context7-v0.2.1`：
 
 1. 改版本并提交（`npm version` 只改 manifest，不打 tag）：
 
    ```bash
    (cd dsh-git && npm version patch --no-git-tag-version)
-   git add -A && git commit -m "release: dsh-git 0.2.1"
+   git add -A && git commit -m "release: dsh-git 0.5.1"
    ```
 
 2. 打 tag 并推送，CI 随即发布：
