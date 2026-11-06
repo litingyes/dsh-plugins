@@ -3,7 +3,10 @@
 # Mounts exactly one Host row, and that row registers one thing: a prefix route
 # `/dsh-git/api/...` served by `ctx.webServer`, which both browser surfaces call
 # to read Git state and to run explicit actions (staging, committing, branch
-# and worktree management).
+# and worktree management, and the history actions merge / rebase /
+# cherry-pick / revert / drop that the panel's right-click menus offer).
+# History actions refuse a dirty tracked worktree or a stopped operation, and
+# abort a conflict instead of leaving one for the panel to resolve.
 # There are no agent tools: 0.3.0 removed git_status / git_diff / git_commit /
 # git_branch, so the plugin's UI is the only surface.
 # The browser half declared by `dsh.client` registers a chat-page branch chip in

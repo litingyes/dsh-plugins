@@ -20,9 +20,13 @@ import { Toggle } from '@base-ui-components/react/toggle'
 import { ChevronRight, RefreshIcon } from './icons.jsx'
 import { CommitDetail } from './commit-detail.jsx'
 import { DiffView } from './diff-view.jsx'
+import { ContextActions } from './menu.jsx'
+import { IconButton } from './controls.jsx'
+import { DropCommitDialog, commitMenuItems } from './commit-menu.jsx'
+import { commitActionState, reachableFromHead } from './commit-actions.js'
 import { layoutGraph } from '../shared/graph.js'
 import { LANE_PALETTE } from './styles.js'
-import { relativeTime } from './format.js'
+import { copyText, relativeTime } from './format.js'
 
 /** Horizontal pitch of one lane, in pixels. */
 const LANE_W = 16
@@ -195,10 +199,31 @@ function RefBadges({ refs, t }) {
 /**
  * One commit row.
  *
+ * The row body is still a `Collapsible.Trigger`, so a click expands the node.
+ * The context menu hangs off a wrapper around that trigger rather than the whole
+ * node: the expanded detail contains a message a reader may want to select and
+ * copy, and replacing the browser's own right-click menu there would take that
+ * away.
+ *
  * @param {object} props row props.
+ * @param {object} props.availability from `commitActionState`.
+ * @param {object} props.menu commit-action handlers.
  * @returns {React.ReactElement} the row.
  */
-function CommitNode({ commit, row, laneCount, open, onToggle, api, workspace, language, t, detailState }) {
+function CommitNode({
+  commit,
+  row,
+  laneCount,
+  open,
+  onToggle,
+  api,
+  workspace,
+  language,
+  t,
+  detailState,
+  availability,
+  menu,
+}) {
   const nodeRef = React.useRef(null)
   const height = useElementHeight(nodeRef, HEAD_H)
   const [fileDiff, setFileDiff] = React.useState({ path: null, loading: false, data: null, error: null })
@@ -234,26 +259,42 @@ function CommitNode({ commit, row, laneCount, open, onToggle, api, workspace, la
     },
     React.createElement(LaneSvg, { row, height, laneCount }),
     React.createElement(
-      Collapsible.Trigger,
-      { className: 'dgit-node-head' },
-      React.createElement(ChevronRight, { className: 'dgit-chevron' }),
+      ContextActions,
+      {
+        label: `${t('graph.actions')}: ${commit.short}`,
+        className: 'dgit-node-headwrap',
+        items: commitMenuItems({
+          commit,
+          availability,
+          t,
+          onCopy: menu.copy,
+          onCherryPick: menu.cherryPick,
+          onRevert: menu.revert,
+          onDrop: menu.drop,
+        }),
+      },
       React.createElement(
-        'span',
-        { className: 'dgit-node-body' },
+        Collapsible.Trigger,
+        { className: 'dgit-node-head' },
+        React.createElement(ChevronRight, { className: 'dgit-chevron' }),
         React.createElement(
           'span',
-          { className: 'dgit-node-subject' },
-          React.createElement('span', { className: 'dgit-node-subject-text', title: commit.subject }, commit.subject),
-          React.createElement(RefBadges, { refs: commit.refs, t }),
-        ),
-        React.createElement(
-          'span',
-          { className: 'dgit-node-meta' },
-          React.createElement('span', { className: 'dgit-node-meta-author', title: commit.email }, commit.author),
-          React.createElement('span', { 'aria-hidden': true }, '·'),
-          React.createElement('span', { title: commit.authorTime }, relativeTime(commit.authorTime, language)),
-          React.createElement('span', { 'aria-hidden': true }, '·'),
-          React.createElement('code', { className: 'dgit-mono' }, commit.short),
+          { className: 'dgit-node-body' },
+          React.createElement(
+            'span',
+            { className: 'dgit-node-subject' },
+            React.createElement('span', { className: 'dgit-node-subject-text', title: commit.subject }, commit.subject),
+            React.createElement(RefBadges, { refs: commit.refs, t }),
+          ),
+          React.createElement(
+            'span',
+            { className: 'dgit-node-meta' },
+            React.createElement('span', { className: 'dgit-node-meta-author', title: commit.email }, commit.author),
+            React.createElement('span', { 'aria-hidden': true }, '·'),
+            React.createElement('span', { title: commit.authorTime }, relativeTime(commit.authorTime, language)),
+            React.createElement('span', { 'aria-hidden': true }, '·'),
+            React.createElement('code', { className: 'dgit-mono' }, commit.short),
+          ),
         ),
       ),
     ),
@@ -289,15 +330,64 @@ function CommitNode({ commit, row, laneCount, open, onToggle, api, workspace, la
 /**
  * The graph view.
  *
+ * History actions are offered per node through a right-click menu; the dialog
+ * for the one destructive item lives here, once, rather than inside every row.
+ *
  * @param {object} props view props.
+ * @param {(body: object) => Promise<boolean>} [props.onAction] panel action runner.
+ * @param {boolean} [props.busy] whether an action is in flight.
+ * @param {string|null} [props.headOid] checked-out commit.
+ * @param {boolean} [props.attached] HEAD is on a branch with a commit.
+ * @param {string|null} [props.operation] in-progress merge/rebase/…
+ * @param {boolean} [props.dirty] staged or unstaged tracked changes.
  * @returns {React.ReactElement} the view.
  */
-export function GraphView({ commits, api, workspace, language, t, headOnly, onToggleHeadOnly, onRefresh }) {
+export function GraphView({
+  commits,
+  api,
+  workspace,
+  language,
+  t,
+  headOnly,
+  onToggleHeadOnly,
+  onRefresh,
+  onAction = () => Promise.resolve(false),
+  busy = false,
+  headOid = null,
+  attached = true,
+  operation = null,
+  dirty = false,
+}) {
   const [query, setQuery] = React.useState('')
   const [openSha, setOpenSha] = React.useState(null)
   const [details, setDetails] = React.useState({})
+  const [pendingDrop, setPendingDrop] = React.useState(null)
 
   const layout = React.useMemo(() => layoutGraph(commits), [commits])
+  const reachable = React.useMemo(() => reachableFromHead(commits, headOid), [commits, headOid])
+  const availabilityContext = React.useMemo(
+    () => ({ headOid, attached, operation, dirty, busy, reachable }),
+    [headOid, attached, operation, dirty, busy, reachable],
+  )
+
+  const menu = React.useMemo(() => ({
+    copy: (commit) => {
+      void copyText(commit.sha)
+    },
+    cherryPick: (commit) => {
+      void onAction({ action: 'cherry-pick', commit: commit.sha })
+    },
+    revert: (commit) => {
+      void onAction({ action: 'revert', commit: commit.sha })
+    },
+    drop: (commit) => setPendingDrop(commit),
+  }), [onAction])
+
+  const confirmDrop = React.useCallback(async () => {
+    if (pendingDrop === null) return
+    const done = await onAction({ action: 'drop-commit', commit: pendingDrop.sha, confirm: true })
+    if (done === true) setPendingDrop(null)
+  }, [onAction, pendingDrop])
 
   const filtered = React.useMemo(() => {
     const needle = query.trim().toLowerCase()
@@ -363,11 +453,11 @@ export function GraphView({ commits, api, workspace, language, t, headOnly, onTo
       }),
       React.createElement('span', { className: 'dgit-spacer' }),
       React.createElement('span', { className: 'dgit-count' }, t('graph.count', { n: filtered.length })),
-      React.createElement(
-        'button',
-        { type: 'button', className: 'dgit-btn', 'data-variant': 'ghost', title: t('panel.refresh'), onClick: onRefresh },
-        React.createElement(RefreshIcon, null),
-      ),
+      React.createElement(IconButton, {
+        label: t('panel.refresh'),
+        icon: React.createElement(RefreshIcon, null),
+        onClick: onRefresh,
+      }),
       layout.overflow
         ? React.createElement('span', { className: 'dgit-pill', 'data-tone': 'warn' }, t('graph.overflow'))
         : null,
@@ -389,7 +479,18 @@ export function GraphView({ commits, api, workspace, language, t, headOnly, onTo
             language,
             t,
             detailState: details[commit.sha] ?? { loading: false, detail: null, error: null },
+            availability: commitActionState(commit, availabilityContext),
+            menu,
           })),
     ),
+    React.createElement(DropCommitDialog, {
+      commit: pendingDrop,
+      busy,
+      t,
+      onConfirm: () => {
+        void confirmDrop()
+      },
+      onClose: () => setPendingDrop(null),
+    }),
   )
 }

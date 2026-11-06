@@ -13,7 +13,8 @@ import * as React from 'react'
 import { Checkbox } from '@base-ui-components/react/checkbox'
 import { Dialog } from '@base-ui-components/react/dialog'
 import { DiffView } from './diff-view.jsx'
-import { CheckIcon } from './icons.jsx'
+import { CheckIcon, StageIcon, TrashIcon, UnstageIcon } from './icons.jsx'
+import { IconButton } from './controls.jsx'
 import { splitPath, statusLetter } from './format.js'
 
 /** Which diff target each group's file reads from. */
@@ -57,37 +58,34 @@ function FileRow({ group, entry, selected, active, onToggleSelected, onOpen, onA
     'span',
     { className: 'dgit-row-actions' },
     group === 'staged'
-      ? React.createElement('button', {
-          type: 'button',
-          className: 'dgit-btn',
-          'data-variant': 'ghost',
+      ? React.createElement(IconButton, {
+          label: t('changes.unstage'),
+          icon: React.createElement(UnstageIcon, null),
           onClick: event => {
             event.stopPropagation()
             onAction('unstage', [entry.path])
           },
-        }, t('changes.unstage'))
+        })
       : null,
     group === 'unstaged' || group === 'untracked'
-      ? React.createElement('button', {
-          type: 'button',
-          className: 'dgit-btn',
-          'data-variant': 'ghost',
+      ? React.createElement(IconButton, {
+          label: t('changes.stage'),
+          icon: React.createElement(StageIcon, null),
           onClick: event => {
             event.stopPropagation()
             onAction('stage', [entry.path])
           },
-        }, t('changes.stage'))
+        })
       : null,
     group === 'unstaged' || group === 'untracked'
-      ? React.createElement('button', {
-          type: 'button',
-          className: 'dgit-btn',
-          'data-variant': 'ghost',
+      ? React.createElement(IconButton, {
+          label: t('changes.discard'),
+          icon: React.createElement(TrashIcon, null),
           onClick: event => {
             event.stopPropagation()
             onAction('discard', [entry.path])
           },
-        }, t('changes.discard'))
+        })
       : null,
   )
 
@@ -233,22 +231,22 @@ export function ChangesView({ changes, api, workspace, t, busy, onAction, staged
               : React.createElement(
                   React.Fragment,
                   null,
-                  React.createElement('button', {
-                    type: 'button',
-                    className: 'dgit-btn',
-                    'data-variant': 'ghost',
+                  React.createElement(IconButton, {
+                    label: group.id === 'staged' ? t('changes.unstage') : t('changes.stage'),
+                    icon: React.createElement(group.id === 'staged' ? UnstageIcon : StageIcon, null),
                     disabled: busy,
+                    disabledReason: busy ? t('action.running') : undefined,
                     onClick: () => runAction(group.id === 'staged' ? 'unstage' : 'stage', chosen),
-                  }, group.id === 'staged' ? t('changes.unstage') : t('changes.stage')),
+                  }),
                   group.id === 'staged'
                     ? null
-                    : React.createElement('button', {
-                        type: 'button',
-                        className: 'dgit-btn',
-                        'data-variant': 'ghost',
+                    : React.createElement(IconButton, {
+                        label: t('changes.discard'),
+                        icon: React.createElement(TrashIcon, null),
                         disabled: busy,
+                        disabledReason: busy ? t('action.running') : undefined,
                         onClick: () => askDiscard(chosen),
-                      }, t('changes.discard')),
+                      }),
                 ),
           ),
           group.entries.map(entry => React.createElement(FileRow, {

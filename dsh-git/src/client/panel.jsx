@@ -22,7 +22,8 @@ import { Tabs } from '@base-ui-components/react/tabs'
 import { GraphView } from './graph-view.jsx'
 import { ChangesView } from './changes-view.jsx'
 import { BranchesView } from './branches-view.jsx'
-import { GitMark, RefreshIcon } from './icons.jsx'
+import { CloseIcon, GitMark, RefreshIcon } from './icons.jsx'
+import { IconButton } from './controls.jsx'
 import { relativeTime } from './format.js'
 import { failureText } from './failure.js'
 import { useGitStore } from './git-store.js'
@@ -37,6 +38,14 @@ import { useTranslate } from './use-translate.js'
  */
 function useNoSessions() {
   return undefined
+}
+
+/** Operation names the Host reports, mapped to their translated labels. */
+const OPERATION_KEYS = {
+  merge: 'operation.merge',
+  rebase: 'operation.rebase',
+  'cherry-pick': 'operation.cherry-pick',
+  revert: 'operation.revert',
 }
 
 /** `↑n ↓m` divergence pill, or nothing when the branch has no upstream. */
@@ -102,8 +111,12 @@ export function GitPanel({ api, stores, locale, sessionId, useSessions }) {
   const changes = snapshot?.changes ?? { staged: [], unstaged: [], untracked: [], conflicted: [] }
   const changeCount = (changes.staged?.length ?? 0) + (changes.unstaged?.length ?? 0) +
     (changes.untracked?.length ?? 0) + (changes.conflicted?.length ?? 0)
+  // The history actions only need to know about tracked work: untracked files
+  // are ordinary build output and do not block a merge or a rewrite.
+  const trackedDirty = (changes.staged?.length ?? 0) + (changes.unstaged?.length ?? 0) > 0
   const branch = snapshot?.branch ?? null
   const repo = snapshot?.repo ?? null
+  const operation = typeof repo?.operation === 'string' && repo.operation !== '' ? repo.operation : null
 
   const headOnly = (refs ?? snapshot?.limits?.refs) === 'head'
 
@@ -151,6 +164,19 @@ export function GitPanel({ api, stores, locale, sessionId, useSessions }) {
             )
           : null,
         React.createElement(Divergence, { branch, t }),
+        // A stopped merge or rebase explains why every history action in the
+        // tabs is disabled, so it is shown here once instead of per menu item.
+        operation === null
+          ? null
+          : React.createElement(
+              'span',
+              { className: 'dgit-pill', 'data-tone': 'warn', title: t('panel.operationHint') },
+              t('panel.operation', {
+                // A future Host operation the dictionary does not know is still
+                // shown by its git name rather than as a raw dictionary key.
+                name: OPERATION_KEYS[operation] === undefined ? operation : t(OPERATION_KEYS[operation]),
+              }),
+            ),
         repo?.isRepo === true && snapshot?.commits?.[0] !== undefined
           ? React.createElement('span', { title: snapshot.commits[0].authorTime },
               relativeTime(snapshot.commits[0].authorTime, language))
@@ -158,31 +184,24 @@ export function GitPanel({ api, stores, locale, sessionId, useSessions }) {
       ),
     ),
     React.createElement('span', { className: 'dgit-spacer' }),
-    React.createElement(
-      'button',
-      {
-        type: 'button',
-        className: 'dgit-btn',
-        'data-variant': 'ghost',
-        title: t('panel.refresh'),
-        'aria-label': t('panel.refresh'),
-        disabled: loading || cwd === undefined,
-        onClick: () => void store.refresh(),
-      },
-      React.createElement(RefreshIcon, null),
-    ),
+    React.createElement(IconButton, {
+      label: t('panel.refresh'),
+      icon: React.createElement(RefreshIcon, null),
+      disabled: loading || cwd === undefined,
+      disabledReason: cwd === undefined ? t('panel.noSessionDir') : t('panel.loading'),
+      onClick: () => void store.refresh(),
+    }),
   )
 
   const banner = error === null ? null : React.createElement(
     'div',
     { className: 'dgit-banner' },
     React.createElement('span', { className: 'dgit-banner-text' }, error),
-    React.createElement('button', {
-      type: 'button',
-      className: 'dgit-btn',
-      'data-variant': 'ghost',
+    React.createElement(IconButton, {
+      label: t('action.dismiss'),
+      icon: React.createElement(CloseIcon, null),
       onClick: () => store.clearFailure(),
-    }, t('action.dismiss')),
+    }),
   )
 
   if (snapshot === null) {
@@ -195,11 +214,11 @@ export function GitPanel({ api, stores, locale, sessionId, useSessions }) {
         : loading ? t('panel.loading') : ''
     const retry = sessionsPending || cwd !== undefined
       ? null
-      : React.createElement('button', {
-          type: 'button',
-          className: 'dgit-btn',
+      : React.createElement(IconButton, {
+          label: t('panel.retry'),
+          icon: React.createElement(RefreshIcon, null),
           onClick: () => void store.refresh(),
-        }, t('panel.retry'))
+        })
     return React.createElement(
       'div',
       { className: 'dgit-panel' },
@@ -229,11 +248,11 @@ export function GitPanel({ api, stores, locale, sessionId, useSessions }) {
         'div',
         { className: 'dgit-empty' },
         React.createElement('span', null, message),
-        React.createElement('button', {
-          type: 'button',
-          className: 'dgit-btn',
+        React.createElement(IconButton, {
+          label: t('panel.retry'),
+          icon: React.createElement(RefreshIcon, null),
           onClick: () => void store.refresh(),
-        }, t('panel.retry')),
+        }),
       ),
     )
   }
@@ -268,6 +287,14 @@ export function GitPanel({ api, stores, locale, sessionId, useSessions }) {
           headOnly,
           onToggleHeadOnly: next => store.setRefs(next ? 'head' : 'all'),
           onRefresh: () => void store.refresh(),
+          onAction: perform,
+          busy,
+          headOid: branch?.oid ?? null,
+          // The Host refuses these anyway; the client disables the entries so a
+          // click never has to discover the refusal.
+          attached: snapshot.isEmpty !== true && branch?.detached !== true,
+          operation,
+          dirty: trackedDirty,
         }),
       ),
       React.createElement(
@@ -293,6 +320,10 @@ export function GitPanel({ api, stores, locale, sessionId, useSessions }) {
           language,
           busy,
           onAction: perform,
+          branch,
+          isEmpty: snapshot.isEmpty === true,
+          operation,
+          dirty: trackedDirty,
         }),
       ),
     ),

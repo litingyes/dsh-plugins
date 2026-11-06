@@ -6,6 +6,7 @@
 
 import * as React from 'react'
 import { CopyIcon } from './icons.jsx'
+import { IconButton } from './controls.jsx'
 import { absoluteTime, copyText, relativeTime, splitPath, statusLetter } from './format.js'
 
 /**
@@ -61,20 +62,17 @@ export function CommitDetail({ detail, loading, error, onSelectFile, selectedFil
     'span',
     { className: 'dgit-inline' },
     React.createElement('code', { className: 'dgit-mono' }, detail.short),
-    React.createElement(
-      'button',
-      {
-        type: 'button',
-        className: 'dgit-btn',
-        'data-variant': 'ghost',
-        title: t('graph.copySha'),
-        onClick: async () => {
-          const ok = await copyText(detail.sha)
-          if (ok) setCopied(true)
-        },
+    React.createElement(IconButton, {
+      label: t('graph.copySha'),
+      icon: React.createElement(CopyIcon, null),
+      // The confirmation replaces the tooltip instead of the glyph, so the
+      // button never changes width while the panel is open.
+      tooltip: copied ? t('graph.copied') : t('graph.copySha'),
+      onClick: async () => {
+        const ok = await copyText(detail.sha)
+        if (ok) setCopied(true)
       },
-      copied ? t('graph.copied') : React.createElement(CopyIcon, null),
-    ),
+    }),
   )
 
   return React.createElement(

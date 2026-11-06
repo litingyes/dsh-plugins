@@ -158,3 +158,41 @@ test('an unknown endpoint is a JSON 404 for an authorized peer', async t => {
   const body = await response.json()
   assert.equal(body.error.code, 'not_found')
 })
+
+test('the HTTP surface runs a merge and refuses an unconfirmed drop', async t => {
+  const dir = makeRepo(t)
+  writeFileSync(path.join(dir, 'a.txt'), 'a\n')
+  git(dir, 'add', '-A')
+  git(dir, 'commit', '-qm', 'a')
+  git(dir, 'checkout', '-q', '-b', 'side')
+  writeFileSync(path.join(dir, 'side.txt'), 'side\n')
+  git(dir, 'add', '-A')
+  git(dir, 'commit', '-qm', 'side')
+  git(dir, 'checkout', '-q', 'main')
+
+  const base = await startServer(t, { workspace: dir, authorize: () => undefined })
+  const merged = await fetch(`${base}/dsh-git/api/action`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ action: 'merge', workspace: 'w1', branch: 'side', type: 'local' }),
+  })
+  assert.equal(merged.status, 200)
+  const afterMerge = await merged.json()
+  assert.equal(afterMerge.ok, true)
+  assert.equal(afterMerge.branch.head, 'main')
+  assert.equal(afterMerge.repo.operation, null)
+  assert.ok(afterMerge.commits.some(commit => commit.subject === 'side'))
+
+  // A drop without the confirmation the dialog sends is a 409, and the error
+  // stays structured over the wire.
+  const head = afterMerge.branch.oid
+  const refused = await fetch(`${base}/dsh-git/api/action`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ action: 'drop-commit', workspace: 'w1', commit: head }),
+  })
+  assert.equal(refused.status, 409)
+  const body = await refused.json()
+  assert.equal(body.ok, false)
+  assert.equal(body.error.code, 'confirm_required')
+})

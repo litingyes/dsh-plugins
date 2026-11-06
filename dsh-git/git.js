@@ -225,7 +225,12 @@ export function createRunner(options = {}) {
             finish(reject, new GitError('aborted', 'the git command was cancelled'))
             return
           }
-          const firstLine = err.split('\n').map(line => line.trim()).find(line => line !== '') ?? ''
+          // A conflict explanation is written to stdout by merge, cherry-pick,
+          // and revert, so a failure that only reads stderr would report the bare
+          // exit code. Read stderr first (the usual failure channel) and fall back
+          // to the first non-empty stdout line before giving up.
+          const firstLineOf = text => text.split('\n').map(line => line.trim()).find(line => line !== '') ?? ''
+          const firstLine = firstLineOf(err) || firstLineOf(out)
           finish(
             reject,
             new GitError('git_failed', firstLine === '' ? `git ${args[0] ?? ''} exited with code ${code}` : firstLine, {
@@ -906,6 +911,41 @@ export function createGitService(options) {
     return parseWorktrees(result.stdout)
   }
 
+  /**
+   * Detect a history operation git left in progress.
+   *
+   * The panel writes no conflict resolution UI, so a repository that is already
+   * mid-merge or mid-rebase cannot accept another history action: starting a
+   * second one would either be refused by git after the fact or, worse, mix two
+   * operations. `rev-parse --absolute-git-dir` resolves the git directory of the
+   * worktree itself — a linked worktree keeps its state under
+   * `.git/worktrees/<name>`, not in the main checkout — and the markers are the
+   * same files git consults before it lets an operation start.
+   *
+   * Rebase is checked first: its sequencer reuses `CHERRY_PICK_HEAD`, so a
+   * rebase would otherwise be reported as a cherry-pick.
+   *
+   * @param {string} root repository root.
+   * @param {AbortSignal} [signal] caller cancellation.
+   * @returns {Promise<'merge'|'rebase'|'cherry-pick'|'revert'|null>} the operation, when one is running.
+   */
+  const readOperation = async (root, signal) => {
+    let gitDir
+    try {
+      const result = await run(['rev-parse', '--absolute-git-dir'], { cwd: root, signal })
+      gitDir = result.stdout.trim()
+    } catch {
+      return null
+    }
+    if (gitDir === '') return null
+    const exists = name => existsSync(path.join(gitDir, name))
+    if (exists('rebase-merge') || exists('rebase-apply')) return 'rebase'
+    if (exists('MERGE_HEAD')) return 'merge'
+    if (exists('CHERRY_PICK_HEAD')) return 'cherry-pick'
+    if (exists('REVERT_HEAD')) return 'revert'
+    return null
+  }
+
   const readLog = async (root, refs, limit, signal) => {
     const args = ['log', '--no-color', '--date-order', `-n${limit}`, LOG_FORMAT]
     if (refs === 'all') {
@@ -939,7 +979,7 @@ export function createGitService(options) {
     if (repo.isRepo !== true) {
       return {
         workspace: { id: workspace.id, title: workspace.title ?? path.basename(workspace.path), path: workspace.path },
-        repo,
+        repo: { ...repo, operation: null },
         workspaces,
         branch: null,
         changes: { staged: [], unstaged: [], untracked: [], conflicted: [] },
@@ -952,12 +992,13 @@ export function createGitService(options) {
       }
     }
 
-    // The four reads are independent, so one round of latency covers all of them.
-    const [hasHead, status, rawBranches, rawWorktrees] = await Promise.all([
+    // The five reads are independent, so one round of latency covers all of them.
+    const [hasHead, status, rawBranches, rawWorktrees, operation] = await Promise.all([
       hasCommit(repo.root, request.signal),
       readStatus(repo.root, request.signal),
       readBranches(repo.root, request.signal),
       readWorktrees(repo.root, request.signal),
+      readOperation(repo.root, request.signal),
     ])
     const empty = !hasHead
     const worktrees = presentWorktrees(rawWorktrees, repo.root)
@@ -967,7 +1008,7 @@ export function createGitService(options) {
 
     return {
       workspace: { id: workspace.id, title: workspace.title ?? path.basename(workspace.path), path: workspace.path },
-      repo: { ...repo, isEmpty: empty },
+      repo: { ...repo, isEmpty: empty, operation },
       workspaces,
       branch: status.branch,
       changes: presentChanges(status.changes),
@@ -996,6 +1037,190 @@ export function createGitService(options) {
       throw new GitError(repo.reason === 'missing' ? 'missing_workspace' : 'not_a_repo', repo.message)
     }
     return { workspace, root: repo.root }
+  }
+
+  /**
+   * Refuse a history action while git is already in the middle of one.
+   *
+   * A conflict resolution is not something this panel can finish, so a second
+   * action started on top of a stopped merge or rebase would only deepen the
+   * state the user has to clean up outside the panel.
+   *
+   * @param {string} root repository root.
+   * @param {AbortSignal} [signal] caller cancellation.
+   */
+  const requireIdle = async (root, signal) => {
+    const operation = await readOperation(root, signal)
+    if (operation !== null) {
+      throw new GitError(
+        'repository_busy',
+        `the repository is in the middle of a ${operation}; finish or abort it first`,
+        { operation },
+      )
+    }
+  }
+
+  /**
+   * Require HEAD to be a commit on a branch.
+   *
+   * Every history rewrite below moves a branch pointer, and there is no branch
+   * to move while HEAD is detached or the repository has no first commit.
+   *
+   * @param {object} status parsed `git status`.
+   * @returns {string} the checked-out branch name.
+   */
+  const requireAttached = (status) => {
+    if (status.branch.unborn === true) {
+      throw new GitError('no_commit', 'the repository has no commits yet')
+    }
+    if (status.branch.detached === true) {
+      throw new GitError('detached_head', 'HEAD is detached; check out a branch first')
+    }
+    return status.branch.head
+  }
+
+  /**
+   * Refuse history actions on a dirty index or worktree.
+   *
+   * Untracked files are deliberately not counted: they are ordinary build
+   * output, git itself refuses only when one of them would be overwritten, and a
+   * refused command exits before any operation state is written.
+   *
+   * @param {object} status parsed `git status`.
+   */
+  const requireCleanTracked = (status) => {
+    if (status.changes.staged.length > 0 || status.changes.unstaged.length > 0) {
+      throw new GitError('worktree_dirty', 'the working tree has staged or unstaged changes')
+    }
+  }
+
+  /**
+   * Resolve a browser-named branch to the full ref git should act on.
+   *
+   * The panel lists short names, so an unqualified `origin/main` is ambiguous
+   * when a local branch of that name exists. The row's own `type` narrows the
+   * match, and the command always receives `%(refname)` rather than the short
+   * name, which is what makes the two unambiguous.
+   *
+   * @param {string} root repository root.
+   * @param {unknown} name short branch name from the browser.
+   * @param {unknown} type `local` | `remote` when the caller knows it.
+   * @param {AbortSignal} [signal] caller cancellation.
+   * @returns {Promise<{name: string, refName: string, type: string, current: boolean}>} the matching ref.
+   */
+  const findBranchRef = async (root, name, type, signal) => {
+    const wanted = typeof name === 'string' ? name.trim() : ''
+    if (wanted === '') throw new GitError('invalid_branch', 'branch must be a non-empty string')
+    if (wanted.startsWith('-')) throw new GitError('invalid_branch', 'branch must not start with "-"')
+    const kind = type === 'local' || type === 'remote' ? type : undefined
+    const branches = await readBranches(root, signal)
+    const entry = branches.find(branch =>
+      branch.name === wanted && (kind === undefined || branch.type === kind))
+    if (entry === undefined) throw new GitError('unknown_branch', `no such branch: ${wanted}`)
+    return entry
+  }
+
+  /**
+   * Resolve a commit id to its full object name and parents.
+   *
+   * `assertCommitId` only proves the shape; a well-formed id that names no commit
+   * has to be refused here instead of reaching a git command.
+   *
+   * @param {string} root repository root.
+   * @param {unknown} commit abbreviated or full object name.
+   * @param {AbortSignal} [signal] caller cancellation.
+   * @returns {Promise<{sha: string, parents: string[]}>} the commit facts.
+   */
+  const requireCommitObject = async (root, commit, signal) => {
+    const wanted = assertCommitId(commit)
+    let full
+    try {
+      const verified = await run(['rev-parse', '--verify', `${wanted}^{commit}`], { cwd: root, signal })
+      full = verified.stdout.trim()
+    } catch (error) {
+      // A missing object is a caller error; a broken git or a timeout is not,
+      // and must keep its own code instead of masquerading as a bad commit id.
+      if (error instanceof GitError && error.code === 'git_failed') {
+        throw new GitError('unknown_commit', `no such commit: ${wanted}`, { commit: wanted })
+      }
+      throw error
+    }
+    if (full === '') throw new GitError('unknown_commit', `no such commit: ${wanted}`, { commit: wanted })
+    const listing = await run(['rev-list', '--parents', '-n', '1', full], { cwd: root, signal })
+    const parts = listing.stdout.trim().split(/\s+/u).filter(part => part !== '')
+    return { sha: full, parents: parts.slice(1) }
+  }
+
+  /**
+   * Whether one commit is an ancestor of HEAD.
+   *
+   * @param {string} root repository root.
+   * @param {string} sha commit to look for.
+   * @param {AbortSignal} [signal] caller cancellation.
+   * @returns {Promise<boolean>} true when HEAD descends from it.
+   */
+  const isAncestor = async (root, sha, signal) => {
+    const result = await run(['merge-base', '--is-ancestor', sha, 'HEAD'], {
+      cwd: root,
+      signal,
+      allowCodes: [1],
+    })
+    return result.code === 0
+  }
+
+  /**
+   * Whether a marker proving an aborted operation is still in progress exists.
+   *
+   * @param {string} root repository root.
+   * @param {'merge'|'rebase'|'cherry-pick'|'revert'} kind operation kind.
+   * @param {AbortSignal} [signal] caller cancellation.
+   * @returns {Promise<boolean>} true when git would need `--abort`.
+   */
+  const operationInProgress = async (root, kind, signal) => {
+    let gitDir
+    try {
+      const result = await run(['rev-parse', '--absolute-git-dir'], { cwd: root, signal })
+      gitDir = result.stdout.trim()
+    } catch {
+      return false
+    }
+    if (gitDir === '') return false
+    const has = name => existsSync(path.join(gitDir, name))
+    if (kind === 'merge') return has('MERGE_HEAD')
+    if (kind === 'rebase') return has('rebase-merge') || has('rebase-apply')
+    return has('CHERRY_PICK_HEAD') || has('REVERT_HEAD') || has('sequencer')
+  }
+
+  /**
+   * Undo a stopped operation so a failure never leaves the repository mid-way.
+   *
+   * @param {string} root repository root.
+   * @param {'merge'|'rebase'|'cherry-pick'|'revert'} kind operation kind.
+   * @param {AbortSignal} [signal] caller cancellation.
+   * @returns {Promise<boolean>} whether an abort was attempted.
+   */
+  const abortOperation = async (root, kind, signal) => {
+    if (!(await operationInProgress(root, kind, signal))) return false
+    const args = kind === 'merge'
+      ? ['merge', '--abort']
+      : kind === 'rebase'
+        ? ['rebase', '--abort']
+        : kind === 'cherry-pick'
+          ? ['cherry-pick', '--abort']
+          : ['revert', '--abort']
+    try {
+      await run(args, { cwd: root, signal })
+    } catch {
+      // The original failure is the one worth reporting; an abort that cannot
+      // finish is surfaced by the next snapshot read instead.
+    }
+    return true
+  }
+
+  /** The first non-empty line of a thrown failure, for a conflict message. */
+  const failureLine = (error) => {
+    const text = error instanceof Error ? error.message : String(error)
+    return text.split('\n').map(line => line.trim()).find(line => line !== '') ?? ''
   }
 
   /**
@@ -1443,6 +1668,189 @@ export function createGitService(options) {
     return { pruned: true }
   }
 
+  /**
+   * Merge one branch into the checked-out branch.
+   *
+   * `git merge` without `--ff-only`: a branch that is already contained is a
+   * fast-forward, a diverged one gets a merge commit, and `--no-edit` keeps the
+   * action from opening an editor the browser has no way to show. A stopped
+   * merge is aborted before the failure is rethrown; nothing in this panel can
+   * resolve a conflict, and leaving one behind would strand the repository.
+   *
+   * @param {{workspaceId?: string, branch: string, type?: 'local'|'remote', signal?: AbortSignal}} request
+   * @returns {Promise<{branch: string}>}
+   */
+  async function merge(request) {
+    const { root } = await requireRepo(request.workspaceId, request.signal)
+    const signal = request.signal
+    await requireIdle(root, signal)
+    const status = await readStatus(root, signal)
+    requireAttached(status)
+    requireCleanTracked(status)
+    const entry = await findBranchRef(root, request.branch, request.type, signal)
+    if (entry.current === true) {
+      throw new GitError('same_branch', `already on branch ${entry.name}`, { branch: entry.name })
+    }
+    try {
+      await run(['merge', '--no-verify', '--no-edit', entry.refName], { cwd: root, signal })
+    } catch (error) {
+      const aborted = await abortOperation(root, 'merge', signal)
+      if (aborted) throw new GitError('merge_conflict', failureLine(error), { branch: entry.name })
+      throw error
+    }
+    return { branch: entry.name }
+  }
+
+  /**
+   * Rebase the checked-out branch onto another branch.
+   *
+   * The default rebase is what the menu promises: replay this branch's own
+   * commits on top of the target. Existing merge commits in that range are
+   * flattened by git, which is the ordinary behaviour of `git rebase` and is
+   * documented as such; a stopped rebase is aborted like a stopped merge.
+   *
+   * @param {{workspaceId?: string, branch: string, type?: 'local'|'remote', signal?: AbortSignal}} request
+   * @returns {Promise<{branch: string}>}
+   */
+  async function rebase(request) {
+    const { root } = await requireRepo(request.workspaceId, request.signal)
+    const signal = request.signal
+    await requireIdle(root, signal)
+    const status = await readStatus(root, signal)
+    requireAttached(status)
+    requireCleanTracked(status)
+    const entry = await findBranchRef(root, request.branch, request.type, signal)
+    if (entry.current === true) {
+      throw new GitError('same_branch', `already on branch ${entry.name}`, { branch: entry.name })
+    }
+    try {
+      await run(['rebase', '--no-verify', entry.refName], { cwd: root, signal })
+    } catch (error) {
+      const aborted = await abortOperation(root, 'rebase', signal)
+      if (aborted) throw new GitError('rebase_conflict', failureLine(error), { branch: entry.name })
+      throw error
+    }
+    return { branch: entry.name }
+  }
+
+  /**
+   * Apply one commit's patch on top of the checked-out branch.
+   *
+   * A merge commit cannot be picked without choosing a mainline, and picking
+   * HEAD onto itself only produces an empty commit that git stops on, so both
+   * are refused before the command runs.
+   *
+   * @param {{workspaceId?: string, commit: string, signal?: AbortSignal}} request
+   * @returns {Promise<{commit: string}>}
+   */
+  async function cherryPick(request) {
+    const { root } = await requireRepo(request.workspaceId, request.signal)
+    const signal = request.signal
+    await requireIdle(root, signal)
+    const status = await readStatus(root, signal)
+    requireAttached(status)
+    requireCleanTracked(status)
+    const commit = await requireCommitObject(root, request.commit, signal)
+    if (commit.parents.length > 1) {
+      throw new GitError('merge_commit', 'a merge commit cannot be cherry-picked', { commit: commit.sha })
+    }
+    if (status.branch.oid === commit.sha) {
+      throw new GitError('same_commit', 'that commit is already HEAD', { commit: commit.sha })
+    }
+    try {
+      await run(['cherry-pick', commit.sha], { cwd: root, signal })
+    } catch (error) {
+      const aborted = await abortOperation(root, 'cherry-pick', signal)
+      if (aborted) throw new GitError('cherry_pick_conflict', failureLine(error), { commit: commit.sha })
+      throw error
+    }
+    return { commit: commit.sha }
+  }
+
+  /**
+   * Revert one commit on the checked-out branch.
+   *
+   * Reverting a commit that is not an ancestor of HEAD would produce a patch
+   * against a history this branch never had, so it is refused; a revert that
+   * conflicts is aborted like every other history action here.
+   *
+   * @param {{workspaceId?: string, commit: string, signal?: AbortSignal}} request
+   * @returns {Promise<{commit: string}>}
+   */
+  async function revert(request) {
+    const { root } = await requireRepo(request.workspaceId, request.signal)
+    const signal = request.signal
+    await requireIdle(root, signal)
+    const status = await readStatus(root, signal)
+    requireAttached(status)
+    requireCleanTracked(status)
+    const commit = await requireCommitObject(root, request.commit, signal)
+    if (commit.parents.length > 1) {
+      throw new GitError('merge_commit', 'a merge commit cannot be reverted without a mainline', {
+        commit: commit.sha,
+      })
+    }
+    if (!(await isAncestor(root, commit.sha, signal))) {
+      throw new GitError('not_ancestor', 'that commit is not on the current branch', { commit: commit.sha })
+    }
+    try {
+      await run(['revert', '--no-edit', commit.sha], { cwd: root, signal })
+    } catch (error) {
+      const aborted = await abortOperation(root, 'revert', signal)
+      if (aborted) throw new GitError('revert_conflict', failureLine(error), { commit: commit.sha })
+      throw error
+    }
+    return { commit: commit.sha }
+  }
+
+  /**
+   * Remove one commit from the checked-out branch, keeping its descendants.
+   *
+   * `git rebase --onto <sha>^ <sha>` replays exactly the commits after the one
+   * being dropped, which is the "drop this commit" a graph menu promises. It is
+   * also a history rewrite, so it needs the same explicit confirmation the other
+   * destructive actions need, and it refuses a range that contains merge commits
+   * because the replay would silently flatten them.
+   *
+   * @param {{workspaceId?: string, commit: string, confirm?: boolean, signal?: AbortSignal}} request
+   * @returns {Promise<{commit: string, dropped: true}>}
+   */
+  async function dropCommit(request) {
+    const { root } = await requireRepo(request.workspaceId, request.signal)
+    const signal = request.signal
+    if (request.confirm !== true) {
+      throw new GitError('confirm_required', 'dropping a commit requires confirm: true')
+    }
+    await requireIdle(root, signal)
+    const status = await readStatus(root, signal)
+    requireAttached(status)
+    requireCleanTracked(status)
+    const commit = await requireCommitObject(root, request.commit, signal)
+    if (commit.parents.length === 0) {
+      throw new GitError('root_commit', 'the first commit cannot be dropped', { commit: commit.sha })
+    }
+    if (commit.parents.length > 1) {
+      throw new GitError('merge_commit', 'a merge commit cannot be dropped', { commit: commit.sha })
+    }
+    if (!(await isAncestor(root, commit.sha, signal))) {
+      throw new GitError('not_ancestor', 'that commit is not on the current branch', { commit: commit.sha })
+    }
+    if (status.branch.oid !== commit.sha) {
+      const merges = await run(['rev-list', '--merges', `${commit.sha}..HEAD`], { cwd: root, signal })
+      if (merges.stdout.trim() !== '') {
+        throw new GitError('merges_in_range', 'dropping it would rewrite merge commits', { commit: commit.sha })
+      }
+    }
+    try {
+      await run(['rebase', '--no-verify', '--onto', `${commit.sha}^`, commit.sha], { cwd: root, signal })
+    } catch (error) {
+      const aborted = await abortOperation(root, 'rebase', signal)
+      if (aborted) throw new GitError('rebase_conflict', failureLine(error), { commit: commit.sha })
+      throw error
+    }
+    return { commit: commit.sha, dropped: true }
+  }
+
   return {
     state,
     commitDetail,
@@ -1456,6 +1864,11 @@ export function createGitService(options) {
     createWorktree,
     removeWorktree,
     pruneWorktrees,
+    merge,
+    rebase,
+    cherryPick,
+    revert,
+    dropCommit,
     listWorkspaces: () => readWorkspaces().map(entry => ({
       id: entry.id,
       title: entry.title ?? path.basename(entry.path),

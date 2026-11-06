@@ -145,3 +145,81 @@ export function WorktreeIcon(props) {
     ],
   })
 }
+
+/** Check out this branch: an arrow moving into a rail. */
+export function SwitchIcon(props) {
+  return Icon({
+    className: props?.className,
+    children: [
+      React.createElement('path', { key: 'a', d: 'M2.5 8h8' }),
+      React.createElement('path', { key: 'b', d: 'M7.5 5 10.5 8 7.5 11' }),
+      React.createElement('path', { key: 'c', d: 'M13 3v10' }),
+    ],
+  })
+}
+
+/** Delete: best used where the tooltip names what disappears. */
+export function TrashIcon(props) {
+  return Icon({
+    className: props?.className,
+    children: [
+      React.createElement('path', { key: 'a', d: 'M3 4.5h10' }),
+      React.createElement('path', { key: 'b', d: 'M6 2.5h4' }),
+      React.createElement('path', { key: 'c', d: 'M4.5 4.5l.6 8.5h5.8l.6-8.5' }),
+      React.createElement('path', { key: 'd', d: 'M6.8 7v3.8' }),
+      React.createElement('path', { key: 'e', d: 'M9.2 7v3.8' }),
+    ],
+  })
+}
+
+/** Dismiss a notice. */
+export function CloseIcon(props) {
+  return Icon({
+    className: props?.className,
+    children: [
+      React.createElement('path', { key: 'a', d: 'M4 4l8 8' }),
+      React.createElement('path', { key: 'b', d: 'M12 4l-8 8' }),
+    ],
+  })
+}
+
+/** Stage: an arrow into the index. */
+export function StageIcon(props) {
+  return Icon({
+    className: props?.className,
+    children: [
+      React.createElement('path', { key: 'a', d: 'M3 12.5h10' }),
+      React.createElement('path', { key: 'b', d: 'M8 2.5v6.5' }),
+      React.createElement('path', { key: 'c', d: 'M5.2 6.4 8 9.2l2.8-2.8' }),
+    ],
+  })
+}
+
+/** Unstage: an arrow back out of the index. */
+export function UnstageIcon(props) {
+  return Icon({
+    className: props?.className,
+    children: [
+      React.createElement('path', { key: 'a', d: 'M3 13h10' }),
+      React.createElement('path', { key: 'b', d: 'M8 10.5V3.5' }),
+      React.createElement('path', { key: 'c', d: 'M5.2 6.3 8 3.5l2.8 2.8' }),
+    ],
+  })
+}
+
+/** Clean up stale records: a sparkle, distinct from the row's delete bin. */
+export function PruneIcon(props) {
+  return Icon({
+    className: props?.className,
+    children: [
+      React.createElement('path', {
+        key: 'a',
+        d: 'M7.4 1.8 8.6 5.2l3.4 1.2-3.4 1.2-1.2 3.4-1.2-3.4L2.8 6.4l3.4-1.2z',
+      }),
+      React.createElement('path', {
+        key: 'b',
+        d: 'M12 9.6l.6 1.6 1.6.6-1.6.6-.6 1.6-.6-1.6-1.6-.6 1.6-.6z',
+      }),
+    ],
+  })
+}

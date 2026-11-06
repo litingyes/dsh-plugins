@@ -220,6 +220,32 @@ export const CSS = `
 .dgit-filerow .dgit-btn,.dgit-filerow .dgit-pill{flex:0 0 auto}
 .dgit-filerow .dgit-btn{height:20px;font-size:11px;padding:0 6px}
 
+/* ---- icon-only actions and their tooltips ---- */
+/* One square control per row action: a right-Sidebar row cannot hold the words
+   "Switch", "Merge" and "Revert" without pushing the branch name out of view.
+   Every one of them carries a tooltip, so the glyph never has to be guessed. */
+.dgit-iconbtn{width:24px;height:24px;padding:0;flex:none}
+.dgit-filerow .dgit-iconbtn{width:20px;height:20px;padding:0}
+.dgit-tipwrap{display:inline-flex;align-items:center;flex:none;border-radius:var(--dsw-radius-sm)}
+.dgit-tipwrap:focus-visible{outline:2px solid var(--dsw-alias-brand-primary);outline-offset:1px}
+.dgit-node-headwrap{display:block;min-width:0}
+/* The tooltip borrows the host's menu material rather than the browser's title:
+   it follows the theme, opens on keyboard focus, and is the only way a disabled
+   control can explain itself (a disabled button gets no pointer events). */
+.dgit-tooltip-positioner{z-index:1200}
+.dgit-tooltip{box-sizing:border-box;max-width:min(280px,calc(100vw - 24px));padding:4px 8px;border-radius:var(--dsw-radius-md);background:var(--dsw-specific-menu);-webkit-backdrop-filter:var(--dsw-menu-backdrop-filter);backdrop-filter:var(--dsw-menu-backdrop-filter);box-shadow:var(--dsw-elevation-prominent);color:var(--dsw-alias-label-primary);font-size:11.5px;line-height:1.45;word-break:break-word;pointer-events:none}
+
+/* ---- context menus ---- */
+.dgit-menu-positioner{outline:none;z-index:1150}
+.dgit-menu{box-sizing:border-box;display:flex;flex-direction:column;gap:1px;min-width:180px;max-width:min(300px,calc(100vw - 24px));padding:4px;border:0;border-radius:var(--dsw-radius-lg);background:var(--dsw-specific-menu);-webkit-backdrop-filter:var(--dsw-menu-backdrop-filter);backdrop-filter:var(--dsw-menu-backdrop-filter);box-shadow:var(--dsw-elevation-prominent);color:var(--dsw-alias-label-primary);font-size:12.5px;line-height:1.5;outline:none}
+.dgit-menu-item{display:flex;align-items:center;gap:8px;box-sizing:border-box;min-height:30px;padding:5px 8px;border:0;border-radius:var(--dsw-radius-md);background:transparent;color:var(--dsw-alias-label-primary);font:inherit;font-size:12.5px;text-align:left;cursor:default;user-select:none;outline:none}
+.dgit-menu-item[data-highlighted]{background:var(--dsw-alias-interactive-bg-hover)}
+.dgit-menu-item[data-disabled]{color:var(--dsw-alias-label-tertiary);cursor:default}
+.dgit-menu-item[data-tone=danger]{color:var(--dsw-alias-state-error-primary)}
+.dgit-menu-item[data-tone=danger][data-disabled]{color:var(--dsw-alias-label-tertiary)}
+.dgit-menu-item:focus-visible{outline:2px solid var(--dsw-alias-brand-primary);outline-offset:-2px}
+.dgit-menu-sep{flex:none;height:1px;margin:4px 2px;background:var(--dsw-alias-border-l1)}
+
 /* ---- marks ---- */
 /* No forced box: the caller's size decides, so the guide card's 22-26px glyph
    and the 14px chip glyph are both drawn at the size they ask for. */

@@ -38,3 +38,14 @@ test('branch copy resolves in both languages', () => {
   assert.equal(translate('en', 'branch.dirty', { n: 3 }), '3 files with uncommitted changes')
   assert.equal(translate('zh', 'missing.key'), 'missing.key')
 })
+
+test('history-action copy resolves in both languages', () => {
+  assert.equal(translate('zh', 'graph.drop'), '删除此提交')
+  assert.equal(translate('en', 'graph.drop'), 'Drop this commit')
+  assert.equal(translate('zh', 'branches.merge'), '合并到当前分支')
+  assert.equal(translate('en', 'branches.merge'), 'Merge into current branch')
+  assert.equal(translate('zh', 'panel.operation', { name: '变基' }), '仓库操作进行中：变基')
+  assert.equal(translate('en', 'panel.operation', { name: 'rebase' }), 'Repository operation in progress: rebase')
+  assert.equal(translate('zh', 'action.mergeConflict'), '合并遇到冲突，已自动中止。')
+  assert.equal(translate('en', 'action.mergeConflict'), 'The merge hit conflicts and was aborted.')
+})

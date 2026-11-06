@@ -38,6 +38,7 @@
 import * as React from 'react'
 import { GitPanel } from './panel.jsx'
 import { BranchSwitcher } from './branch-switch.jsx'
+import { TooltipLayer } from './controls.jsx'
 import { GitGuideIcon, GitMark } from './icons.jsx'
 import { CSS } from './styles.js'
 import { DICTIONARIES, NS, resolveLanguage, translate } from './i18n.js'
@@ -149,13 +150,19 @@ export function apply(ctx) {
 
   /** The panel, bound to the Session whose right Sidebar holds this tab. */
   function DshGitTabBody(props) {
-    return React.createElement(GitPanel, {
-      api,
-      stores,
-      locale,
-      sessionId: props?.sessionId,
-      useSessions: props?.useSessions,
-    })
+    // One tooltip provider for the whole panel: the icon actions use Base UI
+    // tooltips, and the provider is what gives them a shared delay.
+    return React.createElement(
+      TooltipLayer,
+      null,
+      React.createElement(GitPanel, {
+        api,
+        stores,
+        locale,
+        sessionId: props?.sessionId,
+        useSessions: props?.useSessions,
+      }),
+    )
   }
 
   // Every registration below lives exactly as long as the tab registry exists.

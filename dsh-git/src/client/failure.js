@@ -19,6 +19,24 @@ export const FAILURE_KEYS = {
   worktree_in_use: 'panel.worktreeInUse',
   worktree_exists: 'panel.worktreeExists',
   invalid_worktree_path: 'panel.invalidWorktreePath',
+  // History actions. The conflict codes are the ones a reader meets most: the
+  // Host aborts the stopped operation, so the sentence says what happened and
+  // what state the repository is in.
+  merge_conflict: 'action.mergeConflict',
+  rebase_conflict: 'action.rebaseConflict',
+  cherry_pick_conflict: 'action.cherryPickConflict',
+  revert_conflict: 'action.revertConflict',
+  worktree_dirty: 'action.worktreeDirty',
+  repository_busy: 'action.repositoryBusy',
+  not_ancestor: 'action.notAncestor',
+  merge_commit: 'action.mergeCommit',
+  root_commit: 'action.rootCommit',
+  same_branch: 'action.sameBranch',
+  same_commit: 'action.sameCommit',
+  detached_head: 'action.detachedHead',
+  no_commit: 'action.noCommit',
+  unknown_commit: 'action.unknownCommit',
+  merges_in_range: 'action.mergesInRange',
 }
 
 /**

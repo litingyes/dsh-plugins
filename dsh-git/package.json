@@ -1,7 +1,7 @@
 {
   "name": "@litingyes/dsh-git",
-  "version": "0.4.0",
-  "description": "Git for DeepSeek Harness: a chat-page branch switcher in the status row below the composer, plus a right-sidebar tab with a multi-branch commit graph, expandable nodes, working-tree staging and committing, and branch and worktree management for the Session's workspace.",
+  "version": "0.5.0",
+  "description": "Git for DeepSeek Harness: a chat-page branch switcher in the status row below the composer, plus a right-sidebar tab with a multi-branch commit graph, right-click commit actions (cherry-pick, revert, drop), working-tree staging and committing, branch merge/rebase, and branch and worktree management for the Session's workspace.",
   "type": "module",
   "license": "MIT",
   "author": {

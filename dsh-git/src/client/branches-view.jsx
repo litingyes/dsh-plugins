@@ -23,9 +23,21 @@
 
 import * as React from 'react'
 import { Input } from '@base-ui-components/react/input'
-import { BranchIcon, ChevronRight, CopyIcon, PlusIcon, WorktreeIcon } from './icons.jsx'
+import {
+  BranchIcon,
+  ChevronRight,
+  CopyIcon,
+  PlusIcon,
+  PruneIcon,
+  SwitchIcon,
+  TrashIcon,
+  WorktreeIcon,
+} from './icons.jsx'
 import { absoluteTime, copyText, relativeTime } from './format.js'
 import { WorktreeCreateDialog, WorktreeRemoveDialog, worktreeLabel } from './worktree-dialog.jsx'
+import { IconButton } from './controls.jsx'
+import { ContextActions, refusalText } from './menu.jsx'
+import { branchActionState } from './branch-actions.js'
 
 /**
  * Whether a Host field carries a value.
@@ -82,17 +94,88 @@ function GroupHeader({ icon, name, count, open, onToggle, t, children }) {
 }
 
 /**
+ * The two history items every branch row offers.
+ *
+ * @param {object} options item options.
+ * @param {object} options.branch the row's branch.
+ * @param {{merge: object, rebase: object}} options.availability from `branchActionState`.
+ * @param {(key: string, vars?: object) => string} options.t translator.
+ * @param {(branch: object) => void} options.onMerge merge it into HEAD.
+ * @param {(branch: object) => void} options.onRebase rebase HEAD onto it.
+ * @returns {object[]} menu items for `ContextActions`.
+ */
+function branchMenuItems({ branch, availability, t, onMerge, onRebase }) {
+  return [
+    {
+      key: 'merge',
+      label: t('branches.merge'),
+      disabled: availability.merge.enabled !== true,
+      reason: refusalText(availability.merge, t),
+      onSelect: () => onMerge(branch),
+    },
+    {
+      key: 'rebase',
+      label: t('branches.rebase'),
+      disabled: availability.rebase.enabled !== true,
+      reason: refusalText(availability.rebase, t),
+      onSelect: () => onRebase(branch),
+    },
+  ]
+}
+
+/**
+ * One remote branch row.
+ *
+ * Remote branches are merge and rebase targets only: this panel never checks
+ * one out, so the row carries the context menu and nothing else.
+ *
+ * @param {object} props row props.
+ * @param {object} props.branch one `state.branches` remote entry.
+ * @param {(key: string, vars?: object) => string} props.t translator.
+ * @param {'zh'|'en'} props.language active language.
+ * @param {object} props.context snapshot facts for `branchActionState`.
+ * @param {(branch: object) => void} props.onMerge merge request.
+ * @param {(branch: object) => void} props.onRebase rebase request.
+ * @returns {React.ReactElement} the row.
+ */
+function RemoteBranchRow({ branch, t, language, context, onMerge, onRebase }) {
+  const availability = branchActionState(branch, context)
+  return React.createElement(
+    ContextActions,
+    {
+      label: `${t('branches.actions')}: ${branch.name}`,
+      className: 'dgit-filerow',
+      attributes: { style: { cursor: 'default' } },
+      items: branchMenuItems({ branch, availability, t, onMerge, onRebase }),
+    },
+    React.createElement('span', { className: 'dgit-status', 'data-code': 'M' }, React.createElement(BranchIcon, null)),
+    React.createElement('span', {
+      className: 'dgit-path',
+      style: { direction: 'ltr' },
+      title: branch.name,
+    }, branch.name),
+    hasText(branch.commitTime)
+      ? React.createElement('span', { className: 'dgit-count dgit-branch-time' },
+          relativeTime(branch.commitTime, language))
+      : null,
+  )
+}
+
+/**
  * One local branch row.
  *
  * @param {object} props row props.
  * @param {object} props.branch one `state.branches` local entry.
+ * @param {object} props.context snapshot facts for `branchActionState`.
  * @param {boolean} props.busy whether an action is in flight.
  * @param {(key: string, vars?: object) => string} props.t translator.
  * @param {'zh'|'en'} props.language active language.
  * @param {(name: string) => void} props.onSwitch check out this branch.
+ * @param {(branch: object) => void} props.onMerge merge it into HEAD.
+ * @param {(branch: object) => void} props.onRebase rebase HEAD onto it.
  * @returns {React.ReactElement} the row.
  */
-function BranchRow({ branch, busy, t, language, onSwitch }) {
+function BranchRow({ branch, context, busy, t, language, onSwitch, onMerge, onRebase }) {
   const upstream = hasText(branch.upstream) ? branch.upstream : ''
   const held = hasText(branch.worktreePath)
   // A branch this worktree has checked out is already marked "current"; a second
@@ -113,6 +196,8 @@ function BranchRow({ branch, busy, t, language, onSwitch }) {
   if (heldElsewhere) metaTitle.push(branch.worktreePath)
   if (hasText(branch.commitTime)) metaTitle.push(absoluteTime(branch.commitTime))
 
+  const availability = branchActionState(branch, context)
+
   const actions = []
   if (heldElsewhere) {
     actions.push(React.createElement(
@@ -129,24 +214,27 @@ function BranchRow({ branch, busy, t, language, onSwitch }) {
     ))
   } else {
     // git refuses to check out a branch another worktree holds, so the button is
-    // off and names the holder instead of failing after the click.
-    actions.push(React.createElement('button', {
+    // off and its tooltip names the holder instead of failing after the click.
+    actions.push(React.createElement(IconButton, {
       key: 'switch',
-      type: 'button',
-      className: 'dgit-btn',
-      'data-variant': 'ghost',
+      label: t('branches.switch'),
+      icon: React.createElement(SwitchIcon, null),
       disabled: busy || held,
-      title: held ? t('worktree.inUse', { path: branch.worktreePath }) : undefined,
+      disabledReason: held ? t('worktree.inUse', { path: branch.worktreePath }) : undefined,
       onClick: () => onSwitch(branch.name),
-    }, t('branches.switch')))
+    }))
   }
 
   return React.createElement(
-    'div',
+    ContextActions,
     {
+      label: `${t('branches.actions')}: ${branch.name}`,
       className: 'dgit-filerow dgit-branchrow',
-      'data-selected': branch.current === true ? '' : undefined,
-      style: { cursor: 'default' },
+      attributes: {
+        'data-selected': branch.current === true ? '' : undefined,
+        style: { cursor: 'default' },
+      },
+      items: branchMenuItems({ branch, availability, t, onMerge, onRebase }),
     },
     React.createElement(
       'span',
@@ -224,30 +312,28 @@ function WorktreeRow({ worktree, busy, t, onRemove }) {
   }
 
   // The main worktree and the one this panel reads cannot be removed; a button
-  // that opens a dialog only to fail is worse than a disabled button with the
-  // reason in its title.
+  // that opens a dialog only to fail is worse than a disabled button whose
+  // tooltip explains why.
   const removable = worktree.main !== true && worktree.current !== true
 
   const actions = badges.concat([
-    React.createElement('button', {
+    React.createElement(IconButton, {
       key: 'copy',
-      type: 'button',
-      className: 'dgit-btn',
-      'data-variant': 'ghost',
-      title: t('worktree.copyPath'),
-      'aria-label': t('worktree.copyPath'),
+      label: t('worktree.copyPath'),
+      icon: React.createElement(CopyIcon, null),
       disabled: path === '',
       onClick: () => void copyText(path),
-    }, React.createElement(CopyIcon, null)),
-    React.createElement('button', {
+    }),
+    React.createElement(IconButton, {
       key: 'remove',
-      type: 'button',
-      className: 'dgit-btn',
-      'data-variant': 'ghost',
+      label: t('worktree.remove'),
+      icon: React.createElement(TrashIcon, null),
       disabled: busy || !removable,
-      title: removable ? t('worktree.remove') : t('worktree.removeBlocked'),
+      disabledReason: !removable
+        ? t('worktree.removeBlocked')
+        : busy ? t('action.running') : undefined,
       onClick: () => onRemove(worktree),
-    }, t('worktree.remove')),
+    }),
   ])
 
   return React.createElement(
@@ -275,6 +361,11 @@ function WorktreeRow({ worktree, busy, t, onRemove }) {
 /**
  * The branches view.
  *
+ * Merge and rebase live in a right-click menu on each row: they act on the other
+ * branch relative to HEAD, and a narrow row only has room for one always-visible
+ * control (the switch icon). Both are gated by `branchActionState` so a disabled
+ * entry can say why.
+ *
  * @param {object} props view props.
  * @param {object[]} props.branches local and remote branches from `state.branches`.
  * @param {object[]} props.worktrees worktrees from `state.worktrees`.
@@ -282,9 +373,24 @@ function WorktreeRow({ worktree, busy, t, onRemove }) {
  * @param {'zh'|'en'} props.language active language.
  * @param {boolean} props.busy whether an action is in flight.
  * @param {(body: object) => Promise<boolean>} props.onAction panel action runner.
+ * @param {object|null} [props.branch] `state.branch`, for the history preconditions.
+ * @param {boolean} [props.isEmpty] the repository has no commits.
+ * @param {string|null} [props.operation] in-progress merge/rebase/…
+ * @param {boolean} [props.dirty] staged or unstaged tracked changes.
  * @returns {React.ReactElement} the view.
  */
-export function BranchesView({ branches, worktrees, t, language, busy, onAction }) {
+export function BranchesView({
+  branches,
+  worktrees,
+  t,
+  language,
+  busy,
+  onAction,
+  branch = null,
+  isEmpty = false,
+  operation = null,
+  dirty = false,
+}) {
   const [name, setName] = React.useState('')
   const [creating, setCreating] = React.useState(false)
   const [removing, setRemoving] = React.useState(null)
@@ -294,12 +400,22 @@ export function BranchesView({ branches, worktrees, t, language, busy, onAction 
   const [open, setOpen] = React.useState({ local: true, worktrees: true, remote: true })
 
   const list = Array.isArray(branches) ? branches : []
-  const locals = list.filter(branch => branch.type === 'local')
-  const remotes = list.filter(branch => branch.type === 'remote')
+  const locals = list.filter(entry => entry.type === 'local')
+  const remotes = list.filter(entry => entry.type === 'remote')
   const worktreeRows = Array.isArray(worktrees) ? worktrees : []
   // `worktree prune` only has work to do when git reports a stale record, so the
   // button is absent rather than permanently disabled.
   const prunable = worktreeRows.some(entry => entry.prunable !== null && entry.prunable !== undefined)
+
+  // One context object per render: every row's menu answers from the same
+  // snapshot, so two rows cannot disagree about whether the tree is clean.
+  const context = {
+    hasCommit: isEmpty !== true,
+    attached: isEmpty !== true && branch?.detached !== true,
+    operation,
+    dirty,
+    busy,
+  }
 
   const toggle = (key) => setOpen(previous => ({ ...previous, [key]: previous[key] !== true }))
 
@@ -309,6 +425,11 @@ export function BranchesView({ branches, worktrees, t, language, busy, onAction 
     const done = await onAction({ action: 'create-branch', branch: trimmed })
     if (done === true) setName('')
   }
+
+  // A remote branch answers `type: 'remote'` so the Host picks the full
+  // `refs/remotes/...` name instead of guessing between two short names.
+  const merge = (target) => void onAction({ action: 'merge', branch: target.name, type: target.type })
+  const rebase = (target) => void onAction({ action: 'rebase', branch: target.name, type: target.type })
 
   return React.createElement(
     React.Fragment,
@@ -329,18 +450,14 @@ export function BranchesView({ branches, worktrees, t, language, busy, onAction 
         },
         disabled: busy,
       }),
-      React.createElement(
-        'button',
-        {
-          type: 'button',
-          className: 'dgit-btn',
-          'data-variant': 'primary',
-          disabled: busy || name.trim() === '',
-          onClick: create,
-        },
-        React.createElement(PlusIcon, null),
-        t('branches.createAction'),
-      ),
+      React.createElement(IconButton, {
+        label: t('branches.createAction'),
+        icon: React.createElement(PlusIcon, null),
+        variant: 'primary',
+        disabled: busy || name.trim() === '',
+        disabledReason: busy ? t('action.running') : undefined,
+        onClick: create,
+      }),
     ),
     React.createElement(
       'div',
@@ -358,13 +475,16 @@ export function BranchesView({ branches, worktrees, t, language, busy, onAction 
         open.local === true
           ? (locals.length === 0
               ? React.createElement('div', { className: 'dgit-empty' }, t('branches.none'))
-              : locals.map(branch => React.createElement(BranchRow, {
-                  key: branch.name,
-                  branch,
+              : locals.map(entry => React.createElement(BranchRow, {
+                  key: entry.name,
+                  branch: entry,
+                  context,
                   busy,
                   language,
                   t,
                   onSwitch: branchName => onAction({ action: 'checkout', branch: branchName }),
+                  onMerge: merge,
+                  onRebase: rebase,
                 })))
           : null,
       ),
@@ -387,23 +507,21 @@ export function BranchesView({ branches, worktrees, t, language, busy, onAction 
                 onToggle: () => toggle('worktrees'),
                 t,
               },
-              React.createElement('button', {
-                type: 'button',
-                className: 'dgit-btn',
-                'data-variant': 'ghost',
+              React.createElement(IconButton, {
+                label: t('worktree.create'),
+                icon: React.createElement(PlusIcon, null),
                 disabled: busy,
-                title: t('worktree.create'),
+                disabledReason: busy ? t('action.running') : undefined,
                 onClick: () => setCreating(true),
-              }, React.createElement(PlusIcon, null), t('worktree.create')),
+              }),
               prunable
-                ? React.createElement('button', {
-                    type: 'button',
-                    className: 'dgit-btn',
-                    'data-variant': 'ghost',
+                ? React.createElement(IconButton, {
+                    label: t('worktree.prune'),
+                    icon: React.createElement(PruneIcon, null),
                     disabled: busy,
-                    title: t('worktree.prune'),
+                    disabledReason: busy ? t('action.running') : undefined,
                     onClick: () => void onAction({ action: 'prune-worktrees' }),
-                  }, t('worktree.prune'))
+                  })
                 : null,
             ),
             open.worktrees === true
@@ -429,17 +547,15 @@ export function BranchesView({ branches, worktrees, t, language, busy, onAction 
               t,
             }),
             open.remote === true
-              ? remotes.map(branch => React.createElement('div', {
-                  key: branch.name,
-                  className: 'dgit-filerow',
-                  style: { cursor: 'default' },
-                },
-                React.createElement('span', { className: 'dgit-status', 'data-code': 'M' }, React.createElement(BranchIcon, null)),
-                React.createElement('span', { className: 'dgit-path', style: { direction: 'ltr' }, title: branch.name }, branch.name),
-                hasText(branch.commitTime)
-                  ? React.createElement('span', { className: 'dgit-count dgit-branch-time' },
-                      relativeTime(branch.commitTime, language))
-                  : null))
+              ? remotes.map(entry => React.createElement(RemoteBranchRow, {
+                  key: entry.name,
+                  branch: entry,
+                  t,
+                  language,
+                  context,
+                  onMerge: merge,
+                  onRebase: rebase,
+                }))
               : null,
           ),
       React.createElement(WorktreeCreateDialog, {

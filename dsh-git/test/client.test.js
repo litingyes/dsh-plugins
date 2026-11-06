@@ -456,3 +456,85 @@ test('section headers fold their rows', () => {
   // And it is a real button: focus must be visible for keyboard users.
   assert.match(css, /\.dgit-group-toggle:focus-visible\{/u)
 })
+
+test('icon actions carry host tooltips, and context menus use the theme', () => {
+  const { registered, styles } = loadBundle()
+  const react = makeReact()
+  const exports = registered[0].factory(name => {
+    if (name === 'react' || name === 'react/jsx-runtime') return react
+    if (name === 'react-dom') return {}
+    throw new Error(`unexpected external module: ${name}`)
+  })
+
+  const harness = makeCtx('zh')
+  exports.apply(harness.ctx)
+  const css = styles[0].textContent
+
+  // Every row action is a square icon: a word such as "Switch" is what pushed
+  // the trailing control out of the pane in the first place.
+  const icon = styleBlock(css, '.dgit-iconbtn')
+  assert.ok(icon !== '', 'the icon button must be styled')
+  assert.match(icon, /width:24px/u)
+  assert.match(icon, /height:24px/u)
+  assert.match(icon, /padding:0/u)
+  const compact = styleBlock(css, '.dgit-filerow .dgit-iconbtn')
+  assert.match(compact, /width:20px/u)
+  assert.match(compact, /padding:0/u)
+
+  // A disabled button receives no pointer events, so its tooltip hangs off a
+  // focusable wrapper; both the wrapper and the ring must exist.
+  assert.match(css, /\.dgit-tipwrap\{/u)
+  assert.match(css, /\.dgit-tipwrap:focus-visible\{/u)
+
+  // The tooltip is host menu material, not a native title attribute.
+  const tip = styleBlock(css, '.dgit-tooltip')
+  assert.ok(tip !== '', 'the tooltip bubble must be styled')
+  assert.match(tip, /background:var\(--dsw-specific-menu\)/u)
+  assert.match(tip, /box-shadow:var\(--dsw-elevation-prominent\)/u)
+  assert.match(tip, /max-width:min\(/u)
+  assert.match(css, /\.dgit-tooltip-positioner\{[^}]*z-index:12\d\d/u)
+
+  // The menu is the same surface as the branch picker, and the destructive item
+  // is the only one painted with the error token.
+  assert.match(css, /\.dgit-menu\{/u)
+  const item = styleBlock(css, '.dgit-menu-item')
+  assert.ok(item !== '', 'the menu item must be styled')
+  assert.match(css, /\.dgit-menu-item\[data-highlighted\]\{/u)
+  assert.match(css, /\.dgit-menu-item\[data-disabled\]\{/u)
+  assert.match(css, /\.dgit-menu-item\[data-tone=danger\]\{[^}]*state-error-primary/u)
+  assert.match(css, /\.dgit-menu-sep\{/u)
+  assert.match(css, /\.dgit-menu-positioner\{[^}]*z-index:11\d\d/u)
+})
+
+test('history-action copy exists in both dictionaries', () => {
+  const { registered } = loadBundle()
+  const react = makeReact()
+  const exports = registered[0].factory(name => {
+    if (name === 'react' || name === 'react/jsx-runtime') return react
+    if (name === 'react-dom') return {}
+    throw new Error(`unexpected external module: ${name}`)
+  })
+
+  const harness = makeCtx('zh')
+  exports.apply(harness.ctx)
+  const { zh, en } = harness.localeDicts[0].dictionaries
+  for (const key of [
+    'graph.actions',
+    'graph.cherryPick',
+    'graph.revert',
+    'graph.drop',
+    'graph.dropTitle',
+    'graph.dropBody',
+    'graph.dropConfirm',
+    'branches.merge',
+    'branches.rebase',
+    'branches.reasonCurrent',
+    'panel.operation',
+    'operation.rebase',
+    'action.mergeConflict',
+    'action.repositoryBusy',
+  ]) {
+    assert.ok(zh[key], `zh is missing ${key}`)
+    assert.ok(en[key], `en is missing ${key}`)
+  }
+})

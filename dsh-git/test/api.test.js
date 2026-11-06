@@ -94,6 +94,11 @@ function makeGit(overrides = {}) {
     createWorktree: record('createWorktree', {}),
     removeWorktree: record('removeWorktree', {}),
     pruneWorktrees: record('pruneWorktrees', {}),
+    merge: record('merge', {}),
+    rebase: record('rebase', {}),
+    cherryPick: record('cherryPick', {}),
+    revert: record('revert', {}),
+    dropCommit: record('dropCommit', {}),
     ...overrides,
   }
 }
@@ -225,7 +230,7 @@ test('an action must name a known action', async () => {
 
   const unknown = makeRes()
   await handler(
-    makeReq({ method: 'POST', url: `${API_PREFIX}/api/action`, body: JSON.stringify({ action: 'rebase' }) }),
+    makeReq({ method: 'POST', url: `${API_PREFIX}/api/action`, body: JSON.stringify({ action: 'explode' }) }),
     unknown,
   )
   assert.equal(unknown.statusCode, 400)
@@ -430,5 +435,90 @@ test('worktree failures map to their own statuses', async () => {
     assert.equal(res.statusCode, status, code)
     assert.equal(res.json.error.code, code)
     assert.equal(res.json.error.path, '/tmp/tree')
+  }
+})
+
+test('history actions reach the service with their arguments', async () => {
+  const git = makeGit()
+  const handler = createApi({ git, authorize: ok })
+
+  const post = async (body) => {
+    const res = makeRes()
+    await handler(makeReq({ method: 'POST', url: `${API_PREFIX}/api/action`, body: JSON.stringify(body) }), res)
+    assert.equal(res.statusCode, 200, body.action)
+    assert.equal(res.json.ok, true)
+    return res
+  }
+
+  await post({ action: 'merge', workspace: 'w1', branch: 'side', type: 'local' })
+  const merge = git.calls.find(call => call.name === 'merge')
+  assert.ok(merge !== undefined)
+  assert.equal(merge.request.workspaceId, 'w1')
+  assert.equal(merge.request.branch, 'side')
+  assert.equal(merge.request.type, 'local')
+
+  await post({ action: 'rebase', branch: 'origin/main', type: 'remote' })
+  const rebase = git.calls.find(call => call.name === 'rebase')
+  assert.equal(rebase.request.branch, 'origin/main')
+  assert.equal(rebase.request.type, 'remote')
+
+  await post({ action: 'cherry-pick', commit: 'a'.repeat(40) })
+  assert.equal(git.calls.find(call => call.name === 'cherryPick').request.commit, 'a'.repeat(40))
+
+  await post({ action: 'revert', commit: 'b'.repeat(40) })
+  assert.equal(git.calls.find(call => call.name === 'revert').request.commit, 'b'.repeat(40))
+
+  await post({ action: 'drop-commit', commit: 'c'.repeat(40), confirm: true })
+  const drops = git.calls.filter(call => call.name === 'dropCommit')
+  assert.equal(drops[0].request.commit, 'c'.repeat(40))
+  assert.equal(drops[0].request.confirm, true)
+
+  // Only a literal `true` counts for the confirmation the service requires.
+  await post({ action: 'drop-commit', commit: 'd'.repeat(40), confirm: 'yes' })
+  assert.equal(git.calls.filter(call => call.name === 'dropCommit')[1].request.confirm, false)
+
+  // Every mutation answers with the state it produced.
+  assert.equal(git.calls.filter(call => call.name === 'state').length, 6)
+})
+
+test('history failures map to their own statuses', async () => {
+  const cases = [
+    ['unknown_commit', 400],
+    ['merge_commit', 400],
+    ['root_commit', 400],
+    ['same_branch', 409],
+    ['same_commit', 409],
+    ['not_ancestor', 409],
+    ['merges_in_range', 409],
+    ['worktree_dirty', 409],
+    ['repository_busy', 409],
+    ['detached_head', 409],
+    ['no_commit', 409],
+    ['merge_conflict', 409],
+    ['rebase_conflict', 409],
+    ['cherry_pick_conflict', 409],
+    ['revert_conflict', 409],
+  ]
+  for (const [code, status] of cases) {
+    const git = makeGit({
+      dropCommit: async () => {
+        throw new GitError(code, `${code} happened`, { commit: 'a'.repeat(40) })
+      },
+    })
+    const handler = createApi({ git, authorize: ok })
+    const res = makeRes()
+    await handler(
+      makeReq({
+        method: 'POST',
+        url: `${API_PREFIX}/api/action`,
+        body: JSON.stringify({ action: 'drop-commit', commit: 'a'.repeat(40), confirm: true }),
+      }),
+      res,
+    )
+    assert.equal(res.statusCode, status, code)
+    assert.equal(res.json.error.code, code)
+    // `GitError.detail` is spread into the wire error, so the client can name
+    // the commit a refusal is about.
+    assert.equal(res.json.error.commit, 'a'.repeat(40))
   }
 })

@@ -1,6 +1,6 @@
 {
   "meta": {
     "title": "Workspace Git",
-    "description": "Shows and switches the Git branch in the status row below the composer, and opens a right-sidebar tab with this Session's workspace history as a multi-branch commit graph, expandable commit details, staging, commits, and branch and worktree management."
+    "description": "Shows and switches the Git branch in the status row below the composer, and opens a right-sidebar tab with this Session's workspace history as a multi-branch commit graph, expandable commit details and right-click history actions (cherry-pick, revert, drop), staging, commits, branch merge/rebase, and branch and worktree management."
   }
 }

@@ -11,6 +11,9 @@ function git(cwd, ...args) {
   return execFileSync('git', args, {
     cwd,
     encoding: 'utf8',
+    // Some fixtures leave a merge or rebase deliberately stopped; git explains
+    // that on stderr, which is expected here and would only noise the run.
+    stdio: ['ignore', 'pipe', 'pipe'],
     env: { ...process.env, GIT_TERMINAL_PROMPT: '0', GIT_OPTIONAL_LOCKS: '0' },
   })
 }
@@ -31,6 +34,12 @@ function serviceFor(dir, config = {}) {
     workspaces: () => [{ id: 'w1', title: 'fixture', path: dir }],
     config: { commandTimeoutMs: 20000, ...config },
   })
+}
+
+/** Write one file and commit it through the service. */
+async function commitFile(service, dir, name, message = name) {
+  writeFileSync(path.join(dir, name), `${message}\n`)
+  return service.commit({ message, paths: [name] })
 }
 
 test('an empty repository reports itself without failing', async t => {
@@ -479,4 +488,355 @@ test('prune forgets a worktree whose directory disappeared', async t => {
   assert.equal(state.worktrees.length, 1)
   // Pruning forgets the registration, never the branch.
   assert.ok(state.branches.some(entry => entry.name === 'feat/lost'))
+})
+
+/* ------------------------------------------------------------------ *
+ * History actions: merge, rebase, cherry-pick, revert, drop
+ * ------------------------------------------------------------------ */
+
+test('merge fast-forwards a local branch and a remote-tracking ref', async t => {
+  const dir = makeRepo(t)
+  const service = serviceFor(dir)
+  await commitFile(service, dir, 'a.txt', 'a')
+
+  git(dir, 'checkout', '-q', '-b', 'side')
+  await commitFile(service, dir, 'side.txt', 'side')
+  git(dir, 'checkout', '-q', 'main')
+
+  assert.deepEqual(await service.merge({ branch: 'side', type: 'local' }), { branch: 'side' })
+  let state = await service.state({})
+  assert.equal(state.branch.head, 'main')
+  assert.ok(state.commits.some(commit => commit.subject === 'side'))
+  assert.equal(readFileSync(path.join(dir, 'side.txt'), 'utf8'), 'side\n')
+
+  // A remote-tracking ref is a merge target too; the full ref name reaches git.
+  git(dir, 'checkout', '-q', '-b', 'remote-work')
+  await commitFile(service, dir, 'remote.txt', 'remote-work')
+  git(dir, 'checkout', '-q', 'main')
+  git(dir, 'update-ref', 'refs/remotes/origin/remote-work', git(dir, 'rev-parse', 'remote-work').trim())
+  assert.deepEqual(
+    await service.merge({ branch: 'origin/remote-work', type: 'remote' }),
+    { branch: 'origin/remote-work' },
+  )
+  assert.equal(existsSync(path.join(dir, 'remote.txt')), true)
+
+  // The checked-out branch cannot merge into itself, and an unknown name is a
+  // caller error rather than a git failure.
+  await assert.rejects(
+    () => service.merge({ branch: 'main', type: 'local' }),
+    error => error instanceof GitError && error.code === 'same_branch',
+  )
+  await assert.rejects(
+    () => service.merge({ branch: 'ghost' }),
+    error => error instanceof GitError && error.code === 'unknown_branch',
+  )
+})
+
+test('a merge conflict is aborted and reported as merge_conflict', async t => {
+  const dir = makeRepo(t)
+  const service = serviceFor(dir)
+  await commitFile(service, dir, 'a.txt', 'base')
+  git(dir, 'checkout', '-q', '-b', 'side')
+  await commitFile(service, dir, 'a.txt', 'side')
+  git(dir, 'checkout', '-q', 'main')
+  await commitFile(service, dir, 'a.txt', 'main')
+
+  await assert.rejects(
+    () => service.merge({ branch: 'side', type: 'local' }),
+    error => error instanceof GitError && error.code === 'merge_conflict' && error.detail.branch === 'side',
+  )
+  // The panel cannot resolve conflicts, so the stopped merge must be gone.
+  assert.equal(existsSync(path.join(dir, '.git', 'MERGE_HEAD')), false)
+  const state = await service.state({})
+  assert.equal(state.repo.operation, null)
+  assert.deepEqual(state.changes, { staged: [], unstaged: [], untracked: [], conflicted: [] })
+})
+
+test('rebase replays the current branch onto the target and aborts on conflict', async t => {
+  const dir = makeRepo(t)
+  const service = serviceFor(dir)
+  await commitFile(service, dir, 'base.txt', 'base')
+  git(dir, 'checkout', '-q', '-b', 'target')
+  await commitFile(service, dir, 'target.txt', 'target')
+  git(dir, 'checkout', '-q', 'main')
+  await commitFile(service, dir, 'main.txt', 'main')
+
+  assert.deepEqual(await service.rebase({ branch: 'target', type: 'local' }), { branch: 'target' })
+  const log = git(dir, 'log', '--format=%s', '-3').trim().split('\n')
+  assert.deepEqual(log, ['main', 'target', 'base'])
+  assert.doesNotThrow(() => git(dir, 'merge-base', '--is-ancestor', 'target', 'HEAD'))
+
+  // A later commit on the current branch that conflicts with the new base.
+  git(dir, 'checkout', '-q', '-b', 'conflicting', 'target')
+  await commitFile(service, dir, 'main.txt', 'conflicting')
+  git(dir, 'checkout', '-q', 'main')
+  const headBefore = (await service.state({})).branch.oid
+  await assert.rejects(
+    () => service.rebase({ branch: 'conflicting', type: 'local' }),
+    error => error instanceof GitError && error.code === 'rebase_conflict',
+  )
+  assert.equal(existsSync(path.join(dir, '.git', 'rebase-merge')), false)
+  const state = await service.state({})
+  assert.equal(state.branch.head, 'main')
+  assert.equal(state.branch.oid, headBefore)
+  assert.equal(state.repo.operation, null)
+})
+
+test('cherry-pick applies one commit and refuses HEAD or a merge commit', async t => {
+  const dir = makeRepo(t)
+  const service = serviceFor(dir)
+  await commitFile(service, dir, 'a.txt', 'a')
+  git(dir, 'checkout', '-q', '-b', 'work')
+  const picked = await commitFile(service, dir, 'picked.txt', 'picked')
+  git(dir, 'checkout', '-q', 'main')
+
+  assert.deepEqual(await service.cherryPick({ commit: picked.sha }), { commit: picked.sha })
+  assert.equal(readFileSync(path.join(dir, 'picked.txt'), 'utf8'), 'picked\n')
+  assert.equal((await service.state({})).commits[0].subject, 'picked')
+
+  const head = (await service.state({})).branch.oid
+  await assert.rejects(
+    () => service.cherryPick({ commit: head }),
+    error => error instanceof GitError && error.code === 'same_commit',
+  )
+  await assert.rejects(
+    () => service.cherryPick({ commit: '0123456789abcdef' }),
+    error => error instanceof GitError && error.code === 'unknown_commit',
+  )
+
+  // A merge commit has no single patch to pick without a mainline.
+  git(dir, 'checkout', '-q', '-b', 'merged', 'HEAD~1')
+  await commitFile(service, dir, 'merged.txt', 'merged')
+  git(dir, 'checkout', '-q', 'main')
+  git(dir, 'merge', '-q', '--no-ff', '--no-edit', 'merged')
+  const mergeCommit = git(dir, 'rev-parse', 'HEAD').trim()
+  await assert.rejects(
+    () => service.cherryPick({ commit: mergeCommit }),
+    error => error instanceof GitError && error.code === 'merge_commit',
+  )
+})
+
+test('a cherry-pick conflict is aborted and reported', async t => {
+  const dir = makeRepo(t)
+  const service = serviceFor(dir)
+  await commitFile(service, dir, 'a.txt', 'base')
+  git(dir, 'checkout', '-q', '-b', 'work')
+  await commitFile(service, dir, 'a.txt', 'work')
+  git(dir, 'checkout', '-q', 'main')
+  await commitFile(service, dir, 'a.txt', 'main')
+  const work = git(dir, 'rev-parse', 'work').trim()
+
+  await assert.rejects(
+    () => service.cherryPick({ commit: work }),
+    error => error instanceof GitError && error.code === 'cherry_pick_conflict',
+  )
+  assert.equal(existsSync(path.join(dir, '.git', 'CHERRY_PICK_HEAD')), false)
+  assert.equal((await service.state({})).repo.operation, null)
+})
+
+test('revert undoes a commit and refuses non-ancestors', async t => {
+  const dir = makeRepo(t)
+  const service = serviceFor(dir)
+  await commitFile(service, dir, 'a.txt', 'first')
+  const second = await commitFile(service, dir, 'a.txt', 'second')
+
+  assert.deepEqual(await service.revert({ commit: second.sha }), { commit: second.sha })
+  assert.equal(readFileSync(path.join(dir, 'a.txt'), 'utf8'), 'first\n')
+  // `git revert --no-edit` keeps git's own message, so the newest commit is the
+  // revert of the one that was asked for.
+  assert.match((await service.state({})).commits[0].subject, /^Revert "second"/u)
+
+  // A commit that only exists on another branch is not this branch's history.
+  git(dir, 'checkout', '-q', '-b', 'elsewhere')
+  const stranger = await commitFile(service, dir, 'other.txt', 'other')
+  git(dir, 'checkout', '-q', 'main')
+  await assert.rejects(
+    () => service.revert({ commit: stranger.sha }),
+    error => error instanceof GitError && error.code === 'not_ancestor',
+  )
+})
+
+test('a revert conflict is aborted and reported', async t => {
+  const dir = makeRepo(t)
+  const service = serviceFor(dir)
+  const first = await commitFile(service, dir, 'a.txt', 'one')
+  await commitFile(service, dir, 'a.txt', 'two')
+
+  await assert.rejects(
+    () => service.revert({ commit: first.sha }),
+    error => error instanceof GitError && error.code === 'revert_conflict',
+  )
+  assert.equal(existsSync(path.join(dir, '.git', 'REVERT_HEAD')), false)
+  assert.equal((await service.state({})).repo.operation, null)
+})
+
+test('dropping one commit keeps its descendants', async t => {
+  const dir = makeRepo(t)
+  const service = serviceFor(dir)
+  await commitFile(service, dir, 'a.txt', 'a')
+  const middle = await commitFile(service, dir, 'b.txt', 'b')
+  await commitFile(service, dir, 'c.txt', 'c')
+
+  assert.deepEqual(await service.dropCommit({ commit: middle.sha, confirm: true }), {
+    commit: middle.sha,
+    dropped: true,
+  })
+  assert.deepEqual(
+    git(dir, 'log', '--format=%s').trim().split('\n'),
+    ['c', 'a'],
+  )
+  assert.equal(existsSync(path.join(dir, 'b.txt')), false)
+  assert.equal(existsSync(path.join(dir, 'c.txt')), true)
+  assert.equal((await service.state({})).repo.operation, null)
+})
+
+test('dropping the tip removes only that commit', async t => {
+  const dir = makeRepo(t)
+  const service = serviceFor(dir)
+  await commitFile(service, dir, 'a.txt', 'a')
+  const tip = await commitFile(service, dir, 'b.txt', 'b')
+
+  await service.dropCommit({ commit: tip.sha, confirm: true })
+  assert.deepEqual(git(dir, 'log', '--format=%s').trim().split('\n'), ['a'])
+})
+
+test('drop refuses a root commit, a merge commit, a stranger, and unconfirmed work', async t => {
+  const dir = makeRepo(t)
+  const service = serviceFor(dir)
+  const root = await commitFile(service, dir, 'a.txt', 'a')
+  const middle = await commitFile(service, dir, 'b.txt', 'b')
+  await commitFile(service, dir, 'c.txt', 'c')
+
+  await assert.rejects(
+    () => service.dropCommit({ commit: middle.sha }),
+    error => error instanceof GitError && error.code === 'confirm_required',
+  )
+  await assert.rejects(
+    () => service.dropCommit({ commit: root.sha, confirm: true }),
+    error => error instanceof GitError && error.code === 'root_commit',
+  )
+  await assert.rejects(
+    () => service.dropCommit({ commit: 'deadbeef', confirm: true }),
+    error => error instanceof GitError && error.code === 'unknown_commit',
+  )
+
+  // A merge commit cannot be dropped as "one commit" without choosing a side.
+  git(dir, 'checkout', '-q', '-b', 'merged', 'HEAD~1')
+  await commitFile(service, dir, 'merged.txt', 'merged')
+  git(dir, 'checkout', '-q', 'main')
+  git(dir, 'merge', '-q', '--no-ff', '--no-edit', 'merged')
+  const mergeCommit = git(dir, 'rev-parse', 'HEAD').trim()
+  await assert.rejects(
+    () => service.dropCommit({ commit: mergeCommit, confirm: true }),
+    error => error instanceof GitError && error.code === 'merge_commit',
+  )
+
+  // A commit reachable only from another branch is not on this history.
+  git(dir, 'checkout', '-q', '-b', 'elsewhere')
+  const stranger = await commitFile(service, dir, 'other.txt', 'other')
+  git(dir, 'checkout', '-q', 'main')
+  await assert.rejects(
+    () => service.dropCommit({ commit: stranger.sha, confirm: true }),
+    error => error instanceof GitError && error.code === 'not_ancestor',
+  )
+})
+
+test('drop refuses a range that would rewrite merge commits', async t => {
+  const dir = makeRepo(t)
+  const service = serviceFor(dir)
+  await commitFile(service, dir, 'a.txt', 'a')
+  const middle = await commitFile(service, dir, 'b.txt', 'b')
+  await commitFile(service, dir, 'c.txt', 'c')
+
+  git(dir, 'checkout', '-q', '-b', 'side', 'HEAD~2')
+  await commitFile(service, dir, 'side.txt', 'side')
+  git(dir, 'checkout', '-q', 'main')
+  git(dir, 'merge', '-q', '--no-ff', '--no-edit', 'side')
+
+  await assert.rejects(
+    () => service.dropCommit({ commit: middle.sha, confirm: true }),
+    error => error instanceof GitError && error.code === 'merges_in_range',
+  )
+})
+
+test('history actions refuse a dirty tracked worktree', async t => {
+  const dir = makeRepo(t)
+  const service = serviceFor(dir)
+  await commitFile(service, dir, 'a.txt', 'a')
+  git(dir, 'branch', 'side')
+  const head = (await service.state({})).branch.oid
+  writeFileSync(path.join(dir, 'a.txt'), 'dirty\n')
+
+  await assert.rejects(
+    () => service.merge({ branch: 'side', type: 'local' }),
+    error => error instanceof GitError && error.code === 'worktree_dirty',
+  )
+  await assert.rejects(
+    () => service.cherryPick({ commit: head }),
+    error => error instanceof GitError && error.code === 'worktree_dirty',
+  )
+  await assert.rejects(
+    () => service.dropCommit({ commit: head, confirm: true }),
+    error => error instanceof GitError && error.code === 'worktree_dirty',
+  )
+})
+
+test('history actions refuse a detached HEAD and an empty repository', async t => {
+  const dir = makeRepo(t)
+  const service = serviceFor(dir)
+  await assert.rejects(
+    () => service.merge({ branch: 'side' }),
+    error => error instanceof GitError && error.code === 'no_commit',
+  )
+
+  await commitFile(service, dir, 'a.txt', 'a')
+  git(dir, 'checkout', '-q', '--detach', 'HEAD')
+  const head = (await service.state({})).branch.oid
+  await assert.rejects(
+    () => service.merge({ branch: 'main', type: 'local' }),
+    error => error instanceof GitError && error.code === 'detached_head',
+  )
+  await assert.rejects(
+    () => service.dropCommit({ commit: head, confirm: true }),
+    error => error instanceof GitError && error.code === 'detached_head',
+  )
+})
+
+test('a stopped operation is reported in the snapshot and blocks history actions', async t => {
+  const dir = makeRepo(t)
+  const service = serviceFor(dir)
+  await commitFile(service, dir, 'a.txt', 'base')
+  git(dir, 'checkout', '-q', '-b', 'side')
+  await commitFile(service, dir, 'a.txt', 'side')
+  git(dir, 'checkout', '-q', 'main')
+  await commitFile(service, dir, 'a.txt', 'main')
+
+  // Leave a real merge stopped, the way a terminal would.
+  assert.throws(() => git(dir, 'merge', 'side'))
+  let state = await service.state({})
+  assert.equal(state.repo.operation, 'merge')
+  await assert.rejects(
+    () => service.merge({ branch: 'side', type: 'local' }),
+    error => error instanceof GitError && error.code === 'repository_busy' && error.detail.operation === 'merge',
+  )
+  await assert.rejects(
+    () => service.dropCommit({ commit: state.branch.oid, confirm: true }),
+    error => error instanceof GitError && error.code === 'repository_busy',
+  )
+  git(dir, 'merge', '--abort')
+
+  // A rebase uses the cherry-pick machinery; the detector must still call it a
+  // rebase, not a cherry-pick.
+  git(dir, 'checkout', '-q', 'side')
+  assert.throws(() => git(dir, 'rebase', 'main'))
+  state = await service.state({})
+  assert.equal(state.repo.operation, 'rebase')
+  await assert.rejects(
+    () => service.rebase({ branch: 'main', type: 'local' }),
+    error => error instanceof GitError && error.code === 'repository_busy' && error.detail.operation === 'rebase',
+  )
+  git(dir, 'rebase', '--abort')
+
+  state = await service.state({})
+  assert.equal(state.repo.operation, null)
 })

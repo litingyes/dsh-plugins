@@ -1,6 +1,6 @@
 # @litingyes/dsh-git
 
-给 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 的 Git 插件：**在输入框下方的状态行直接查看并切换当前分支**；右侧栏的 Git 页签**跟着当前会话的工作区走**，以多分支提交树为主视图，节点显示 description / author / date / commit，点开看提交详情；旁边是变更暂存、提交，以及分支与工作树管理。两处共用同一份仓库状态。0.3.0 起不再注册智能体工具。
+给 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 的 Git 插件：**在输入框下方的状态行直接查看并切换当前分支**；右侧栏的 Git 页签**跟着当前会话的工作区走**，以多分支提交树为主视图，节点显示 description / author / date / commit，点开看提交详情；旁边是变更暂存、提交，以及分支与工作树管理；提交节点右键可做 cherry-pick / revert / drop，分支行右键可把分支 merge 或 rebase 到当前分支。两处共用同一份仓库状态。0.3.0 起不再注册智能体工具。
 
 > 只读写本机的 Git 仓库，不做任何网络操作（没有 fetch / pull / push / clone）。
 
@@ -37,18 +37,21 @@
   | 右侧 | author · 相对日期 · 短 SHA |
 
 - **点击节点展开详情**：完整 commit message、author 与 committer、绝对/相对时间、父提交、全部 refs、变更文件列表（状态字母 + `+/-` 行数）；再点某个文件即可看该文件在该提交中的 diff。
+- **右键节点行打开提交菜单**：复制 SHA、拣选到当前分支（cherry-pick）、撤销此提交（revert）、删除此提交（drop）。不满足条件的项留在菜单里但禁用，并用 tooltip 说明原因（合并提交、第一个提交、不在当前分支、工作区有改动、仓库正在合并或变基等）；删除提交还要过一次确认框。
 - 工具行提供「仅当前分支 / 全部分支」切换、提交搜索（subject / author / SHA）与刷新。
 
 ### 变更
 
-- 已暂存 / 未暂存 / 未跟踪 / 冲突四组，逐文件或整组勾选，按钮执行「暂存 / 取消暂存 / 丢弃」。
+- 已暂存 / 未暂存 / 未跟踪 / 冲突四组，逐文件或整组勾选，图标按钮执行「暂存 / 取消暂存 / 丢弃」（悬停或键盘聚焦显示 tooltip）。
 - 选中文件在右侧看 diff（宽屏两栏，窄屏上下堆叠），新增/删除行按主题的成功/错误色高亮。
 - 底部提交框：填信息后「提交」；已暂存为空或信息为空时禁用；`Cmd/Ctrl+Enter` 快捷提交。
 - 「丢弃」会先弹确认框，确认后才带 `confirm: true` 请求 Host，Host 还会再校验一次。
 
 ### 分支
 
-- 本地分支列表（当前分支标记、上游、最近提交时间），一键切换。
+- 本地分支列表（当前分支标记、上游、最近提交时间），行尾图标按钮一键切换。
+- 面板里的行内操作（切换、复制路径、移除工作树、暂存/取消暂存/丢弃、新建工作树、清理记录、创建并切换）都是图标按钮：悬停或键盘聚焦时显示宿主风格 tooltip；禁用时 tooltip 写明原因（例如「已在工作树 …… 中检出」「主工作树和当前工作树不能移除」）。
+- **右键分支行打开菜单**：把该分支合并到当前分支（`git merge`）、把当前分支变基到该分支（`git rebase`）；本地与远程分支都可以作为目标。菜单项按当前快照禁用并说明原因：已经是当前分支、工作区有改动、仓库没有提交、仓库正在合并或变基、或有动作进行中。
 - 已被某个工作树检出的分支不能再次切换：行上标注「工作树」，切换按钮禁用（git 会拒绝重复检出）。
 - 新建分支并切换；分支名交给 `git check-ref-format --branch` 校验。
 - 三个分组按「本地分支 → 工作树 → 远程分支」排列，点分组标题即可折叠/展开（默认展开）。
@@ -70,7 +73,7 @@ plugin_manager action=install_bundle target=/absolute/path/to/dsh-plugins/dsh-gi
 发布到 npm 后可按包名安装：
 
 ```text
-plugin_manager action=install_bundle target=@litingyes/dsh-git@0.4.0
+plugin_manager action=install_bundle target=@litingyes/dsh-git@0.5.0
 ```
 
 安装后左侧栏不再有 Git 图标：会话开始后，输入框下方的状态行会自动出现分支胶囊，完整面板的入口在右侧栏「+」的起始页里。浏览器半边升级后，桌面 App 需要**重启**（或设置 → Plugins 里关开插件）才能加载新的 `client.js`；`dsh web` 刷新页面即可。Host 半边（`index.js` / `git.js` / `api.js`）由 Loader 在启动时载入，**升级后需要重启 DSH** 才生效。卸载：`plugin_manager action=remove_bundle target=@litingyes/dsh-git`。
@@ -101,14 +104,18 @@ plugin_manager action=install_bundle target=@litingyes/dsh-git@0.4.0
 - **路径校验**：所有落在 git 命令里的路径先过 `assertRelativePath`（拒绝空串、绝对路径、`..` 段、NUL）。
 - **工作树路径校验**：新建的路径必须在已注册工作区根内、不在 `.git` 内、且目标尚不存在；移除只接受该仓库 `worktree list` 里登记过的路径，永远不碰主工作树与当前工作树。
 - **鉴权前置**：路由先跑 `connection.requestRejection(req)`，未通过时连工作区列表都不返回。
-- **破坏性操作两次确认**：丢弃改动、移除工作树都先弹确认框，请求体必须带 `confirm: true`；丢弃还会复核路径确实处于变更状态，否则拒绝。
+- **历史操作前置校验**：merge / rebase / cherry-pick / revert / drop 都要求 HEAD 在分支上、工作区没有已暂存或未暂存的改动、仓库没有进行中的合并或变基；提交必须能被 `rev-parse --verify <sha>^{commit}` 解析，分支名必须仍出现在 `for-each-ref` 的列表里。revert 与 drop 还要求提交是当前 HEAD 的祖先；drop 额外要求 `confirm: true`，拒绝根提交与合并提交，并且当重写范围里存在合并提交（`git rev-list --merges <sha>..HEAD` 非空）时直接拒绝，避免把合并历史静默压平。
+- **冲突自动中止**：以上操作遇到冲突会先执行对应的 `--abort`，再以结构化错误返回，仓库回到操作前状态；面板不提供冲突解决，也不提供 continue / skip。
+- **破坏性操作两次确认**：丢弃改动、移除工作树、删除提交（drop）都先弹确认框，请求体必须带 `confirm: true`；丢弃还会复核路径确实处于变更状态，否则拒绝。
 - **可观测的失败**：git 非零退出、超时、`index.lock` 冲突等都会以结构化 code + git 自己的报错首行返回，不吞错。
 
 ## 限制
 
 - 不做网络操作：没有 fetch / pull / push / clone。
 - 面板不移动会话目录：新建工作树只是登记一个目录，进去开会话要你自己操作。
-- 不做 stash、rebase、merge、cherry-pick、冲突解决。
+- 不做 stash，也不做冲突解决：merge / rebase / cherry-pick / revert 遇到冲突会自动中止，没有 continue / skip / 冲突编辑器。
+- rebase 使用 git 默认行为：重放范围里已有的合并提交会被压平；drop 遇到这种范围会直接拒绝。
+- 右键菜单靠鼠标右键或触屏长按打开，菜单内可用键盘导航；提交行与分支行没有额外的「更多」按钮入口。
 - 分支胶囊只列本地分支（与面板一致，不检出远程分支）。
 - 提交历史一次最多 500 条；文件列表一次最多 400 个。
 - 泳道超过 8 条会折叠并提示，不会横向撑破布局。

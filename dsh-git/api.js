@@ -35,6 +35,11 @@ const ACTIONS = new Set([
   'create-worktree',
   'remove-worktree',
   'prune-worktrees',
+  'merge',
+  'rebase',
+  'cherry-pick',
+  'revert',
+  'drop-commit',
 ])
 
 /** Machine code → HTTP status. Anything unmapped is a 500. */
@@ -49,7 +54,10 @@ const STATUS_BY_CODE = {
   unknown_path: 400,
   unknown_branch: 400,
   unknown_worktree: 400,
+  unknown_commit: 400,
   branch_exists: 400,
+  merge_commit: 400,
+  root_commit: 400,
   no_workspace: 400,
   bad_request: 400,
   payload_too_large: 413,
@@ -59,6 +67,18 @@ const STATUS_BY_CODE = {
   worktree_exists: 409,
   worktree_in_use: 409,
   branch_in_worktree: 409,
+  same_branch: 409,
+  same_commit: 409,
+  not_ancestor: 409,
+  merges_in_range: 409,
+  worktree_dirty: 409,
+  repository_busy: 409,
+  detached_head: 409,
+  no_commit: 409,
+  merge_conflict: 409,
+  rebase_conflict: 409,
+  cherry_pick_conflict: 409,
+  revert_conflict: 409,
   git_missing: 503,
   git_timeout: 504,
   git_failed: 422,
@@ -298,8 +318,34 @@ export function createApi(options) {
             force: body.force === true,
             signal: controller.signal,
           })
-        } else {
+        } else if (action === 'prune-worktrees') {
           await git.pruneWorktrees({ workspaceId, signal: controller.signal })
+        } else if (action === 'merge') {
+          await git.merge({
+            workspaceId,
+            branch: body.branch,
+            type: body.type,
+            signal: controller.signal,
+          })
+        } else if (action === 'rebase') {
+          await git.rebase({
+            workspaceId,
+            branch: body.branch,
+            type: body.type,
+            signal: controller.signal,
+          })
+        } else if (action === 'cherry-pick') {
+          await git.cherryPick({ workspaceId, commit: body.commit, signal: controller.signal })
+        } else if (action === 'revert') {
+          await git.revert({ workspaceId, commit: body.commit, signal: controller.signal })
+        } else {
+          // `drop-commit` is the only remaining member of ACTIONS.
+          await git.dropCommit({
+            workspaceId,
+            commit: body.commit,
+            confirm: body.confirm === true,
+            signal: controller.signal,
+          })
         }
 
         // Every mutation answers with the state it produced, so the panel
