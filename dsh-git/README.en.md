@@ -67,7 +67,7 @@ The plugin is a Cordis bundle. Install it with the DSH plugin manager; never han
 plugin_manager action=install_bundle target=/absolute/path/to/dsh-plugins/dsh-git
 ```
 
-From npm:
+Once published to npm:
 
 ```text
 plugin_manager action=install_bundle target=@litingyes/dsh-git@0.4.0
