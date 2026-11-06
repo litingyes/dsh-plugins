@@ -25,10 +25,42 @@ try {
   console.warn('dsh-plugins site: no git checkout here; skipping the HEAD comparison')
 }
 
+function git(args) {
+  try {
+    return execFileSync('git', args, { cwd: REPO, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim()
+  } catch {
+    return null
+  }
+}
+
+/** Run git for its exit status only. */
+function gitOk(args) {
+  try {
+    execFileSync('git', args, { cwd: REPO, stdio: 'ignore' })
+    return true
+  } catch {
+    return false
+  }
+}
+
 if (head && graph.source.head !== head) {
-  problems.push(
-    `commit graph is at ${graph.source.head.slice(0, 7)}, repository is at ${head.slice(0, 7)}: run \`pnpm sync\` and commit src/data/*.json`,
-  )
+  if (!gitOk(['merge-base', '--is-ancestor', graph.source.head, head])) {
+    problems.push(
+      `commit graph is at ${graph.source.head.slice(0, 7)}, which is not an ancestor of HEAD ${head.slice(0, 7)}: run \`pnpm sync\` and commit src/data/*.json`,
+    )
+  } else {
+    // Commits that only touch the portal or the root README are the site's own
+    // bookkeeping; the graph may lag those, but never a plugin change.
+    const changed = (git(['diff', '--name-only', `${graph.source.head}..${head}`]) ?? '')
+      .split('\n')
+      .filter(Boolean)
+    const code = changed.filter((file) => file !== 'README.md' && !file.startsWith('site/'))
+    if (code.length > 0) {
+      problems.push(
+        `code changed since the graph (${code.slice(0, 3).join(', ')}${code.length > 3 ? ', ...' : ''}): run \`pnpm sync\` and commit src/data/*.json`,
+      )
+    }
+  }
 }
 
 for (const [slug, expected] of Object.entries(meta)) {

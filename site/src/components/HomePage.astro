@@ -80,7 +80,7 @@ const context7Plugin = plugins[1]!
           <CommitGraph locale={locale} toolbar />
         </div>
         <figcaption class="mt-[var(--space-sm)] flex flex-wrap items-baseline justify-between gap-[var(--space-sm)]">
-          <span class="body-copy text-[var(--text-sm)]">{t.home.graph.caption[locale]}</span>
+          <span class="body-copy text-[var(--text-sm)]">{t.home.graph.caption[locale].replace('{n}', String(graph.commits.length))}</span>
           <a class="link text-[var(--text-sm)]" href={url(locale, `plugins/${gitPlugin.slug}`)}>
             {t.home.graph.link[locale]}
           </a>

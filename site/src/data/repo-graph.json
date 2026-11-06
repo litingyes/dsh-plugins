@@ -1,14 +1,31 @@
 {
   "source": {
-    "head": "f66eabaece6e94e0ead680bf460c8299ad4f1565",
-    "headShort": "f66eaba",
+    "head": "dda11f14cf3673c16fbbc4c580e72a344867bd75",
+    "headShort": "dda11f1",
     "headDate": "2026-11-06",
     "currentBranch": "feature/docs",
-    "total": 9,
+    "total": 10,
     "limit": 40,
     "truncated": false
   },
   "commits": [
+    {
+      "sha": "dda11f14cf3673c16fbbc4c580e72a344867bd75",
+      "parents": [
+        "f66eabaece6e94e0ead680bf460c8299ad4f1565"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-06",
+      "subject": "feat(site): add the bilingual portal for the plugin collection",
+      "refs": [
+        {
+          "name": "release",
+          "kind": "branch"
+        }
+      ],
+      "onCurrent": true
+    },
     {
       "sha": "f66eabaece6e94e0ead680bf460c8299ad4f1565",
       "parents": [
@@ -26,10 +43,6 @@
         {
           "name": "origin/release",
           "kind": "remote"
-        },
-        {
-          "name": "release",
-          "kind": "branch"
         },
         {
           "name": "feature/dsh-conext7",
@@ -149,6 +162,19 @@
   ],
   "layout": {
     "rows": [
+      {
+        "sha": "dda11f14cf3673c16fbbc4c580e72a344867bd75",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
       {
         "sha": "f66eabaece6e94e0ead680bf460c8299ad4f1565",
         "lane": 0,
@@ -293,8 +319,8 @@
   "branches": [
     {
       "name": "feature/docs",
-      "sha": "f66eabaece6e94e0ead680bf460c8299ad4f1565",
-      "short": "f66eaba",
+      "sha": "dda11f14cf3673c16fbbc4c580e72a344867bd75",
+      "short": "dda11f1",
       "upstream": "",
       "date": "2026-11-06",
       "current": true,
@@ -320,8 +346,8 @@
     },
     {
       "name": "release",
-      "sha": "f66eabaece6e94e0ead680bf460c8299ad4f1565",
-      "short": "f66eaba",
+      "sha": "dda11f14cf3673c16fbbc4c580e72a344867bd75",
+      "short": "dda11f1",
       "upstream": "origin/release",
       "date": "2026-11-06",
       "current": false,
@@ -329,6 +355,342 @@
     }
   ],
   "details": {
+    "dda11f14cf3673c16fbbc4c580e72a344867bd75": {
+      "message": "feat(site): add the bilingual portal for the plugin collection\n\n- Astro 7 + Tailwind CSS 4 static site under site/, Chinese at / and\n  English at /en, one page per plugin plus home, 404 and sitemap\n- the commit graph, lane rows, branch list and commit details are\n  generated from this repository's own history by dsh-git's layoutGraph\n  and committed as JSON, so a deploy never needs git history\n- copy for tools, configuration, security and limits comes from the two\n  plugin READMEs; install commands match what npm currently carries\n- pnpm check guards data freshness, internal links and token contrast;\n  the Hallmark Console stamp and waivers sit at the top of global.css",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-06T19:17:48+08:00",
+      "files": [
+        {
+          "path": "README.md",
+          "status": "M",
+          "added": 14,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/.gitignore",
+          "status": "A",
+          "added": 6,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/.hallmark/.gitignore",
+          "status": "A",
+          "added": 5,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/.hallmark/log.json",
+          "status": "A",
+          "added": 20,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/.hallmark/preflight.json",
+          "status": "A",
+          "added": 35,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/README.md",
+          "status": "A",
+          "added": 74,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/astro.config.mjs",
+          "status": "A",
+          "added": 19,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/package.json",
+          "status": "A",
+          "added": 25,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/pnpm-lock.yaml",
+          "status": "A",
+          "added": 2744,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/public/favicon.svg",
+          "status": "A",
+          "added": 6,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/public/icons/dsh-context7.svg",
+          "status": "A",
+          "added": 6,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/public/icons/dsh-git.svg",
+          "status": "A",
+          "added": 3,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/scripts/check-contrast.mjs",
+          "status": "A",
+          "added": 94,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/scripts/check-data.mjs",
+          "status": "A",
+          "added": 59,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/scripts/check-links.mjs",
+          "status": "A",
+          "added": 93,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/scripts/sync-repo-data.mjs",
+          "status": "A",
+          "added": 254,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/components/BranchesPanel.astro",
+          "status": "A",
+          "added": 109,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/components/CommandBlock.astro",
+          "status": "A",
+          "added": 79,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/components/CommitGraph.astro",
+          "status": "A",
+          "added": 612,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/components/Context7Rows.astro",
+          "status": "A",
+          "added": 102,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/components/Footer.astro",
+          "status": "A",
+          "added": 40,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/components/HomePage.astro",
+          "status": "A",
+          "added": 219,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/components/Nav.astro",
+          "status": "A",
+          "added": 56,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/components/PanelPreview.astro",
+          "status": "A",
+          "added": 128,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/components/PluginIndex.astro",
+          "status": "A",
+          "added": 117,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/components/PluginPage.astro",
+          "status": "A",
+          "added": 624,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/components/ToolTable.astro",
+          "status": "A",
+          "added": 127,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/data/plugins-meta.json",
+          "status": "A",
+          "added": 16,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/data/plugins.ts",
+          "status": "A",
+          "added": 456,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/data/repo-graph.json",
+          "status": "A",
+          "added": 601,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/env.d.ts",
+          "status": "A",
+          "added": 1,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/layouts/Base.astro",
+          "status": "A",
+          "added": 74,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/lib/i18n.ts",
+          "status": "A",
+          "added": 34,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/lib/types.ts",
+          "status": "A",
+          "added": 122,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/pages/404.astro",
+          "status": "A",
+          "added": 24,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/pages/en/index.astro",
+          "status": "A",
+          "added": 5,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/pages/en/plugins/[slug].astro",
+          "status": "A",
+          "added": 15,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/pages/index.astro",
+          "status": "A",
+          "added": 5,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/pages/plugins/[slug].astro",
+          "status": "A",
+          "added": 15,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/pages/sitemap.xml.ts",
+          "status": "A",
+          "added": 41,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/styles/base.css",
+          "status": "A",
+          "added": 27,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/styles/global.css",
+          "status": "A",
+          "added": 251,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/src/styles/tokens.css",
+          "status": "A",
+          "added": 90,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "site/tsconfig.json",
+          "status": "A",
+          "added": 9,
+          "deleted": 0,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "site/src/env.d.ts",
+        "lines": [
+          "diff --git a/site/src/env.d.ts b/site/src/env.d.ts",
+          "new file mode 100644",
+          "index 0000000..f964fe0",
+          "--- /dev/null",
+          "+++ b/site/src/env.d.ts",
+          "@@ -0,0 +1 @@",
+          "+/// <reference types=\"astro/client\" />"
+        ],
+        "truncated": false
+      }
+    },
     "f66eabaece6e94e0ead680bf460c8299ad4f1565": {
       "message": "feat(context7): add always-on guidance so the tools actually get called\n\nMeasured on this machine (57 sessions, ~5,900 recorded tool calls): the two\nContext7 tools accounted for ~0.3% of calls, and only 2 of 26 sessions reached\nthem organically after install. The MCP client does republish Context7's own\ninitialize.instructions, but that text never names mcp__context7__*; the only\nactionable line nearby points at list_mcp_resources, and Context7 exposes no\nresources.\n\nThe plugin's Host half now registers one prompt section at MCP_SERVERS + 1\n(3101, directly below the vendor paragraph) that names both tools, says they\nbeat memory and web_fetch, and gives the one case that should skip them. It\nself-hides through tools.get() when the connector row is missing or renamed,\ncosts ~90 tokens per request, and turns off with `guidance: false`. Both rows\ngain documented config.\n\nAlso add node:test coverage for placement, gating, renaming and config\nvalidation, plus scripts/usage-report.mjs so \"it never triggers\" can be read\nas a number from committed session logs.",
       "author": {
@@ -552,47 +914,6 @@
           "-- Remote branches listed below.",
           "+- Three sections in the order Local → Worktrees → Remote; click a section header to fold or unfold it (all start unfolded).",
           " - **Worktree list**: every worktree of the repository — path (relative inside the repository, `~`-abbreviated outside when possible), branch, short HEAD, plus current / locked / prunable badges."
-        ],
-        "truncated": false
-      }
-    },
-    "b784bb859b81541f0bf7c79e49f8781a9dedcc9c": {
-      "message": "chore(release): keep the tag probe from printing git errors",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-06T00:24:27+08:00",
-      "files": [
-        {
-          "path": "scripts/release.mjs",
-          "status": "M",
-          "added": 5,
-          "deleted": 1,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": "scripts/release.mjs",
-        "lines": [
-          "diff --git a/scripts/release.mjs b/scripts/release.mjs",
-          "index 653f934..e392ddd 100644",
-          "--- a/scripts/release.mjs",
-          "+++ b/scripts/release.mjs",
-          "@@ -20,3 +20,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')",
-          " function git(args) {",
-          "-  return execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim()",
-          "+  return execFileSync('git', args, {",
-          "+    cwd: root,",
-          "+    encoding: 'utf8',",
-          "+    stdio: ['ignore', 'pipe', 'pipe'],",
-          "+  }).trim()",
-          " }"
         ],
         "truncated": false
       }

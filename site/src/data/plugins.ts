@@ -86,8 +86,8 @@ export const siteCopy = {
         en: 'Every branch, date ordered, drawn as parallel lanes. Open a row for the commit.',
       } as L,
       caption: {
-        zh: '本仓库最近的 9 个提交。泳道、分支徽标与文件计数都是真的。',
-        en: 'This repository’s nine newest commits; lanes and file counts are real.',
+        zh: '本仓库最近的 {n} 个提交。泳道、分支徽标与文件计数都是真的。',
+        en: 'This repository’s {n} newest commits; lanes and file counts are real.',
       } as L,
       link: { zh: '工作区 Git 详情', en: 'Workspace Git details' } as L,
     },
