@@ -25,7 +25,17 @@ export const API_PREFIX = '/dsh-git'
 const BODY_LIMIT = 64 * 1024
 
 /** Actions the mutating endpoint accepts. */
-const ACTIONS = new Set(['stage', 'unstage', 'discard', 'commit', 'checkout', 'create-branch'])
+const ACTIONS = new Set([
+  'stage',
+  'unstage',
+  'discard',
+  'commit',
+  'checkout',
+  'create-branch',
+  'create-worktree',
+  'remove-worktree',
+  'prune-worktrees',
+])
 
 /** Machine code → HTTP status. Anything unmapped is a 500. */
 const STATUS_BY_CODE = {
@@ -33,10 +43,12 @@ const STATUS_BY_CODE = {
   invalid_branch: 400,
   invalid_commit: 400,
   invalid_message: 400,
+  invalid_worktree_path: 400,
   unknown_workspace: 400,
   outside_workspace: 400,
   unknown_path: 400,
   unknown_branch: 400,
+  unknown_worktree: 400,
   branch_exists: 400,
   no_workspace: 400,
   bad_request: 400,
@@ -44,6 +56,9 @@ const STATUS_BY_CODE = {
   confirm_required: 409,
   not_a_repo: 409,
   missing_workspace: 409,
+  worktree_exists: 409,
+  worktree_in_use: 409,
+  branch_in_worktree: 409,
   git_missing: 503,
   git_timeout: 504,
   git_failed: 422,
@@ -264,8 +279,27 @@ export function createApi(options) {
           })
         } else if (action === 'checkout') {
           await git.checkout({ workspaceId, branch: body.branch, signal: controller.signal })
-        } else {
+        } else if (action === 'create-branch') {
           await git.createBranch({ workspaceId, branch: body.branch, signal: controller.signal })
+        } else if (action === 'create-worktree') {
+          await git.createWorktree({
+            workspaceId,
+            branch: body.branch,
+            path: body.path,
+            createBranch: body.createBranch === true,
+            base: body.base,
+            signal: controller.signal,
+          })
+        } else if (action === 'remove-worktree') {
+          await git.removeWorktree({
+            workspaceId,
+            path: body.path,
+            confirm: body.confirm === true,
+            force: body.force === true,
+            signal: controller.signal,
+          })
+        } else {
+          await git.pruneWorktrees({ workspaceId, signal: controller.signal })
         }
 
         // Every mutation answers with the state it produced, so the panel

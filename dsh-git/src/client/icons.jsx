@@ -133,3 +133,15 @@ export function CopyIcon(props) {
     ],
   })
 }
+
+/** Two checkouts of one repository: the worktree mark. */
+export function WorktreeIcon(props) {
+  return Icon({
+    className: props?.className,
+    children: [
+      React.createElement('rect', { key: 'a', x: 2, y: 4.5, width: 7.5, height: 8, rx: 1.5 }),
+      React.createElement('path', { key: 'b', d: 'M11.5 4.5h1A1.5 1.5 0 0 1 14 6v6a1.5 1.5 0 0 1-1.5 1.5h-1' }),
+      React.createElement('path', { key: 'c', d: 'M5.75 2.5v2' }),
+    ],
+  })
+}

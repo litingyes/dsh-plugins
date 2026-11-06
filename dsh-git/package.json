@@ -1,7 +1,7 @@
 {
   "name": "@litingyes/dsh-git",
-  "version": "0.2.0",
-  "description": "Git for DeepSeek Harness: a right-sidebar tab with a multi-branch commit graph, expandable nodes, working-tree staging and committing, and branch management for the Session's workspace — plus matching agent tools.",
+  "version": "0.4.0",
+  "description": "Git for DeepSeek Harness: a chat-page branch switcher in the status row below the composer, plus a right-sidebar tab with a multi-branch commit graph, expandable nodes, working-tree staging and committing, and branch and worktree management for the Session's workspace.",
   "type": "module",
   "license": "MIT",
   "author": {
@@ -21,7 +21,9 @@
     "dsh-plugin",
     "deepseek-harness",
     "git",
+    "branch",
     "commit-graph",
+    "worktree",
     "base-ui"
   ],
   "engines": {
@@ -65,7 +67,8 @@
       "inject": [
         "@deepseek-ai/dsh-client-locale",
         "@deepseek-ai/dsh-client-ui-layout",
-        "@deepseek-ai/dsh-client-ui-sidebar-right"
+        "@deepseek-ai/dsh-client-ui-sidebar-right",
+        "@deepseek-ai/dsh-client-ui-conversation"
       ]
     }
   },

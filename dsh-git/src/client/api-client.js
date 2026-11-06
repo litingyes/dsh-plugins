@@ -16,11 +16,17 @@ export class ApiError extends Error {
   /**
    * @param {string} code machine code such as `confirm_required`.
    * @param {string} message human-facing message.
+   * @param {Record<string, unknown> | null} [detail] extra fields the Host attached.
    */
-  constructor(code, message) {
+  constructor(code, message, detail = null) {
     super(message)
     this.name = 'ApiError'
     this.code = code
+    // The Host spreads `GitError.detail` into the same object that carries the
+    // code, so a refused worktree action can name the path it is about. Keeping
+    // the whole object — rather than the fields known today — means the panel
+    // reads a field a future Host adds without another client release.
+    this.detail = detail
   }
 }
 
@@ -71,7 +77,8 @@ async function request(path, options = {}) {
   if (!response.ok || payload === null || payload.ok !== true) {
     const code = typeof payload?.error?.code === 'string' ? payload.error.code : `http_${response.status}`
     const message = typeof payload?.error?.message === 'string' ? payload.error.message : `HTTP ${response.status}`
-    throw new ApiError(code, message)
+    const detail = typeof payload?.error === 'object' && payload.error !== null ? payload.error : null
+    throw new ApiError(code, message, detail)
   }
   return payload
 }

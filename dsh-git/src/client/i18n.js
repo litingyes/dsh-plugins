@@ -23,6 +23,11 @@ export const zh = {
   'panel.notRepo': '这个工作区不是 Git 仓库。',
   'panel.emptyRepo': '仓库还没有任何提交。',
   'panel.defaultBranch': '（无分支）',
+  'panel.branchInWorktree': '这个分支已在另一个工作树中检出，先移除那个工作树再切换。',
+  'panel.unknownWorktree': '这个工作树已经不存在了，列表已刷新。',
+  'panel.worktreeInUse': '这个工作树仍在使用中：它被锁定，或正被当前面板读取。',
+  'panel.worktreeExists': '目标路径已经存在，换一个工作树路径。',
+  'panel.invalidWorktreePath': '工作树路径不合法：必须落在工作区内，且不能在 .git 里。',
 
   'tab.title': 'Git',
   'guide.title': '工作区 Git',
@@ -91,6 +96,49 @@ export const zh = {
   'branches.none': '没有本地分支。',
   'branches.upstream': '跟踪',
 
+  'branch.title': '切换分支',
+  'branch.chipLabel': '切换 Git 分支',
+  'branch.search': '搜索本地分支',
+  'branch.newPlaceholder': '新分支名',
+  'branch.current': '当前',
+  'branch.detachedHint': '当前处于分离 HEAD，选择一个本地分支即可回到分支上。',
+  'branch.none': '没有可切换的本地分支。',
+  'branch.noMatch': '没有匹配的分支。',
+  'branch.dirty': '{n} 个文件有未提交的改动',
+  'branch.switching': '正在切换分支…',
+
+  'groups.expand': '展开',
+  'groups.collapse': '收起',
+
+  'worktree.title': '工作树',
+  'worktree.current': '当前',
+  'worktree.locked': '已锁定',
+  'worktree.prunable': '可清理',
+  'worktree.detached': '分离 HEAD',
+  'worktree.bare': '裸仓库',
+  'worktree.badge': '工作树',
+  'worktree.create': '新建工作树',
+  'worktree.prune': '清理记录',
+  'worktree.copyPath': '复制路径',
+  'worktree.inUse': '已在工作树 {path} 中检出',
+  'worktree.remove': '移除',
+  'worktree.removeBlocked': '主工作树和当前工作树不能移除。',
+  'worktree.createTitle': '新建工作树',
+  'worktree.branchLabel': '分支名',
+  'worktree.branchPlaceholder': '例如 feat/git-worktree',
+  'worktree.pathLabel': '路径',
+  'worktree.pathPlaceholder': '.agents/worktrees/feat-git-worktree',
+  'worktree.pathHint': '相对工作区根目录；留空则使用默认路径。',
+  'worktree.modeLabel': '模式',
+  'worktree.modeNew': '新建分支',
+  'worktree.modeExisting': '检出已有分支',
+  'worktree.createAction': '创建工作树',
+  'worktree.cancel': '取消',
+  'worktree.removeTitle': '移除这个工作树？',
+  'worktree.removeBody': '工作树目录会被删除，分支本身保留。',
+  'worktree.forceLabel': '强制移除',
+  'worktree.forceHint': '该工作树里未提交的改动会被丢弃，且无法恢复。',
+
   'action.running': '正在处理…',
   'action.failed': '操作失败',
   'action.dismiss': '关闭',
@@ -108,6 +156,11 @@ export const en = {
   'panel.notRepo': 'This workspace is not a git repository.',
   'panel.emptyRepo': 'This repository has no commits yet.',
   'panel.defaultBranch': '(no branch)',
+  'panel.branchInWorktree': 'That branch is already checked out in another worktree; remove that worktree before switching.',
+  'panel.unknownWorktree': 'That worktree no longer exists; the list has been refreshed.',
+  'panel.worktreeInUse': 'That worktree is still in use: it is locked, or this panel reads it.',
+  'panel.worktreeExists': 'The target path already exists; pick another worktree path.',
+  'panel.invalidWorktreePath': 'That worktree path is not valid: it must stay inside the workspace and outside .git.',
 
   'tab.title': 'Git',
   'guide.title': 'Workspace Git',
@@ -177,6 +230,49 @@ export const en = {
   'branches.none': 'No local branches.',
   'branches.upstream': 'tracks',
 
+  'branch.title': 'Switch branch',
+  'branch.chipLabel': 'Switch Git branch',
+  'branch.search': 'Filter local branches',
+  'branch.newPlaceholder': 'New branch name',
+  'branch.current': 'current',
+  'branch.detachedHint': 'HEAD is detached; choose a local branch to return to branch work.',
+  'branch.none': 'No local branches to switch to.',
+  'branch.noMatch': 'No matching branch.',
+  'branch.dirty': '{n} files with uncommitted changes',
+  'branch.switching': 'Switching branch…',
+
+  'groups.expand': 'Expand',
+  'groups.collapse': 'Collapse',
+
+  'worktree.title': 'Worktrees',
+  'worktree.current': 'current',
+  'worktree.locked': 'locked',
+  'worktree.prunable': 'prunable',
+  'worktree.detached': 'detached HEAD',
+  'worktree.bare': 'bare repository',
+  'worktree.badge': 'worktree',
+  'worktree.create': 'New worktree',
+  'worktree.prune': 'Prune',
+  'worktree.copyPath': 'Copy path',
+  'worktree.inUse': 'Checked out in the worktree {path}',
+  'worktree.remove': 'Remove',
+  'worktree.removeBlocked': 'The main and current worktrees cannot be removed.',
+  'worktree.createTitle': 'New worktree',
+  'worktree.branchLabel': 'Branch',
+  'worktree.branchPlaceholder': 'e.g. feat/git-worktree',
+  'worktree.pathLabel': 'Path',
+  'worktree.pathPlaceholder': '.agents/worktrees/feat-git-worktree',
+  'worktree.pathHint': 'Relative to the workspace root; leave empty for the default path.',
+  'worktree.modeLabel': 'Mode',
+  'worktree.modeNew': 'Create branch',
+  'worktree.modeExisting': 'Check out existing branch',
+  'worktree.createAction': 'Create worktree',
+  'worktree.cancel': 'Cancel',
+  'worktree.removeTitle': 'Remove this worktree?',
+  'worktree.removeBody': 'The worktree directory is deleted; the branch itself stays.',
+  'worktree.forceLabel': 'Force remove',
+  'worktree.forceHint': 'Uncommitted changes in that worktree are discarded and cannot be recovered.',
+
   'action.running': 'Working…',
   'action.failed': 'Action failed',
   'action.dismiss': 'Dismiss',
@@ -203,6 +299,11 @@ export function translate(language, key, vars) {
 /**
  * Resolve the active language from a Client locale service.
  *
+ * The service's snapshot is `{ active, locales, revision }`; `active` is the
+ * language on screen. The older `id` / `locale` fields are kept as fallbacks so
+ * a composition with a different locale shape still resolves instead of
+ * silently falling back to the browser language.
+ *
  * @param {object | undefined} locale `ctx.locale`.
  * @returns {'zh'|'en'} the language to use.
  */
@@ -210,7 +311,7 @@ export function resolveLanguage(locale) {
   let id
   try {
     const snapshot = typeof locale?.getLocale === 'function' ? locale.getLocale() : undefined
-    id = snapshot?.id ?? snapshot?.locale
+    id = snapshot?.active ?? snapshot?.id ?? snapshot?.locale
   } catch {
     id = undefined
   }

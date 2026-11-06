@@ -7,7 +7,7 @@
 | 目录 | 包名 | 说明 |
 | --- | --- | --- |
 | [`dsh-context7`](./dsh-context7) | `@litingyes/dsh-context7` | 通过官方 MCP 服务接入 [Context7](https://context7.com)，为智能体提供库解析与最新文档查询 |
-| [`dsh-git`](./dsh-git) | `@litingyes/dsh-git` | 右侧栏 Git 页签，跟着会话工作区走：多分支提交树（节点可展开看详情）、变更暂存与提交、分支切换，并把同样的操作提供为智能体工具 |
+| [`dsh-git`](./dsh-git) | `@litingyes/dsh-git` | 输入框下方状态行直接显示并切换 Git 分支；右侧栏 Git 页签跟着会话工作区走：多分支提交树（节点可展开看详情）、变更暂存与提交、分支与工作树管理 |
 
 ## 门户网站
 

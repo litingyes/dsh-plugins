@@ -88,7 +88,12 @@ export function layoutGraph(commits, options = {}) {
     const color = colors[lane]
 
     // 4. Any other lane that expected this commit is a merge into it.
-    const incoming = []
+    //
+    // The lane this commit takes was usually waiting for it too, and that wait is
+    // the edge arriving from the row above. It has to be reported as well: a row
+    // only draws the part of its lane below the node, so leaving the top half out
+    // breaks the lane into one dash per commit.
+    const incoming = before[lane] === commit.sha ? [{ from: fold(lane), color }] : []
     for (let index = 0; index < lanes.length; index += 1) {
       if (index !== lane && lanes[index] === commit.sha) {
         incoming.push({ from: fold(index), color: colors[index] ?? color })

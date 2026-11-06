@@ -103,7 +103,7 @@ test('a directory outside every registered workspace is refused', async t => {
   )
 })
 
-test('an empty dir falls back to the configured default workspace', async t => {
+test('no directory and no id resolves to the registry order', async t => {
   const dir = makeRepo(t)
   const service = serviceFor(dir)
   const state = await service.state({ dir: '' })
@@ -300,4 +300,183 @@ test('a merge commit detail does not fail and still lists files', async t => {
   assert.ok(layoutInput.length >= 4)
   const mergeRow = layoutInput.find(commit => commit.sha === head)
   assert.equal(mergeRow.parents.length, 2)
+})
+
+/* ------------------------------------------------------------------ *
+ * Worktrees
+ * ------------------------------------------------------------------ */
+
+/** A directory outside the repository, so a fixture stays free of side effects. */
+function outsideDir(t) {
+  const parent = mkdtempSync(path.join(tmpdir(), 'dsh-git-wt-'))
+  t.after(() => rmSync(parent, { recursive: true, force: true }))
+  return parent
+}
+
+test('a snapshot lists the repository worktrees and marks its own', async t => {
+  const dir = makeRepo(t)
+  const service = serviceFor(dir)
+  writeFileSync(path.join(dir, 'a.txt'), 'one\n')
+  await service.commit({ message: 'init', paths: ['a.txt'] })
+
+  const state = await service.state({})
+  assert.equal(state.worktrees.length, 1)
+  const [main] = state.worktrees
+  assert.equal(main.current, true)
+  assert.equal(main.main, true)
+  assert.equal(main.branch, 'main')
+  assert.equal(main.displayPath, '.')
+  assert.equal(main.detached, false)
+  assert.equal(main.bare, false)
+  assert.equal(main.locked, null)
+  assert.equal(main.prunable, null)
+  assert.match(main.head, /^[0-9a-f]{7}$/u)
+  assert.equal(state.worktree.path, main.path)
+
+  // The branch row knows the worktree that holds it, and that it is this one.
+  const current = state.branches.find(branch => branch.name === 'main')
+  assert.equal(current.worktreePath, main.path)
+  assert.equal(current.worktreeCurrent, true)
+})
+
+test('a branch checked out elsewhere is annotated and cannot be switched to', async t => {
+  const dir = makeRepo(t)
+  const service = serviceFor(dir)
+  writeFileSync(path.join(dir, 'a.txt'), 'one\n')
+  await service.commit({ message: 'init', paths: ['a.txt'] })
+
+  const linked = path.join(outsideDir(t), 'tree')
+  git(dir, 'worktree', 'add', '-q', '-b', 'feat/linked', linked)
+
+  const state = await service.state({})
+  assert.equal(state.worktrees.length, 2)
+  const row = state.worktrees.find(entry => entry.branch === 'feat/linked')
+  assert.equal(row.current, false)
+  assert.equal(row.main, false)
+  assert.ok(row.path.endsWith(`${path.sep}tree`))
+
+  const branch = state.branches.find(entry => entry.name === 'feat/linked')
+  assert.ok(branch !== undefined)
+  assert.equal(branch.worktreeCurrent, false)
+  assert.equal(branch.worktreePath, row.path)
+
+  // git itself would refuse after the fact; the service refuses before it runs.
+  await assert.rejects(
+    () => service.checkout({ branch: 'feat/linked' }),
+    error => error instanceof GitError && error.code === 'branch_in_worktree' && error.detail.path === row.path,
+  )
+  // The branch this worktree already has checked out is still switchable.
+  assert.deepEqual(await service.checkout({ branch: 'main' }), { branch: 'main' })
+})
+
+test('creating a worktree registers it and leaves the status clean', async t => {
+  const dir = makeRepo(t)
+  const service = serviceFor(dir)
+  writeFileSync(path.join(dir, 'a.txt'), 'one\n')
+  await service.commit({ message: 'init', paths: ['a.txt'] })
+
+  const created = await service.createWorktree({ branch: 'feat/new', createBranch: true })
+  assert.equal(created.branch, 'feat/new')
+  assert.equal(existsSync(created.path), true)
+  assert.ok(created.path.endsWith(path.join('.agents', 'worktrees', 'feat', 'new')))
+
+  // The container is ignored, so a fresh worktree is not a change of its own.
+  const marker = path.join(dir, '.agents', 'worktrees', '.gitignore')
+  assert.equal(readFileSync(marker, 'utf8').trim(), '*')
+  let state = await service.state({})
+  assert.equal(state.worktrees.length, 2)
+  assert.deepEqual(state.changes, { staged: [], unstaged: [], untracked: [], conflicted: [] })
+
+  // The same branch cannot be registered twice, and may not escape the workspace.
+  await assert.rejects(
+    () => service.createWorktree({ branch: 'feat/new', createBranch: true }),
+    error => error.code === 'worktree_exists' || error.code === 'branch_exists',
+  )
+  await assert.rejects(
+    () => service.createWorktree({ branch: 'feat/other', createBranch: true, path: '../outside' }),
+    error => error.code === 'invalid_worktree_path',
+  )
+  await assert.rejects(
+    () => service.createWorktree({ branch: 'feat/other', createBranch: true, path: '.git/tree' }),
+    error => error.code === 'invalid_worktree_path',
+  )
+  await assert.rejects(
+    () => service.createWorktree({ branch: 'ghost' }),
+    error => error.code === 'unknown_branch',
+  )
+
+  // A branch that already exists is moved into a worktree, not recreated.
+  git(dir, 'branch', 'feat/old')
+  const moved = await service.createWorktree({ branch: 'feat/old' })
+  assert.equal(existsSync(moved.path), true)
+  await assert.rejects(
+    () => service.createWorktree({ branch: 'feat/old', path: 'another' }),
+    error => error.code === 'branch_in_worktree',
+  )
+
+  state = await service.state({})
+  assert.equal(state.worktrees.length, 3)
+})
+
+test('removing a worktree needs confirmation and never touches the main one', async t => {
+  const dir = makeRepo(t)
+  const service = serviceFor(dir)
+  writeFileSync(path.join(dir, 'a.txt'), 'one\n')
+  await service.commit({ message: 'init', paths: ['a.txt'] })
+
+  const created = await service.createWorktree({ branch: 'feat/gone', createBranch: true })
+  await assert.rejects(
+    () => service.removeWorktree({ path: created.path }),
+    error => error.code === 'confirm_required',
+  )
+  await assert.rejects(
+    () => service.removeWorktree({ path: dir, confirm: true }),
+    error => error.code === 'worktree_in_use',
+  )
+  await assert.rejects(
+    () => service.removeWorktree({ path: path.join(dir, 'nope'), confirm: true }),
+    error => error.code === 'unknown_worktree',
+  )
+
+  await service.removeWorktree({ path: created.path, confirm: true })
+  assert.equal(existsSync(created.path), false)
+  assert.equal((await service.state({})).worktrees.length, 1)
+})
+
+test('a dirty worktree survives a plain removal and goes with force', async t => {
+  const dir = makeRepo(t)
+  const service = serviceFor(dir)
+  writeFileSync(path.join(dir, 'a.txt'), 'one\n')
+  await service.commit({ message: 'init', paths: ['a.txt'] })
+
+  const created = await service.createWorktree({ branch: 'feat/dirty', createBranch: true })
+  writeFileSync(path.join(created.path, 'dirty.txt'), 'unsaved\n')
+
+  await assert.rejects(
+    () => service.removeWorktree({ path: created.path, confirm: true }),
+    error => error instanceof GitError && error.code === 'git_failed',
+  )
+  await service.removeWorktree({ path: created.path, confirm: true, force: true })
+  assert.equal(existsSync(created.path), false)
+})
+
+test('prune forgets a worktree whose directory disappeared', async t => {
+  const dir = makeRepo(t)
+  const service = serviceFor(dir)
+  writeFileSync(path.join(dir, 'a.txt'), 'one\n')
+  await service.commit({ message: 'init', paths: ['a.txt'] })
+
+  const created = await service.createWorktree({ branch: 'feat/lost', createBranch: true })
+  rmSync(created.path, { recursive: true, force: true })
+
+  let state = await service.state({})
+  const lost = state.worktrees.find(entry => entry.branch === 'feat/lost')
+  assert.ok(lost !== undefined)
+  assert.notEqual(lost.prunable, null)
+
+  assert.deepEqual(await service.pruneWorktrees({}), { pruned: true })
+  state = await service.state({})
+  assert.equal(state.worktrees.length, 1)
+  // Pruning forgets the registration, never the branch.
+  assert.ok(state.branches.some(entry => entry.name === 'feat/lost'))
 })

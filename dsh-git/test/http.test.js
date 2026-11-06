@@ -65,6 +65,10 @@ test('the real HTTP surface serves state, staging, and commit', async t => {
   assert.equal(state.repo.isRepo, true)
   assert.equal(state.isEmpty, true)
   assert.deepEqual(state.changes.untracked.map(entry => entry.path), ['a.txt'])
+  // Even an unborn repository reports the worktree the panel is reading.
+  assert.equal(state.worktrees.length, 1)
+  assert.equal(state.worktrees[0].current, true)
+  assert.equal(state.worktree.path, state.worktrees[0].path)
 
   const staged = await fetch(`${base}/dsh-git/api/action`, {
     method: 'POST',
@@ -97,6 +101,21 @@ test('the real HTTP surface serves state, staging, and commit', async t => {
   const detail = await detailResponse.json()
   assert.equal(detail.ok, true)
   assert.deepEqual(detail.commit.files.map(file => file.path), ['a.txt'])
+
+  // A worktree created over the wire answers with the state that includes it.
+  const worktreeResponse = await fetch(`${base}/dsh-git/api/action`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ action: 'create-worktree', branch: 'feat/wt', createBranch: true }),
+  })
+  const afterWorktree = await worktreeResponse.json()
+  assert.equal(afterWorktree.ok, true)
+  assert.equal(afterWorktree.worktrees.length, 2)
+  assert.equal(afterWorktree.worktree.current, true)
+  const held = afterWorktree.branches.find(entry => entry.name === 'feat/wt')
+  assert.ok(held !== undefined)
+  assert.notEqual(held.worktreePath, null)
+  assert.equal(held.worktreeCurrent, false)
 
   const missing = await fetch(`${base}/dsh-git/api/state?workspace=nope`)
   assert.equal(missing.status, 400)

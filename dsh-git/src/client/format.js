@@ -77,3 +77,26 @@ export function statusLetter(status) {
   const letter = status[0].toUpperCase()
   return letter === '.' ? '?' : letter
 }
+
+/**
+ * Copy text to the clipboard.
+ *
+ * The Web UI may serve the plugin over a context without the async clipboard,
+ * and a denied write rejects instead of throwing synchronously, so every route
+ * out of here is a boolean the caller can ignore. Kept here rather than in one
+ * view because both the commit detail and the worktree rows copy a string.
+ *
+ * @param {string} text text to copy.
+ * @returns {Promise<boolean>} whether the copy succeeded.
+ */
+export async function copyText(text) {
+  try {
+    if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText !== undefined) {
+      await navigator.clipboard.writeText(text)
+      return true
+    }
+  } catch {
+    return false
+  }
+  return false
+}

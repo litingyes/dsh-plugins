@@ -138,6 +138,12 @@ function LaneSvg({ row, height, laneCount }) {
       width,
       height,
       viewBox: `0 0 ${width} ${height}`,
+      // The stylesheet stretches this box over the whole node, and the height
+      // attribute is the row's measured height: between the two, one frame can
+      // disagree. Filling the box without aspect correction keeps every lane
+      // touching both edges in that frame, instead of scaling the drawing down
+      // and centring it — which is precisely what breaks the line at a seam.
+      preserveAspectRatio: 'none',
       'aria-hidden': true,
       focusable: 'false',
     },

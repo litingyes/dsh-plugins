@@ -1,11 +1,15 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { homedir } from 'node:os'
+import path from 'node:path'
 import {
   GitError,
+  annotateBranches,
   assertBranchName,
   assertCommitId,
   assertPathList,
   assertRelativePath,
+  displayPathOf,
   isBinaryPatch,
   parseBranches,
   parseLog,
@@ -13,7 +17,9 @@ import {
   parseNumstat,
   parsePorcelainV2,
   parseRefs,
+  parseWorktrees,
   presentChanges,
+  presentWorktrees,
   truncatePatch,
 } from '../git.js'
 
@@ -228,4 +234,108 @@ test('patch truncation respects the byte budget and never splits a character', (
   assert.equal(sliced.truncated, true)
   assert.equal(sliced.patch.includes('\uFFFD'), false)
   assert.ok(Buffer.byteLength(sliced.patch, 'utf8') <= 7)
+})
+
+test('worktree porcelain keeps paths with spaces, detached, bare, locked, and prunable', () => {
+  const head = '459979e05f70a97aa063356fa94559825b950d7a'
+  const text = [
+    'worktree /repo',
+    `HEAD ${head}`,
+    'branch refs/heads/main',
+    '',
+    'worktree /repo/.agents/worktrees/feat/x',
+    'HEAD 1a2b3c4d5e6f7890aabbccddeeff001122334455',
+    'branch refs/heads/feat/x',
+    '',
+    'worktree /tmp/detached one',
+    'HEAD 0f1e2d3c4b5a69788796a5b4c3d2e1f00a1b2c3d',
+    'detached',
+    '',
+    'worktree /bare',
+    'bare',
+    '',
+    'worktree /missing',
+    'HEAD 1111111111111111111111111111111111111111',
+    'branch refs/heads/gone',
+    'locked kept for later',
+    'prunable gitdir file points to non-existent location',
+    '',
+  ].join('\n')
+
+  const worktrees = parseWorktrees(text)
+  assert.equal(worktrees.length, 5)
+  assert.deepEqual(worktrees[0], {
+    path: '/repo',
+    branch: 'main',
+    head,
+    detached: false,
+    bare: false,
+    locked: null,
+    prunable: null,
+  })
+  // A path with a space is one field, not two.
+  assert.equal(worktrees[2].path, '/tmp/detached one')
+  assert.equal(worktrees[2].detached, true)
+  assert.equal(worktrees[2].branch, null)
+  assert.equal(worktrees[3].bare, true)
+  // `locked` / `prunable` may carry a reason; the reason is kept verbatim.
+  assert.equal(worktrees[4].locked, 'kept for later')
+  assert.equal(worktrees[4].prunable, 'gitdir file points to non-existent location')
+
+  assert.deepEqual(parseWorktrees(''), [])
+  assert.deepEqual(parseWorktrees(undefined), [])
+  // A flag with no reason is "flagged" (''), never "absent" (null).
+  assert.equal(parseWorktrees('worktree /repo\nlocked\n')[0].locked, '')
+  // Windows line endings must not leak into a path.
+  assert.equal(parseWorktrees('worktree /repo\r\nHEAD abc\r\n\r\n')[0].path, '/repo')
+})
+
+test('branches learn which worktree holds them, and remote rows are untouched', () => {
+  const branches = [
+    { name: 'main', type: 'local', current: true, upstream: '', commitTime: '' },
+    { name: 'feat/x', type: 'local', current: false, upstream: '', commitTime: '' },
+    { name: 'origin/main', type: 'remote', current: false, upstream: '', commitTime: '' },
+  ]
+  const worktrees = [
+    { path: '/repo', branch: 'main', bare: false },
+    { path: '/repo/.agents/worktrees/feat/x', branch: 'feat/x', bare: false },
+    { path: '/repo/bare', branch: 'ignored', bare: true },
+  ]
+
+  const annotated = annotateBranches(branches, worktrees, '/repo')
+  assert.equal(annotated[0].worktreePath, '/repo')
+  assert.equal(annotated[0].worktreeCurrent, true)
+  assert.equal(annotated[1].worktreePath, '/repo/.agents/worktrees/feat/x')
+  assert.equal(annotated[1].worktreeCurrent, false)
+  // A bare repository is not a checkout, and a remote branch has no worktree.
+  assert.equal(annotated[2].worktreePath, undefined)
+  assert.equal('worktreePath' in annotated[2], false)
+  assert.equal(annotateBranches(branches, undefined, '/repo')[1].worktreePath, null)
+})
+
+test('worktree rows render a short head, a relative path, and a current marker', () => {
+  assert.equal(displayPathOf('/repo', '/repo'), '.')
+  assert.equal(displayPathOf('/repo/.agents/worktrees/feat/x', '/repo'), '.agents/worktrees/feat/x')
+  assert.equal(displayPathOf('/somewhere/else/tree', '/repo'), '/somewhere/else/tree')
+  assert.equal(displayPathOf(path.join(homedir(), 'tree'), '/repo'), `~${path.sep}tree`)
+  assert.equal(displayPathOf('', '/repo'), '')
+
+  const presented = presentWorktrees(
+    [
+      { path: '/repo', branch: 'main', head: '459979e05f70a97aa063356fa94559825b950d7a', detached: false, bare: false, locked: null, prunable: null },
+      { path: '/repo/.agents/worktrees/feat/x', branch: null, head: '1a2b3c4d', detached: true, bare: false, locked: 'kept', prunable: null },
+    ],
+    '/repo',
+  )
+  assert.equal(presented[0].head, '459979e')
+  assert.equal(presented[0].displayPath, '.')
+  assert.equal(presented[0].current, true)
+  assert.equal(presented[0].main, true)
+  assert.equal(presented[1].displayPath, '.agents/worktrees/feat/x')
+  assert.equal(presented[1].current, false)
+  assert.equal(presented[1].main, false)
+  assert.equal(presented[1].detached, true)
+  assert.equal(presented[1].locked, 'kept')
+  assert.equal(presented[1].branch, null)
+  assert.deepEqual(presentWorktrees(undefined, '/repo'), [])
 })

@@ -172,7 +172,7 @@ test('the factory returns the plugin contract without touching the DOM tree', ()
   assert.equal(typeof exports.apply, 'function')
 })
 
-test('apply contributes the dictionary, one stylesheet, and one right-Sidebar tab', () => {
+test('apply contributes the dictionary, one stylesheet, the composer chip, and one right-Sidebar tab', () => {
   const { registered, styles } = loadBundle()
   const react = makeReact()
   const exports = registered[0].factory(name => {
@@ -190,15 +190,40 @@ test('apply contributes the dictionary, one stylesheet, and one right-Sidebar ta
   assert.ok(harness.localeDicts[0].dictionaries.en['panel.title'])
   assert.ok(harness.localeDicts[0].dictionaries.zh['guide.title'])
   assert.ok(harness.localeDicts[0].dictionaries.en['guide.title'])
+  assert.ok(harness.localeDicts[0].dictionaries.zh['branch.chipLabel'])
+  assert.ok(harness.localeDicts[0].dictionaries.en['branch.chipLabel'])
+
+  // Both dictionaries must describe the same panel: a key that exists in only
+  // one language renders as its own name in the other.
+  const zhKeys = Object.keys(harness.localeDicts[0].dictionaries.zh).sort()
+  const enKeys = Object.keys(harness.localeDicts[0].dictionaries.en).sort()
+  assert.deepEqual(zhKeys, enKeys)
 
   assert.equal(styles.length, 1)
   assert.equal(styles[0].dataset.plugin, '@litingyes/dsh-git')
   assert.match(styles[0].textContent, /\.dgit-panel\{/u)
   assert.match(styles[0].textContent, /@container dgit/u)
 
-  // The tab only exists where the right Sidebar exists.
+  // The branch chip lives in the composer's status dock, the tab only where the
+  // right Sidebar exists: both slots are injected, only the tab behind the
+  // optional sidebar service.
   assert.deepEqual(harness.injectedServices, ['sidebarRightTabs'])
-  assert.deepEqual(harness.injectedSlots, ['sidebar.right.pane.tab', 'sidebar.right.pane.tab.title'])
+  assert.deepEqual(harness.injectedSlots, [
+    'conversation.composer.dock',
+    'sidebar.right.pane.tab',
+    'sidebar.right.pane.tab.title',
+  ])
+
+  const chip = harness.registeredSlots.find(entry => entry.options.name === 'conversation.composer.dock')
+  assert.ok(chip !== undefined, 'the composer-dock branch chip must be registered')
+  assert.equal(chip.options.id, 'dsh-git')
+  assert.equal(chip.options.order, -10)
+  assert.equal(chip.options.locale, 'dsh-git')
+  assert.equal(typeof chip.component, 'function')
+  assert.equal(typeof chip.options.inject, 'function')
+  const injected = chip.options.inject()
+  assert.equal(typeof injected.stores.forDir, 'function')
+  assert.equal(typeof injected.locale.getLocale, 'function')
 
   assert.equal(harness.tabTypes.length, 1)
   const type = harness.tabTypes[0]
@@ -257,4 +282,177 @@ test('the bundle declares no external module outside the shared table', () => {
   const found = new Set()
   for (const match of source.matchAll(/require\(\s*["']([^"']+)["']\s*\)/gu)) found.add(match[1])
   assert.deepEqual([...found].sort(), ['react', 'react-dom', 'react/jsx-runtime'])
+})
+
+/** One declaration block from the panel stylesheet, or '' when absent. */
+function styleBlock(css, selector) {
+  const at = css.indexOf(`${selector}{`)
+  if (at === -1) return ''
+  const end = css.indexOf('}', at)
+  return end === -1 ? '' : css.slice(at, end)
+}
+
+test('the row layout cannot overflow the right sidebar', () => {
+  const { registered, styles } = loadBundle()
+  const react = makeReact()
+  const exports = registered[0].factory(name => {
+    if (name === 'react' || name === 'react/jsx-runtime') return react
+    if (name === 'react-dom') return {}
+    throw new Error(`unexpected external module: ${name}`)
+  })
+
+  const harness = makeCtx('zh')
+  exports.apply(harness.ctx)
+  const css = styles[0].textContent
+
+  // A `width:100%` row with horizontal padding is wider than its own container:
+  // the trailing control then lands outside the scroller's clip box, which is
+  // exactly the cut-off "Switch" button the panel started with.
+  const row = styleBlock(css, '.dgit-filerow')
+  assert.ok(row !== '', 'the file row must be styled')
+  assert.match(row, /box-sizing:border-box/u)
+  assert.equal(/width:100%/u.test(row), false)
+
+  // The branch row keeps its text in a column that may shrink and its control
+  // in a slot that may not, so the button is never pushed out of view.
+  assert.match(css, /\.dgit-branchrow\{/u)
+  const main = styleBlock(css, '.dgit-branchrow-main')
+  assert.match(main, /min-width:0/u)
+  const actions = styleBlock(css, '.dgit-branchrow-actions')
+  assert.match(actions, /flex:0 0 auto|flex:none/u)
+
+  // The narrow tier exists, so a very thin sidebar drops padding rather than
+  // clipping content.
+  assert.match(css, /@container dgit \(max-width:\s*(?:520|4[0-9]0|3[0-9]0)px\)/u)
+})
+
+test('fills that invert with the theme paint their label from a host token', () => {
+  const { registered, styles } = loadBundle()
+  const react = makeReact()
+  const exports = registered[0].factory(name => {
+    if (name === 'react' || name === 'react/jsx-runtime') return react
+    if (name === 'react-dom') return {}
+    throw new Error(`unexpected external module: ${name}`)
+  })
+
+  const harness = makeCtx('zh')
+  exports.apply(harness.ctx)
+  const css = styles[0].textContent
+
+  // `brand-primary` is near-white in the dark theme, so a hard-coded white label
+  // vanished on it. The label must come from the token the host paints on a
+  // primary fill, which inverts with the theme.
+  const primary = styleBlock(css, '.dgit-btn[data-variant=primary]')
+  assert.ok(primary !== '')
+  assert.match(primary, /color:var\(--dsw-alias-label-primary-foreground/u)
+  assert.equal(/color:#fff/u.test(primary), false)
+
+  // The checkbox shares the same fill, and its rule is a grouped selector.
+  const check = /\.dgit-check\[data-checked\][^{]*\{([^}]*)\}/u.exec(css)
+  assert.ok(check !== null)
+  assert.match(check[1], /color:var\(--dsw-alias-label-primary-foreground/u)
+  assert.equal(/color:#fff/u.test(check[1]), false)
+})
+
+test('lane rows fill their node without re-centring the drawing', () => {
+  const { registered, styles } = loadBundle()
+  const react = makeReact()
+  const exports = registered[0].factory(name => {
+    if (name === 'react' || name === 'react/jsx-runtime') return react
+    if (name === 'react-dom') return {}
+    throw new Error(`unexpected external module: ${name}`)
+  })
+
+  const harness = makeCtx('zh')
+  exports.apply(harness.ctx)
+  const css = styles[0].textContent
+
+  // The svg stretches over the node so a row that just grew is drawn at full
+  // height immediately; without that, an expanding row shows lanes cut short
+  // until the measured height arrives.
+  const lanes = styleBlock(css, '.dgit-lanes')
+  assert.ok(lanes !== '')
+  assert.match(lanes, /top:0/u)
+  assert.match(lanes, /bottom:0/u)
+
+  // Stretching a viewBox with the default preserveAspectRatio would scale the
+  // drawing down and centre it whenever the two heights disagree, which shows up
+  // as a hairline break at the seam. The svg opts out of aspect correction.
+  const source = readFileSync(path.join(packageRoot, 'client.js'), 'utf8')
+  assert.match(source, /preserveAspectRatio\s*:\s*["']none["']/u)
+})
+
+test('the composer-dock chip and picker keep their contract', () => {
+  const { registered, styles } = loadBundle()
+  const react = makeReact()
+  const exports = registered[0].factory(name => {
+    if (name === 'react' || name === 'react/jsx-runtime') return react
+    if (name === 'react-dom') return {}
+    throw new Error(`unexpected external module: ${name}`)
+  })
+
+  const harness = makeCtx('zh')
+  exports.apply(harness.ctx)
+  const css = styles[0].textContent
+
+  // The chip is a dock status pill: transparent, label-tertiary, and capped so
+  // a long branch name cannot widen the status row.
+  const chip = styleBlock(css, '.dgit-branchchip')
+  assert.ok(chip !== '')
+  assert.match(chip, /max-width:min\(/u)
+  assert.match(chip, /label-tertiary/u)
+  assert.match(chip, /border-radius:var\(--dsw-radius-sm\)/u)
+  const label = styleBlock(css, '.dgit-branchchip-label')
+  assert.match(label, /text-overflow:ellipsis/u)
+  assert.match(label, /min-width:0/u)
+  // The dock pill expands on hover and while open through the shared overlay.
+  assert.match(css, /\.dgit-branchchip:hover[^{]*\{[^}]*interactive-bg-hover/u)
+
+  // The picker uses the host menu material, not the mid-gray overlay token.
+  const pop = styleBlock(css, '.dgit-branchpop')
+  assert.ok(pop !== '')
+  assert.match(pop, /background:var\(--dsw-specific-menu\)/u)
+  assert.match(pop, /backdrop-filter:var\(--dsw-menu-backdrop-filter\)/u)
+  assert.match(pop, /box-shadow:var\(--dsw-elevation-prominent\)/u)
+  assert.doesNotMatch(pop, /--dsw-alias-bg-overlay/u)
+
+  // The title is a menu group label, not an uppercase banner.
+  const title = styleBlock(css, '.dgit-branchpop-title')
+  assert.doesNotMatch(title, /text-transform:uppercase/u)
+
+  // Held rows stay legible: muted text and a badge, never a whole-row fade.
+  const disabled = styleBlock(css, '.dgit-branchpop-row:disabled')
+  assert.match(disabled, /label-tertiary/u)
+  assert.doesNotMatch(disabled, /opacity/u)
+
+  // Focus is visible and the picker portals above page chrome.
+  assert.match(css, /\.dgit-branchchip:focus-visible\{/u)
+  assert.match(css, /\.dgit-branchpop-positioner\{/u)
+  assert.match(css, /\.dgit-branchpop-row:focus-visible\{/u)
+
+  // The pending row animates a spinner; reduced motion must stop it.
+  assert.match(css, /@keyframes dgit-spin/u)
+  assert.match(css, /prefers-reduced-motion:reduce/u)
+  assert.match(css, /\.dgit-branchpop-spin\{animation:none\}/u)
+})
+
+test('section headers fold their rows', () => {
+  const { registered, styles } = loadBundle()
+  const react = makeReact()
+  const exports = registered[0].factory(name => {
+    if (name === 'react' || name === 'react/jsx-runtime') return react
+    if (name === 'react-dom') return {}
+    throw new Error(`unexpected external module: ${name}`)
+  })
+
+  const harness = makeCtx('zh')
+  exports.apply(harness.ctx)
+  const css = styles[0].textContent
+
+  assert.match(css, /\.dgit-group-toggle\{/u)
+  // The chevron turns when the section is open, so the fold is visible without
+  // relying on the row count alone.
+  assert.match(css, /\.dgit-group-toggle\[data-open\] \.dgit-group-chevron\{transform:rotate\(90deg\)\}/u)
+  // And it is a real button: focus must be visible for keyboard users.
+  assert.match(css, /\.dgit-group-toggle:focus-visible\{/u)
 })
