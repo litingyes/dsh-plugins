@@ -1,14 +1,77 @@
 {
   "source": {
-    "head": "dda11f14cf3673c16fbbc4c580e72a344867bd75",
-    "headShort": "dda11f1",
+    "head": "265825218457a06817fee092312f2e6e63169dac",
+    "headShort": "2658252",
     "headDate": "2026-11-06",
-    "currentBranch": "feature/docs",
-    "total": 10,
+    "currentBranch": "release",
+    "total": 14,
     "limit": 40,
     "truncated": false
   },
   "commits": [
+    {
+      "sha": "265825218457a06817fee092312f2e6e63169dac",
+      "parents": [
+        "9dbfec8bf7850813acf7678a6017d3b52dac00cc"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-06",
+      "subject": "docs(git): keep the npm install note pre-release",
+      "refs": [],
+      "onCurrent": true
+    },
+    {
+      "sha": "9dbfec8bf7850813acf7678a6017d3b52dac00cc",
+      "parents": [
+        "0a297ec7fb6be9f294523e41edcaed6e86e85fc5",
+        "f9d31c39ee7948b5ea9e86ea5bc7a231e228962b"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-06",
+      "subject": "Merge branch 'feature/dsh-git' into release",
+      "refs": [],
+      "onCurrent": true
+    },
+    {
+      "sha": "f9d31c39ee7948b5ea9e86ea5bc7a231e228962b",
+      "parents": [
+        "81cefd61527ae29cd5eab955931620d64992caea"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-06",
+      "subject": "feat(git): switch branches from the composer status row",
+      "refs": [
+        {
+          "name": "feature/dsh-git",
+          "kind": "branch"
+        }
+      ],
+      "onCurrent": true
+    },
+    {
+      "sha": "0a297ec7fb6be9f294523e41edcaed6e86e85fc5",
+      "parents": [
+        "dda11f14cf3673c16fbbc4c580e72a344867bd75"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-06",
+      "subject": "fix(site): keep the data guard green after docs-only commits",
+      "refs": [
+        {
+          "name": "origin/release",
+          "kind": "remote"
+        },
+        {
+          "name": "feature/docs",
+          "kind": "branch"
+        }
+      ],
+      "onCurrent": true
+    },
     {
       "sha": "dda11f14cf3673c16fbbc4c580e72a344867bd75",
       "parents": [
@@ -18,12 +81,7 @@
       "email": "luz.liting@gmail.com",
       "date": "2026-11-06",
       "subject": "feat(site): add the bilingual portal for the plugin collection",
-      "refs": [
-        {
-          "name": "release",
-          "kind": "branch"
-        }
-      ],
+      "refs": [],
       "onCurrent": true
     },
     {
@@ -39,10 +97,6 @@
         {
           "name": "dsh-context7-v0.2.0",
           "kind": "tag"
-        },
-        {
-          "name": "origin/release",
-          "kind": "remote"
         },
         {
           "name": "feature/dsh-conext7",
@@ -72,13 +126,8 @@
       "email": "luz.liting@gmail.com",
       "date": "2026-11-05",
       "subject": "feat(git): fold the branch sections and move worktrees above remote",
-      "refs": [
-        {
-          "name": "feature/dsh-git",
-          "kind": "branch"
-        }
-      ],
-      "onCurrent": false
+      "refs": [],
+      "onCurrent": true
     },
     {
       "sha": "b784bb859b81541f0bf7c79e49f8781a9dedcc9c",
@@ -123,7 +172,7 @@
       "date": "2026-11-05",
       "subject": "feat(git)!: manage worktrees and stop clipping the right-sidebar rows",
       "refs": [],
-      "onCurrent": false
+      "onCurrent": true
     },
     {
       "sha": "459979e05f70a97aa063356fa94559825b950d7a",
@@ -163,11 +212,102 @@
   "layout": {
     "rows": [
       {
-        "sha": "dda11f14cf3673c16fbbc4c580e72a344867bd75",
+        "sha": "265825218457a06817fee092312f2e6e63169dac",
         "lane": 0,
         "color": 0,
         "through": [],
         "incoming": [],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "9dbfec8bf7850813acf7678a6017d3b52dac00cc",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          },
+          {
+            "to": 1,
+            "color": 1
+          }
+        ]
+      },
+      {
+        "sha": "f9d31c39ee7948b5ea9e86ea5bc7a231e228962b",
+        "lane": 1,
+        "color": 1,
+        "through": [
+          {
+            "lane": 0,
+            "color": 0
+          }
+        ],
+        "incoming": [
+          {
+            "from": 1,
+            "color": 1
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 1,
+            "color": 1
+          }
+        ]
+      },
+      {
+        "sha": "0a297ec7fb6be9f294523e41edcaed6e86e85fc5",
+        "lane": 0,
+        "color": 0,
+        "through": [
+          {
+            "lane": 1,
+            "color": 1
+          }
+        ],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "dda11f14cf3673c16fbbc4c580e72a344867bd75",
+        "lane": 0,
+        "color": 0,
+        "through": [
+          {
+            "lane": 1,
+            "color": 1
+          }
+        ],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
         "outgoing": [
           {
             "to": 0,
@@ -179,8 +319,18 @@
         "sha": "f66eabaece6e94e0ead680bf460c8299ad4f1565",
         "lane": 0,
         "color": 0,
-        "through": [],
-        "incoming": [],
+        "through": [
+          {
+            "lane": 1,
+            "color": 1
+          }
+        ],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
         "outgoing": [
           {
             "to": 0,
@@ -192,8 +342,18 @@
         "sha": "bf390414b1508431c0c276c113a147461f5fa304",
         "lane": 0,
         "color": 0,
-        "through": [],
-        "incoming": [],
+        "through": [
+          {
+            "lane": 1,
+            "color": 1
+          }
+        ],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
         "outgoing": [
           {
             "to": 0,
@@ -211,7 +371,12 @@
             "color": 0
           }
         ],
-        "incoming": [],
+        "incoming": [
+          {
+            "from": 1,
+            "color": 1
+          }
+        ],
         "outgoing": [
           {
             "to": 1,
@@ -229,7 +394,12 @@
             "color": 1
           }
         ],
-        "incoming": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
         "outgoing": [
           {
             "to": 0,
@@ -247,7 +417,12 @@
             "color": 1
           }
         ],
-        "incoming": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
         "outgoing": [
           {
             "to": 0,
@@ -265,7 +440,12 @@
             "color": 0
           }
         ],
-        "incoming": [],
+        "incoming": [
+          {
+            "from": 1,
+            "color": 1
+          }
+        ],
         "outgoing": [
           {
             "to": 1,
@@ -279,6 +459,10 @@
         "color": 0,
         "through": [],
         "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          },
           {
             "from": 1,
             "color": 1
@@ -296,7 +480,12 @@
         "lane": 0,
         "color": 0,
         "through": [],
-        "incoming": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
         "outgoing": [
           {
             "to": 0,
@@ -309,7 +498,12 @@
         "lane": 0,
         "color": 0,
         "through": [],
-        "incoming": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
         "outgoing": []
       }
     ],
@@ -319,11 +513,11 @@
   "branches": [
     {
       "name": "feature/docs",
-      "sha": "dda11f14cf3673c16fbbc4c580e72a344867bd75",
-      "short": "dda11f1",
+      "sha": "0a297ec7fb6be9f294523e41edcaed6e86e85fc5",
+      "short": "0a297ec",
       "upstream": "",
       "date": "2026-11-06",
-      "current": true,
+      "current": false,
       "symref": ""
     },
     {
@@ -337,8 +531,8 @@
     },
     {
       "name": "feature/dsh-git",
-      "sha": "81cefd61527ae29cd5eab955931620d64992caea",
-      "short": "81cefd6",
+      "sha": "f9d31c39ee7948b5ea9e86ea5bc7a231e228962b",
+      "short": "f9d31c3",
       "upstream": "",
       "date": "2026-11-06",
       "current": false,
@@ -346,17 +540,17 @@
     },
     {
       "name": "release",
-      "sha": "dda11f14cf3673c16fbbc4c580e72a344867bd75",
-      "short": "dda11f1",
+      "sha": "265825218457a06817fee092312f2e6e63169dac",
+      "short": "2658252",
       "upstream": "origin/release",
       "date": "2026-11-06",
-      "current": false,
+      "current": true,
       "symref": ""
     }
   ],
   "details": {
-    "dda11f14cf3673c16fbbc4c580e72a344867bd75": {
-      "message": "feat(site): add the bilingual portal for the plugin collection\n\n- Astro 7 + Tailwind CSS 4 static site under site/, Chinese at / and\n  English at /en, one page per plugin plus home, 404 and sitemap\n- the commit graph, lane rows, branch list and commit details are\n  generated from this repository's own history by dsh-git's layoutGraph\n  and committed as JSON, so a deploy never needs git history\n- copy for tools, configuration, security and limits comes from the two\n  plugin READMEs; install commands match what npm currently carries\n- pnpm check guards data freshness, internal links and token contrast;\n  the Hallmark Console stamp and waivers sit at the top of global.css",
+    "265825218457a06817fee092312f2e6e63169dac": {
+      "message": "docs(git): keep the npm install note pre-release\n\nThe merged manifest is 0.4.0, which is not on npm yet; the release wording from the 0.2.0 publish does not apply to it.",
       "author": {
         "name": "litingyes",
         "email": "luz.liting@gmail.com"
@@ -365,470 +559,7 @@
         "name": "litingyes",
         "email": "luz.liting@gmail.com"
       },
-      "committedAt": "2026-11-06T19:17:48+08:00",
-      "files": [
-        {
-          "path": "README.md",
-          "status": "M",
-          "added": 14,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/.gitignore",
-          "status": "A",
-          "added": 6,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/.hallmark/.gitignore",
-          "status": "A",
-          "added": 5,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/.hallmark/log.json",
-          "status": "A",
-          "added": 20,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/.hallmark/preflight.json",
-          "status": "A",
-          "added": 35,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/README.md",
-          "status": "A",
-          "added": 74,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/astro.config.mjs",
-          "status": "A",
-          "added": 19,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/package.json",
-          "status": "A",
-          "added": 25,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/pnpm-lock.yaml",
-          "status": "A",
-          "added": 2744,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/public/favicon.svg",
-          "status": "A",
-          "added": 6,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/public/icons/dsh-context7.svg",
-          "status": "A",
-          "added": 6,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/public/icons/dsh-git.svg",
-          "status": "A",
-          "added": 3,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/scripts/check-contrast.mjs",
-          "status": "A",
-          "added": 94,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/scripts/check-data.mjs",
-          "status": "A",
-          "added": 59,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/scripts/check-links.mjs",
-          "status": "A",
-          "added": 93,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/scripts/sync-repo-data.mjs",
-          "status": "A",
-          "added": 254,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/components/BranchesPanel.astro",
-          "status": "A",
-          "added": 109,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/components/CommandBlock.astro",
-          "status": "A",
-          "added": 79,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/components/CommitGraph.astro",
-          "status": "A",
-          "added": 612,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/components/Context7Rows.astro",
-          "status": "A",
-          "added": 102,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/components/Footer.astro",
-          "status": "A",
-          "added": 40,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/components/HomePage.astro",
-          "status": "A",
-          "added": 219,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/components/Nav.astro",
-          "status": "A",
-          "added": 56,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/components/PanelPreview.astro",
-          "status": "A",
-          "added": 128,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/components/PluginIndex.astro",
-          "status": "A",
-          "added": 117,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/components/PluginPage.astro",
-          "status": "A",
-          "added": 624,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/components/ToolTable.astro",
-          "status": "A",
-          "added": 127,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/data/plugins-meta.json",
-          "status": "A",
-          "added": 16,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/data/plugins.ts",
-          "status": "A",
-          "added": 456,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/data/repo-graph.json",
-          "status": "A",
-          "added": 601,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/env.d.ts",
-          "status": "A",
-          "added": 1,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/layouts/Base.astro",
-          "status": "A",
-          "added": 74,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/lib/i18n.ts",
-          "status": "A",
-          "added": 34,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/lib/types.ts",
-          "status": "A",
-          "added": 122,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/pages/404.astro",
-          "status": "A",
-          "added": 24,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/pages/en/index.astro",
-          "status": "A",
-          "added": 5,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/pages/en/plugins/[slug].astro",
-          "status": "A",
-          "added": 15,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/pages/index.astro",
-          "status": "A",
-          "added": 5,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/pages/plugins/[slug].astro",
-          "status": "A",
-          "added": 15,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/pages/sitemap.xml.ts",
-          "status": "A",
-          "added": 41,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/styles/base.css",
-          "status": "A",
-          "added": 27,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/styles/global.css",
-          "status": "A",
-          "added": 251,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/src/styles/tokens.css",
-          "status": "A",
-          "added": 90,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "site/tsconfig.json",
-          "status": "A",
-          "added": 9,
-          "deleted": 0,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": "site/src/env.d.ts",
-        "lines": [
-          "diff --git a/site/src/env.d.ts b/site/src/env.d.ts",
-          "new file mode 100644",
-          "index 0000000..f964fe0",
-          "--- /dev/null",
-          "+++ b/site/src/env.d.ts",
-          "@@ -0,0 +1 @@",
-          "+/// <reference types=\"astro/client\" />"
-        ],
-        "truncated": false
-      }
-    },
-    "f66eabaece6e94e0ead680bf460c8299ad4f1565": {
-      "message": "feat(context7): add always-on guidance so the tools actually get called\n\nMeasured on this machine (57 sessions, ~5,900 recorded tool calls): the two\nContext7 tools accounted for ~0.3% of calls, and only 2 of 26 sessions reached\nthem organically after install. The MCP client does republish Context7's own\ninitialize.instructions, but that text never names mcp__context7__*; the only\nactionable line nearby points at list_mcp_resources, and Context7 exposes no\nresources.\n\nThe plugin's Host half now registers one prompt section at MCP_SERVERS + 1\n(3101, directly below the vendor paragraph) that names both tools, says they\nbeat memory and web_fetch, and gives the one case that should skip them. It\nself-hides through tools.get() when the connector row is missing or renamed,\ncosts ~90 tokens per request, and turns off with `guidance: false`. Both rows\ngain documented config.\n\nAlso add node:test coverage for placement, gating, renaming and config\nvalidation, plus scripts/usage-report.mjs so \"it never triggers\" can be read\nas a number from committed session logs.",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-06T00:28:12+08:00",
-      "files": [
-        {
-          "path": "README.md",
-          "status": "M",
-          "added": 6,
-          "deleted": 2,
-          "binary": false
-        },
-        {
-          "path": "dsh-context7/README.en.md",
-          "status": "M",
-          "added": 69,
-          "deleted": 7,
-          "binary": false
-        },
-        {
-          "path": "dsh-context7/README.md",
-          "status": "M",
-          "added": 69,
-          "deleted": 7,
-          "binary": false
-        },
-        {
-          "path": "dsh-context7/cordis.patch.yml",
-          "status": "M",
-          "added": 13,
-          "deleted": 2,
-          "binary": false
-        },
-        {
-          "path": "dsh-context7/index.js",
-          "status": "M",
-          "added": 120,
-          "deleted": 6,
-          "binary": false
-        },
-        {
-          "path": "dsh-context7/package.json",
-          "status": "M",
-          "added": 8,
-          "deleted": 4,
-          "binary": false
-        },
-        {
-          "path": "dsh-context7/scripts/usage-report.mjs",
-          "status": "A",
-          "added": 129,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-context7/test/index.test.js",
-          "status": "A",
-          "added": 135,
-          "deleted": 0,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": "README.md",
-        "lines": [
-          "diff --git a/README.md b/README.md",
-          "index f8d40b3..41fa2f7 100644",
-          "--- a/README.md",
-          "+++ b/README.md",
-          "@@ -65,4 +65,8 @@ dsh-plugins/",
-          " ├── dsh-context7/           # 纯手写 JS，无需构建",
-          "-│   ├── package.json        # bundle manifest（dsh.bundle.patch）",
-          "-│   ├── cordis.patch.yml    # 插入 MCP 客户端配置",
-          "+│   ├── package.json        # bundle manifest（dsh.bundle.patch + dsh.client）",
-          "+│   ├── cordis.patch.yml    # 插入 MCP 客户端配置与引导行配置",
-          "+│   ├── index.js            # Host 入口：浏览器半边载体 + 常驻触发引导",
-          "+│   ├── client.js           # 浏览器半边（手写，无构建）",
-          "+│   ├── scripts/            # usage-report.mjs：统计本机会话的工具使用占比",
-          "+│   ├── test/               # node --test",
-          " │   ├── icon.svg            # 插件图标"
-        ],
-        "truncated": false
-      }
-    },
-    "bf390414b1508431c0c276c113a147461f5fa304": {
-      "message": "chore: ignore the local pnpm store",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-06T00:27:13+08:00",
-      "files": [
-        {
-          "path": ".gitignore",
-          "status": "M",
-          "added": 1,
-          "deleted": 0,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": ".gitignore",
-        "lines": [
-          "diff --git a/.gitignore b/.gitignore",
-          "index 600ebda..5c4a4fe 100644",
-          "--- a/.gitignore",
-          "+++ b/.gitignore",
-          "@@ -4 +4,2 @@ node_modules/",
-          " *.log",
-          "+.pnpm-store/"
-        ],
-        "truncated": false
-      }
-    },
-    "81cefd61527ae29cd5eab955931620d64992caea": {
-      "message": "feat(git): fold the branch sections and move worktrees above remote\n\nThe branches tab now reads local -> worktrees -> remote, and each section folds\nwhen its header is clicked: a repository usually carries more worktrees than\nbranches a reader wants at once, and the worktrees describe this machine while a\nremote branch is just a name.\n\nTwo visual defects of the 0.3.0 panel are fixed with it:\n\n- The primary buttons painted a hard-coded white label on\n  `--dsw-alias-brand-primary`, which is near-white in the dark theme, so the text\n  disappeared and the disabled state read as grey on grey. The label now comes\n  from `--dsw-alias-label-primary-foreground`, the token the host paints on a\n  primary fill, and the disabled state drops the brand fill for a neutral surface\n  with the secondary label.\n- The commit graph drew only the half of a lane below its node: the layout never\n  reported the edge arriving from the row above, so every lane was one dash per\n  commit. That edge is now part of `incoming` — a degenerate curve along the same\n  column — and the lane svg opts out of aspect correction, so filling its row can\n  never scale the drawing away from a seam.",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-06T00:26:57+08:00",
+      "committedAt": "2026-11-06T19:54:57+08:00",
       "files": [
         {
           "path": "dsh-git/README.en.md",
@@ -843,62 +574,6 @@
           "added": 1,
           "deleted": 1,
           "binary": false
-        },
-        {
-          "path": "dsh-git/client.js",
-          "status": "M",
-          "added": 32,
-          "deleted": 13,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/src/client/branches-view.jsx",
-          "status": "M",
-          "added": 123,
-          "deleted": 53,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/src/client/graph-view.jsx",
-          "status": "M",
-          "added": 6,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/src/client/i18n.js",
-          "status": "M",
-          "added": 6,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/src/client/styles.js",
-          "status": "M",
-          "added": 22,
-          "deleted": 3,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/src/shared/graph.js",
-          "status": "M",
-          "added": 6,
-          "deleted": 1,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/test/client.test.js",
-          "status": "M",
-          "added": 77,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/test/graph.test.js",
-          "status": "M",
-          "added": 38,
-          "deleted": 1,
-          "binary": false
         }
       ],
       "filesTruncated": false,
@@ -906,14 +581,269 @@
         "path": "dsh-git/README.en.md",
         "lines": [
           "diff --git a/dsh-git/README.en.md b/dsh-git/README.en.md",
-          "index 6787609..a27b004 100644",
+          "index d788cef..ba9722b 100644",
           "--- a/dsh-git/README.en.md",
           "+++ b/dsh-git/README.en.md",
-          "@@ -40,3 +40,3 @@ Inside the panel there are three tabs.",
-          " - Create-and-switch, with the name validated by `git check-ref-format --branch`.",
-          "-- Remote branches listed below.",
-          "+- Three sections in the order Local → Worktrees → Remote; click a section header to fold or unfold it (all start unfolded).",
-          " - **Worktree list**: every worktree of the repository — path (relative inside the repository, `~`-abbreviated outside when possible), branch, short HEAD, plus current / locked / prunable badges."
+          "@@ -69,3 +69,3 @@ plugin_manager action=install_bundle target=/absolute/path/to/dsh-plugins/dsh-gi",
+          " ",
+          "-From npm:",
+          "+Once published to npm:"
+        ],
+        "truncated": false
+      }
+    },
+    "9dbfec8bf7850813acf7678a6017d3b52dac00cc": {
+      "message": "Merge branch 'feature/dsh-git' into release",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-06T19:53:46+08:00",
+      "files": [],
+      "filesTruncated": false,
+      "diff": null
+    },
+    "f9d31c39ee7948b5ea9e86ea5bc7a231e228962b": {
+      "message": "feat(git): switch branches from the composer status row\n\nAdd a branch chip to the composer status dock: current branch, detached short SHA, an uncommitted-changes dot, a filterable local-branch picker, and create-and-switch.\n\nShare one per-directory snapshot between the chip and the right-sidebar panel, and move the panel onto that store so a switch in either surface updates the other.\n\nRender the picker with the host menu material, and resolve the active language from the locale snapshot's active field so the plugin follows the app language.\n\nBump the package to 0.4.0, rebuild the browser half, and document the new surface.",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-06T19:53:41+08:00",
+      "files": [
+        {
+          "path": "README.md",
+          "status": "M",
+          "added": 1,
+          "deleted": 1,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/README.en.md",
+          "status": "M",
+          "added": 18,
+          "deleted": 4,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/README.md",
+          "status": "M",
+          "added": 19,
+          "deleted": 5,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/client.js",
+          "status": "M",
+          "added": 60,
+          "deleted": 12,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/cordis.patch.yml",
+          "status": "M",
+          "added": 10,
+          "deleted": 7,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/locale/en.json",
+          "status": "M",
+          "added": 1,
+          "deleted": 1,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/locale/zh.json",
+          "status": "M",
+          "added": 1,
+          "deleted": 1,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/package-lock.json",
+          "status": "M",
+          "added": 2,
+          "deleted": 2,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/package.json",
+          "status": "M",
+          "added": 5,
+          "deleted": 3,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/src/client/branch-list.js",
+          "status": "A",
+          "added": 98,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/src/client/branch-switch.jsx",
+          "status": "A",
+          "added": 327,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/src/client/failure.js",
+          "status": "A",
+          "added": 59,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/src/client/git-store.js",
+          "status": "A",
+          "added": 251,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/src/client/i18n.js",
+          "status": "M",
+          "added": 28,
+          "deleted": 1,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/src/client/index.jsx",
+          "status": "M",
+          "added": 43,
+          "deleted": 7,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/src/client/panel.jsx",
+          "status": "M",
+          "added": 28,
+          "deleted": 137,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/src/client/styles.js",
+          "status": "M",
+          "added": 49,
+          "deleted": 1,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/src/client/use-translate.js",
+          "status": "A",
+          "added": 34,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/test/branch-helpers.test.js",
+          "status": "A",
+          "added": 85,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/test/client.test.js",
+          "status": "M",
+          "added": 76,
+          "deleted": 3,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/test/git-store.test.js",
+          "status": "A",
+          "added": 319,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/test/i18n.test.js",
+          "status": "A",
+          "added": 40,
+          "deleted": 0,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "README.md",
+        "lines": [
+          "diff --git a/README.md b/README.md",
+          "index 91fa6b8..d56c7b9 100644",
+          "--- a/README.md",
+          "+++ b/README.md",
+          "@@ -9,3 +9,3 @@",
+          " | [`dsh-context7`](./dsh-context7) | `@litingyes/dsh-context7` | 通过官方 MCP 服务接入 [Context7](https://context7.com)，为智能体提供库解析与最新文档查询 |",
+          "-| [`dsh-git`](./dsh-git) | `@litingyes/dsh-git` | 右侧栏 Git 页签，跟着会话工作区走：多分支提交树（节点可展开看详情）、变更暂存与提交、分支与工作树管理 |",
+          "+| [`dsh-git`](./dsh-git) | `@litingyes/dsh-git` | 输入框下方状态行直接显示并切换 Git 分支；右侧栏 Git 页签跟着会话工作区走：多分支提交树（节点可展开看详情）、变更暂存与提交、分支与工作树管理 |"
+        ],
+        "truncated": false
+      }
+    },
+    "0a297ec7fb6be9f294523e41edcaed6e86e85fc5": {
+      "message": "fix(site): keep the data guard green after docs-only commits\n\n- check-data accepts a graph head that is an ancestor of HEAD when every\n  commit since touched only site/ or the root README; plugin changes still\n  fail the guard\n- the home graph caption takes its count from the data instead of a\n  written-in number\n- regenerate repo-graph.json so the graph covers the site commit itself",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-06T19:20:07+08:00",
+      "files": [
+        {
+          "path": "site/scripts/check-data.mjs",
+          "status": "M",
+          "added": 35,
+          "deleted": 3,
+          "binary": false
+        },
+        {
+          "path": "site/src/components/HomePage.astro",
+          "status": "M",
+          "added": 1,
+          "deleted": 1,
+          "binary": false
+        },
+        {
+          "path": "site/src/data/plugins.ts",
+          "status": "M",
+          "added": 2,
+          "deleted": 2,
+          "binary": false
+        },
+        {
+          "path": "site/src/data/repo-graph.json",
+          "status": "M",
+          "added": 373,
+          "deleted": 52,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "site/src/components/HomePage.astro",
+        "lines": [
+          "diff --git a/site/src/components/HomePage.astro b/site/src/components/HomePage.astro",
+          "index 143c8f8..104fbac 100644",
+          "--- a/site/src/components/HomePage.astro",
+          "+++ b/site/src/components/HomePage.astro",
+          "@@ -82,3 +82,3 @@ const context7Plugin = plugins[1]!",
+          "         <figcaption class=\"mt-[var(--space-sm)] flex flex-wrap items-baseline justify-between gap-[var(--space-sm)]\">",
+          "-          <span class=\"body-copy text-[var(--text-sm)]\">{t.home.graph.caption[locale]}</span>",
+          "+          <span class=\"body-copy text-[var(--text-sm)]\">{t.home.graph.caption[locale].replace('{n}', String(graph.commits.length))}</span>",
+          "           <a class=\"link text-[var(--text-sm)]\" href={url(locale, `plugins/${gitPlugin.slug}`)}>"
         ],
         "truncated": false
       }

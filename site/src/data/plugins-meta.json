@@ -1,9 +1,9 @@
 {
   "dsh-git": {
     "name": "@litingyes/dsh-git",
-    "version": "0.2.0",
+    "version": "0.4.0",
     "dsh": ">=0.2.1-rc.5 <0.3.0-0",
-    "description": "Git for DeepSeek Harness: a right-sidebar tab with a multi-branch commit graph, expandable nodes, working-tree staging and committing, and branch management for the Session's workspace — plus matching agent tools.",
+    "description": "Git for DeepSeek Harness: a chat-page branch switcher in the status row below the composer, plus a right-sidebar tab with a multi-branch commit graph, expandable nodes, working-tree staging and committing, and branch and worktree management for the Session's workspace.",
     "homepage": "https://dsh-plugins.vercel.app"
   },
   "dsh-context7": {
