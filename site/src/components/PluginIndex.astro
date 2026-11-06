@@ -1,5 +1,5 @@
 ---
-import { plugins, pageCopy, siteCopy } from '../data/plugins'
+import { manifest, plugins, pageCopy, siteCopy } from '../data/plugins'
 import { url } from '../lib/i18n'
 import type { Locale } from '../lib/types'
 
@@ -23,10 +23,15 @@ const repo = siteCopy.home.index.repoRow
         </div>
         <p class="plugin-summary">{plugin.summary[locale]}</p>
         <div class="plugin-facts">
-          <span class="tag">
-            {plugin.tools.length}
-            {locale === 'zh' ? ' 个工具' : ' tools'}
-          </span>
+          <span class="tag tag-mono">{manifest(plugin.slug).version}</span>
+          {
+            plugin.tools.length > 0 && (
+              <span class="tag">
+                {plugin.tools.length}
+                {locale === 'zh' ? ' 个工具' : ' tools'}
+              </span>
+            )
+          }
           <span class="tag">MIT</span>
           <a class="link plugin-link" href={url(locale, `plugins/${plugin.slug}`)}>
             {t.open[locale]}

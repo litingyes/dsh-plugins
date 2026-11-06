@@ -5,7 +5,7 @@ import CommandBlock from './CommandBlock.astro'
 import CommitGraph from './CommitGraph.astro'
 import Context7Rows from './Context7Rows.astro'
 import ToolTable from './ToolTable.astro'
-import { context7Guidance, context7Story, pageCopy, siteCopy } from '../data/plugins'
+import { context7Guidance, context7Story, manifest, pageCopy, siteCopy } from '../data/plugins'
 import graphData from '../data/repo-graph.json'
 import { url } from '../lib/i18n'
 import type { Locale, PluginDoc, RepoGraph } from '../lib/types'
@@ -20,6 +20,7 @@ const t = pageCopy
 const graph = graphData as unknown as RepoGraph
 const zh = locale === 'zh'
 const path = `plugins/${plugin.slug}`
+const facts = manifest(plugin.slug)
 const toolRows = plugin.tools.map((tool) => ({
   tool,
   from: { label: plugin.name[locale], href: url(locale, path), signal: plugin.signal },
@@ -50,17 +51,19 @@ const guidance = context7Guidance
             </p>
             <dl class="header-facts mt-[var(--space-lg)]">
               <div>
-                <dt>{locale === 'zh' ? '工具' : 'Tools'}</dt>
-                <dd class="mono">{plugin.tools.length}</dd>
+                <dt>{locale === 'zh' ? '版本' : 'Version'}</dt>
+                <dd class="mono">{facts.version}</dd>
               </div>
               <div>
                 <dt>{locale === 'zh' ? '许可' : 'Licence'}</dt>
                 <dd class="mono">MIT</dd>
               </div>
-              <div>
-                <dt>DSH</dt>
-                <dd class="mono">0.2.1-rc.5</dd>
-              </div>
+              {plugin.tools.length > 0 && (
+                <div>
+                  <dt>{locale === 'zh' ? '工具' : 'Tools'}</dt>
+                  <dd class="mono">{plugin.tools.length}</dd>
+                </div>
+              )}
             </dl>
             <p class="header-spec">{plugin.runtime[locale]}</p>
           </div>
@@ -112,57 +115,20 @@ const guidance = context7Guidance
           <section class="section">
             <div class="wrap grid-12 items-start">
               <div class="md:col-span-6">
-                <h2>{zh ? '变更与分支' : 'Changes and branches'}</h2>
+                <h2>{t.features[locale]}</h2>
                 <ul class="feature-list mt-[var(--space-lg)]">
-                  <li>
-                    <p class="feature-title">{zh ? '四组变更' : 'Four change groups'}</p>
-                    <p class="body-copy text-[var(--text-sm)]">
-                      {zh
-                        ? '已暂存、未暂存、未跟踪、冲突，逐文件或整组勾选；丢弃先弹确认框，Host 再校验一次。'
-                        : 'Staged, unstaged, untracked and conflicted, selected by file or as a group. Discard opens a dialog, and the Host checks again.'}
-                    </p>
-                  </li>
-                  <li>
-                    <p class="feature-title">{zh ? '提交框' : 'The commit box'}</p>
-                    <p class="body-copy text-[var(--text-sm)]">
-                      {zh
-                        ? '已暂存为空或信息为空时禁用；Cmd/Ctrl+Enter 提交。'
-                        : 'Disabled while nothing is staged or the message is empty; Cmd/Ctrl+Enter submits.'}
-                    </p>
-                  </li>
-                  <li>
-                    <p class="feature-title">{zh ? '分支' : 'Branches'}</p>
-                    <p class="body-copy text-[var(--text-sm)]">
-                      {zh
-                        ? '一键切换与新建；分支名交给 git check-ref-format --branch 校验，远程分支折叠显示。'
-                        : 'Switch and create in one click; the name is validated by git check-ref-format --branch, and remote branches stay folded.'}
-                    </p>
-                  </li>
+                  {
+                    plugin.features.map((feature) => (
+                      <li>
+                        <p class="feature-title">{feature.title[locale]}</p>
+                        <p class="body-copy text-[var(--text-sm)]">{feature.body[locale]}</p>
+                      </li>
+                    ))
+                  }
                 </ul>
               </div>
               <div class="md:col-span-6">
                 <BranchesPanel locale={locale} branches={graph.branches} />
-              </div>
-            </div>
-          </section>
-
-          <section class="section-wide">
-            <div class="wrap">
-              <div class="grid-12 items-end">
-                <h2 class="md:col-span-6">{zh ? '四个智能体工具' : 'Four agent tools'}</h2>
-                <p class="section-lead md:col-span-5 md:col-start-8">
-                  {zh
-                    ? '四个工具与面板调用同一个 Host 服务，行为不会漂移。'
-                    : 'All four call the same Host service the panel calls, so behaviour cannot drift.'}
-                </p>
-              </div>
-              <div class="mt-[var(--space-xl)] well rounded-[var(--radius-card)] border border-rule p-[var(--space-lg)]">
-                <ToolTable
-                  locale={locale}
-                  rows={toolRows}
-                  cols={siteCopy.home.tools.cols}
-                  caption={t.tools[locale]}
-                />
               </div>
             </div>
           </section>

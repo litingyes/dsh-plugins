@@ -1,4 +1,43 @@
-import type { L, PluginDoc, ToolDoc } from '../lib/types'
+import pluginsMetaJson from './plugins-meta.json'
+import type { L, PluginDoc, PluginsMeta, ToolDoc } from '../lib/types'
+
+/**
+ * Name, version and DSH range as read from each plugin's manifest by
+ * `pnpm sync`. Pages derive install commands and requirements from here, so a
+ * version bump can never leave copy behind.
+ */
+const meta = pluginsMetaJson as PluginsMeta
+
+/** One plugin's manifest facts, or a loud failure instead of an `undefined`. */
+export function manifest(slug: string): PluginsMeta[string] {
+  const entry = meta[slug]
+  if (entry === undefined) throw new Error(`plugins-meta.json has no entry for ${slug}; run \`pnpm sync\``)
+  return entry
+}
+
+/** The install command a reader copies, pinned to the manifest version. */
+function installCommand(slug: string): string {
+  const entry = manifest(slug)
+  return `plugin_manager action=install_bundle target=${entry.name}@${entry.version}`
+}
+
+/** The DSH range from the manifest, kept in one place for both locales. */
+function dshRange(slug: string): string {
+  return manifest(slug).dsh
+}
+
+/** One sentence for both plugins' DSH ranges, correct even if they diverge. */
+function bothDshRanges(): L {
+  const git = dshRange('dsh-git')
+  const context7 = dshRange('dsh-context7')
+  if (git === context7) {
+    return { zh: `两个插件都要求 DSH ${git}。`, en: `Both require DSH ${git}.` }
+  }
+  return {
+    zh: `dsh-git 要求 DSH ${git}；dsh-context7 要求 DSH ${context7}。`,
+    en: `dsh-git requires DSH ${git}; dsh-context7 requires DSH ${context7}.`,
+  }
+}
 
 /** Everything a page shows that is not plugin-specific. */
 export const siteCopy = {
@@ -8,8 +47,8 @@ export const siteCopy = {
     en: 'dsh-plugins: plugins for DeepSeek Harness',
   } as L,
   description: {
-    zh: '两个 DeepSeek Harness 插件：右栏里的多分支 Git 面板，和把 Context7 文档接进对话的两个工具。安装、配置与边界。',
-    en: 'Two DeepSeek Harness plugins: a multi-branch Git panel in the right sidebar, and the Context7 docs tools inside the conversation. Install, configuration and limits.',
+    zh: '两个 DeepSeek Harness 插件：输入框下方的分支胶囊与右栏的多分支 Git 面板，和把 Context7 文档接进对话的两个工具。安装、配置与边界。',
+    en: 'Two DeepSeek Harness plugins: a branch chip below the composer with a multi-branch Git panel in the right sidebar, and the Context7 docs tools inside the conversation. Install, configuration and limits.',
   } as L,
   nav: {
     git: { zh: '工作区 Git', en: 'Workspace Git' } as L,
@@ -39,15 +78,15 @@ export const siteCopy = {
         en: 'Two plugins: a Git panel and Context7 docs',
       } as L,
       description: {
-        zh: '给 DeepSeek Harness 的两个插件：右栏里的多分支 Git 面板，和让智能体先查 Context7 文档再回答的两个工具。',
-        en: 'Two plugins for DeepSeek Harness: a multi-branch Git panel in the right sidebar, and two tools that make the agent read current Context7 docs before answering.',
+        zh: '给 DeepSeek Harness 的两个插件：输入框下方的分支胶囊与右栏的多分支 Git 面板，和让智能体先查 Context7 文档再回答的两个工具。',
+        en: 'Two plugins for DeepSeek Harness: a branch chip below the composer with a multi-branch Git panel in the right sidebar, and two tools that make the agent read current Context7 docs before answering.',
       } as L,
     },
     hero: {
       headline: { zh: '给智能体的工具，\n人也能用', en: 'One toolbelt,\ntwo pairs of hands' } as L,
       lead: {
-        zh: '两个插件：Git 搬进右栏，最新文档接进对话。',
-        en: 'Two plugins: Git in the right sidebar, current docs in the conversation.',
+        zh: '两个插件：Git 分支就在输入框下方、完整面板在右栏，最新文档接进对话。',
+        en: 'Two plugins: the branch below the composer with the full panel in the sidebar, and current docs in the conversation.',
       } as L,
       primary: { zh: '查看插件', en: 'See the plugins' } as L,
       secondary: { zh: 'GitHub 仓库', en: 'GitHub repository' } as L,
@@ -58,8 +97,8 @@ export const siteCopy = {
       } as L,
       toolsLabel: { zh: '智能体这一侧', en: 'The agent side' } as L,
       toolsNote: {
-        zh: '六个工具与面板调用同一个 Host 服务。',
-        en: 'Six tools call the same Host service as the panels.',
+        zh: 'Git 面板只做人能点的界面；对话里的工具来自 Context7。',
+        en: 'The Git panel adds no agent tools; the tools in the conversation come from Context7.',
       } as L,
     },
     index: {
@@ -108,10 +147,10 @@ export const siteCopy = {
       link: { zh: 'Context7 详情', en: 'Context7 details' } as L,
     },
     tools: {
-      title: { zh: '六个工具', en: 'Six tools' } as L,
+      title: { zh: '两个文档工具', en: 'Two documentation tools' } as L,
       lead: {
-        zh: '面板里的每个动作，都有同名工具。',
-        en: 'Each panel action has a tool.',
+        zh: 'Git 面板不注册智能体工具；Context7 带来这一对。',
+        en: 'The Git panel registers no agent tools; Context7 brings this pair.',
       } as L,
       cols: {
         name: { zh: '工具', en: 'Tool' } as L,
@@ -133,10 +172,7 @@ export const siteCopy = {
           zh: '升级 dsh-git 或改动引导段落后，重启 DSH 或重新加载插件行。',
           en: 'Restart DSH after upgrades.',
         } as L,
-        {
-          zh: '两个插件都要求 DSH >= 0.2.1-rc.5 < 0.3.0-0。',
-          en: 'Both require DSH >= 0.2.1-rc.5 < 0.3.0-0.',
-        } as L,
+        bothDshRanges(),
       ],
     },
     boundaries: {
@@ -149,15 +185,15 @@ export const siteCopy = {
         {
           title: { zh: '不做网络操作', en: 'No network git' } as L,
           body: {
-            zh: 'dsh-git 只读写本机仓库：没有 fetch、pull、push、clone，也没有 stash、rebase、merge。',
-            en: 'Local repositories only: no fetch, pull, push, clone, stash, rebase or merge.',
+            zh: 'dsh-git 只读写本机仓库：没有 fetch、pull、push、clone，也没有 stash。merge / rebase / cherry-pick 只从面板的右键菜单发起，遇到冲突自动中止。',
+            en: 'Local repositories only: no fetch, pull, push or clone, and no stash. Merge, rebase and cherry-pick start only from the panel’s context menus, and abort on conflict.',
           } as L,
         },
         {
-          title: { zh: '浏览器给不了路径', en: 'The browser cannot name a path' } as L,
+          title: { zh: '浏览器给不了任意路径', en: 'The browser cannot name an arbitrary path' } as L,
           body: {
-            zh: '只接受工作区 id；git 通过 execFile 逐个传参，不经过 shell；丢弃要 UI 与 Host 两次确认。',
-            en: 'Only a workspace id; execFile, no shell; discard confirmed twice.',
+            zh: '写操作只接受工作区 id；读快照时还可以给会话目录，但必须落在已注册工作区内。git 通过 execFile 逐个传参，不经过 shell；丢弃要 UI 与 Host 两次确认。',
+            en: 'Mutations take only a workspace id; a snapshot read may also name the Session directory, which must sit inside a registered workspace. execFile, no shell; discards are confirmed twice.',
           } as L,
         },
         {
@@ -172,28 +208,11 @@ export const siteCopy = {
   },
 }
 
-const gitTools: ToolDoc[] = [
-  {
-    name: 'git_status',
-    args: 'workspace? refs? limit?',
-    desc: { zh: '分支与领先/落后、四类变更文件、跨分支最近提交、本地分支', en: 'Branch and divergence, the four change groups, recent commits across branches, local branches' },
-  },
-  {
-    name: 'git_diff',
-    args: 'target worktree|index|commit',
-    desc: { zh: '一份统一 diff；二进制与超大补丁会被标注', en: 'One unified diff; binary and oversized patches are labelled' },
-  },
-  {
-    name: 'git_commit',
-    args: 'message paths?',
-    desc: { zh: '先暂存给定路径，再提交；省略路径则提交已暂存内容', en: 'Stages the given paths, then commits; omit them to commit the index' },
-  },
-  {
-    name: 'git_branch',
-    args: 'action list|checkout|create',
-    desc: { zh: '列出、切换或新建分支', en: 'List, switch or create a branch' },
-  },
-]
+/**
+ * dsh-git registers no agent tools since 0.3.0: an agent already knows git, so
+ * the panel is the only surface. `PluginDoc.tools` stays empty on purpose.
+ */
+const gitTools: ToolDoc[] = []
 
 const context7Tools: ToolDoc[] = [
   {
@@ -219,20 +238,20 @@ export const plugins: PluginDoc[] = [
     icon: '/icons/dsh-git.svg',
     name: { zh: '工作区 Git', en: 'Workspace Git' },
     tagline: {
-      zh: '开在右侧栏里的 Git 面板，跟着当前会话的工作区走。',
-      en: 'A Git panel that opens in the right sidebar and follows the Session’s workspace.',
+      zh: '输入框下方的分支胶囊，和跟着当前会话工作区走的右栏 Git 面板。',
+      en: 'A branch chip below the composer, and a Git panel in the right sidebar that follows the Session’s workspace.',
     },
     summary: {
-      zh: '多分支提交树、变更暂存与提交、分支切换；同一套操作也是四个智能体工具。',
-      en: 'Commit graph, staging, commits, branches, four agent tools.',
+      zh: '状态行里切换分支；右栏是提交图、变更、分支与工作树，提交节点右键可拣选 / 撤销 / 删除。',
+      en: 'Switch branches from the status row; the sidebar holds the graph, changes, branches and worktrees, with right-click cherry-pick, revert and drop.',
     },
-    install: 'plugin_manager action=install_bundle target=@litingyes/dsh-git@0.2.0',
+    install: installCommand('dsh-git'),
     installNote: {
       zh: '升级 Host 半边后需要重启 DSH 才生效。',
       en: 'The Host half is loaded at startup, so restart DSH after an upgrade.',
     },
     requirements: [
-      { zh: 'DSH >= 0.2.1-rc.5 < 0.3.0-0，且组合里有右侧栏', en: 'DSH >= 0.2.1-rc.5 < 0.3.0-0 with the right sidebar in the composition' },
+      { zh: `DSH ${dshRange('dsh-git')}，且组合里有右侧栏`, en: `DSH ${dshRange('dsh-git')} with the right sidebar in the composition` },
       { zh: 'PATH 上有可用的 git', en: 'A working git on PATH' },
       { zh: '会话工作目录落在某个已注册工作区内', en: 'The Session’s working directory inside a registered workspace' },
     ],
@@ -240,10 +259,17 @@ export const plugins: PluginDoc[] = [
     readme: 'https://github.com/litingyes/dsh-plugins/blob/release/dsh-git/README.md',
     features: [
       {
+        title: { zh: '输入框下方的分支胶囊', en: 'The branch chip below the composer' },
+        body: {
+          zh: '状态行里的胶囊显示当前分支与未提交改动；点开是向上弹出的本地分支选择器，输入即过滤，切换与「新建并切换」都在里面，git 的拒绝原因直接显示。',
+          en: 'A status-row pill shows the current branch and the uncommitted-change dot. Clicking it opens the local-branch picker upward: filter as you type, switch, or create and switch, with git’s own refusal shown.',
+        },
+      },
+      {
         title: { zh: '多分支提交树', en: 'Multi-branch commit graph' },
         body: {
-          zh: '按 --date-order 展开所有本地与远程分支，泳道并排；点开一行看完整 message、作者、父提交、refs 与文件 diff。',
-          en: 'Every local and remote branch in --date-order, drawn as parallel lanes. Open a row for the message, author, parents, refs and file diffs.',
+          zh: '按 --date-order 展开所有本地与远程分支，泳道并排；点开一行看完整 message、作者、committer、父提交、全部 refs 与文件 diff。',
+          en: 'Every local and remote branch in --date-order, drawn as parallel lanes. Open a row for the message, author and committer, parents, every ref and the file diffs.',
         },
       },
       {
@@ -254,10 +280,17 @@ export const plugins: PluginDoc[] = [
         },
       },
       {
-        title: { zh: '分支', en: 'Branches' },
+        title: { zh: '右键历史操作', en: 'Right-click history actions' },
         body: {
-          zh: '本地分支一键切换，新建分支名先过 git check-ref-format --branch；远程分支折叠显示。',
-          en: 'Switch local branches in one click; a new name is validated by git check-ref-format --branch. Remote branches stay folded.',
+          zh: '提交节点右键：复制 SHA、拣选到当前分支、撤销此提交、删除此提交；分支行右键：把该分支合并进来，或把当前分支变基过去。不满足条件的项留在菜单里并写明原因。',
+          en: 'Right-click a commit to copy its SHA, cherry-pick it, revert it or drop it; right-click a branch to merge it in or rebase onto it. Entries a snapshot cannot allow stay in the menu with the reason.',
+        },
+      },
+      {
+        title: { zh: '分支与工作树', en: 'Branches and worktrees' },
+        body: {
+          zh: '本地 / 工作树 / 远程三段，点标题折叠；新建、切换、移除与 prune 都是行内图标按钮。新工作树默认落在 .agents/worktrees/，并补上忽略文件。',
+          en: 'Local, worktree and remote sections that fold at the header; create, switch, remove and prune are inline icon buttons. New worktrees default to .agents/worktrees/ and get the ignore marker.',
         },
       },
       {
@@ -270,25 +303,28 @@ export const plugins: PluginDoc[] = [
     ],
     tools: gitTools,
     config: [
-      { field: 'defaultWorkspaceId', value: "''", desc: { zh: '工具省略 workspace 时用哪个工作区；空表示最近更新的已注册工作区', en: 'Workspace the tools target when workspace is omitted; empty means the most recently updated one' } },
       { field: 'refs', value: 'all', desc: { zh: 'all 追踪全部分支；head 只追踪当前分支', en: 'all walks every branch; head walks only the current one' } },
       { field: 'maxCommits', value: '200', desc: { zh: '提交图抓取的提交数，20 到 500', en: 'Commits fetched for the graph, 20 to 500' } },
       { field: 'maxDiffBytes', value: '400000', desc: { zh: '单个补丁返回给浏览器的字节上限，超出截断并提示', en: 'Byte budget for one patch sent to the browser; larger patches are truncated with a notice' } },
       { field: 'commandTimeoutMs', value: '15000', desc: { zh: '单次 git 调用的超时，500 到 120000', en: 'Timeout for one git invocation, 500 to 120000' } },
-      { field: 'tools', value: 'true', desc: { zh: '是否注册四个智能体工具；false 时只保留面板', en: 'Register the four agent tools; false leaves only the panel' } },
     ],
     security: [
-      { zh: '工作区白名单：浏览器只能给工作区 id 或会话工作目录，git 的 cwd 始终取注册路径。', en: 'Workspace allowlist: the browser can name a workspace id or one Session directory, and git always runs from the registered path.' },
+      { zh: '工作区白名单：写操作只认工作区 id，读快照还可给会话目录；git 的 cwd 始终取注册路径。', en: 'Workspace allowlist: mutations take a workspace id, a snapshot read may name the Session directory, and git always runs from the registered path.' },
       { zh: "无 shell：execFile('git', args)，参数逐个传递，分支名与提交信息无法被解释成命令。", en: 'No shell: execFile(‘git’, args) passes one argument per entry, so branch names and messages cannot become syntax.' },
-      { zh: '路径校验：assertRelativePath 拒绝空串、绝对路径、.. 段与 NUL。', en: 'Path validation: assertRelativePath refuses empty strings, absolute paths, .. segments and NUL.' },
+      { zh: '路径校验：assertRelativePath 拒绝空串、绝对路径、.. 段与 NUL；工作树路径必须落在工作区内、不在 .git 内且尚不存在。', en: 'Path validation: assertRelativePath refuses empty strings, absolute paths, .. segments and NUL; a worktree path must stay inside the workspace, outside .git, and not exist yet.' },
       { zh: '鉴权前置：路由先跑 connection.requestRejection，未通过时连工作区列表都不返回。', en: 'Authorisation first: the route runs connection.requestRejection before returning even the workspace list.' },
-      { zh: '破坏性操作两次确认：UI 弹框，Host 还要求请求体带 confirm: true 并复查路径仍处于变更状态。', en: 'Destructive work needs two confirmations: the dialog, and confirm: true on the request plus a fresh status check.' },
+      { zh: '历史操作前置校验：HEAD 在分支上、工作区无已暂存/未暂存改动、没有进行中的合并或变基；drop 还要求 confirm: true 且拒绝根提交、合并提交与含合并的重写范围。', en: 'History preconditions: attached HEAD, no tracked changes, no stopped operation; drop also needs confirm: true and refuses a root or merge commit and any range containing merges.' },
+      { zh: '冲突自动中止：merge / rebase / cherry-pick / revert 遇到冲突先跑对应 --abort，再返回结构化错误，仓库回到操作前状态。', en: 'Conflicts abort themselves: merge, rebase, cherry-pick and revert run the matching --abort first, then return a structured error.' },
+      { zh: '破坏性操作两次确认：丢弃改动、移除工作树、删除提交都是 UI 弹框 + Host 的 confirm: true；丢弃还会复查路径仍处于变更状态。', en: 'Destructive work needs two confirmations: the dialog plus confirm: true on the request; discarding re-reads status to prove the path is changed.' },
     ],
     limits: [
       { zh: '不做网络操作：没有 fetch、pull、push、clone。', en: 'No network operations: no fetch, pull, push or clone.' },
-      { zh: '不做 stash、rebase、merge、cherry-pick 与冲突解决。', en: 'No stash, rebase, merge, cherry-pick or conflict resolution.' },
+      { zh: '不做 stash，也不做冲突解决：历史操作遇到冲突自动中止，没有 continue / skip / 冲突编辑器。', en: 'No stash and no conflict resolution: history actions abort on conflict, with no continue, skip or conflict editor.' },
+      { zh: 'rebase 用 git 默认行为，重放范围内的合并提交会被压平；drop 遇到这种范围直接拒绝。', en: 'Rebase uses git’s default, so merge commits in the replayed range are flattened; drop refuses such a range outright.' },
+      { zh: '右键菜单靠鼠标右键或触屏长按打开；提交行与分支行没有额外的「更多」按钮入口。', en: 'Context menus open by right-click or touch long-press; commit and branch rows have no extra “more” button.' },
+      { zh: '分支胶囊只列本地分支；面板不移动会话目录，新工作树要你自己进去开会话。', en: 'The chip lists local branches only; the panel never moves the Session’s directory, so you enter a new worktree yourself.' },
       { zh: '提交历史一次最多 500 条，文件列表一次最多 400 个。', en: 'At most 500 commits and 400 changed files per response.' },
-      { zh: '泳道超过 8 条会折叠并提示，不会横向撑破布局。', en: 'More than eight lanes are folded with a notice instead of widening the graph.' },
+      { zh: '泳道超过 8 条会折叠并提示；泳道配色是固定 8 色，其余颜色来自宿主主题令牌。', en: 'More than eight lanes are folded with a notice; lane colours are a fixed eight-hue palette and everything else comes from host theme tokens.' },
     ],
   },
   {
@@ -309,13 +345,13 @@ export const plugins: PluginDoc[] = [
       en: 'Two doc tools and the paragraph that gets them used.',
     },
     install:
-      'plugin_manager action=install_bundle target=git+https://github.com/litingyes/dsh-plugins.git#release&path:/dsh-context7',
+      installCommand('dsh-context7'),
     installNote: {
       zh: '装完刷新页面；改动引导段落属于 Host 代码，要重新加载插件行或重启 Host。',
       en: 'Refresh the page after installing. The guidance paragraph is Host code, so reload the plugin row or restart the Host after changing it.',
     },
     requirements: [
-      { zh: 'DSH >= 0.2.1-rc.5 < 0.3.0', en: 'DSH >= 0.2.1-rc.5 < 0.3.0' },
+      { zh: `DSH ${dshRange('dsh-context7')}`, en: `DSH ${dshRange('dsh-context7')}` },
       { zh: '能访问 https://mcp.context7.com/mcp', en: 'Network access to https://mcp.context7.com/mcp' },
       { zh: '可选：CONTEXT7_API_KEY 提高额度', en: 'Optional: CONTEXT7_API_KEY for a higher quota' },
     ],
