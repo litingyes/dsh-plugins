@@ -96,6 +96,17 @@ export const zh = {
   'branches.none': '没有本地分支。',
   'branches.upstream': '跟踪',
 
+  'branch.title': '切换分支',
+  'branch.chipLabel': '切换 Git 分支',
+  'branch.search': '搜索本地分支',
+  'branch.newPlaceholder': '新分支名',
+  'branch.current': '当前',
+  'branch.detachedHint': '当前处于分离 HEAD，选择一个本地分支即可回到分支上。',
+  'branch.none': '没有可切换的本地分支。',
+  'branch.noMatch': '没有匹配的分支。',
+  'branch.dirty': '{n} 个文件有未提交的改动',
+  'branch.switching': '正在切换分支…',
+
   'groups.expand': '展开',
   'groups.collapse': '收起',
 
@@ -219,6 +230,17 @@ export const en = {
   'branches.none': 'No local branches.',
   'branches.upstream': 'tracks',
 
+  'branch.title': 'Switch branch',
+  'branch.chipLabel': 'Switch Git branch',
+  'branch.search': 'Filter local branches',
+  'branch.newPlaceholder': 'New branch name',
+  'branch.current': 'current',
+  'branch.detachedHint': 'HEAD is detached; choose a local branch to return to branch work.',
+  'branch.none': 'No local branches to switch to.',
+  'branch.noMatch': 'No matching branch.',
+  'branch.dirty': '{n} files with uncommitted changes',
+  'branch.switching': 'Switching branch…',
+
   'groups.expand': 'Expand',
   'groups.collapse': 'Collapse',
 
@@ -277,6 +299,11 @@ export function translate(language, key, vars) {
 /**
  * Resolve the active language from a Client locale service.
  *
+ * The service's snapshot is `{ active, locales, revision }`; `active` is the
+ * language on screen. The older `id` / `locale` fields are kept as fallbacks so
+ * a composition with a different locale shape still resolves instead of
+ * silently falling back to the browser language.
+ *
  * @param {object | undefined} locale `ctx.locale`.
  * @returns {'zh'|'en'} the language to use.
  */
@@ -284,7 +311,7 @@ export function resolveLanguage(locale) {
   let id
   try {
     const snapshot = typeof locale?.getLocale === 'function' ? locale.getLocale() : undefined
-    id = snapshot?.id ?? snapshot?.locale
+    id = snapshot?.active ?? snapshot?.id ?? snapshot?.locale
   } catch {
     id = undefined
   }

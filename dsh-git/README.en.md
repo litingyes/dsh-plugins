@@ -1,8 +1,21 @@
 # @litingyes/dsh-git
 
-A Git panel for DeepSeek Harness that **opens in the right sidebar and follows the Session's workspace**: **a multi-branch commit graph as the primary view**, where every node shows its description, author, date, and commit and expands into full details — beside staging, committing, and branch and worktree management. The panel is the only surface: 0.3.0 no longer registers agent tools.
+A Git plugin for DeepSeek Harness: **the current branch is shown and switchable in the status row below the composer**, and a **right-sidebar tab follows the Session's workspace** with **a multi-branch commit graph as the primary view**, where every node shows its description, author, date, and commit and expands into full details — beside staging, committing, and branch and worktree management. Both surfaces share one repository snapshot. 0.3.0 no longer registers agent tools.
 
 > Reads and writes local Git repositories only. No network operations: no fetch, pull, push, or clone.
+
+## Branch switching below the composer
+
+A branch chip in the status row below the composer (the row with the token and performance statistics) shows the current branch of the Session's workspace, without opening the right sidebar.
+
+- The chip is a status pill: transparent, highlighted on hover/open. Long names ellipsize; a detached HEAD shows the short SHA (hover for the full id); a small dot appears when the working tree has uncommitted changes, with the file count in its tooltip.
+- Clicking the chip opens the local-branch picker **upward** (host menu material): the filter updates as you type, the current branch is marked, and a branch checked out in another worktree stays listed but is disabled with that worktree's path in the tooltip (the same rule as the panel's Branches tab).
+- Choosing a branch switches immediately, with no second confirmation: `git switch` refuses a switch that would overwrite local changes, that refusal is shown inside the picker, and nothing is force-reset.
+- The same picker can create a branch at HEAD and switch to it; the Host validates the name with `git check-ref-format --branch` and shows git's own error for an invalid one.
+- The chip and the right-sidebar Git tab share one snapshot per working directory, so a switch in either place moves the other immediately. Opening the picker, or returning focus to the window, re-reads the repository so a branch changed by the agent or a terminal shows up.
+- Copy follows the app language (Chinese / English), including the panel, the tab guide, and the picker.
+- The blank-session hero has no status row; the chip appears once the conversation starts (after the first message).
+- The chip stays hidden when the Session's directory is not a Git repository, has no directory, or sits outside every registered workspace; the panel still explains those states.
 
 ## The panel
 
@@ -57,14 +70,14 @@ plugin_manager action=install_bundle target=/absolute/path/to/dsh-plugins/dsh-gi
 Once published to npm:
 
 ```text
-plugin_manager action=install_bundle target=@litingyes/dsh-git@0.3.0
+plugin_manager action=install_bundle target=@litingyes/dsh-git@0.4.0
 ```
 
-There is no left-sidebar icon: the way in is the right sidebar's add control. The Host half (`index.js` / `git.js` / `api.js`) is imported by the Loader at startup, so **restart DSH after upgrading**. Remove it with `plugin_manager action=remove_bundle target=@litingyes/dsh-git`.
+There is no left-sidebar icon: once a conversation starts, a branch chip appears in the status row below the composer, and the full panel's way in is the right sidebar's add control. After a browser-half upgrade the desktop app must be **restarted** (or the plugin toggled in Settings → Plugins) to load the new `client.js`; `dsh web` only needs a page refresh; the Host half (`index.js` / `git.js` / `api.js`) is imported by the Loader at startup, so **restart DSH after upgrading**. Remove it with `plugin_manager action=remove_bundle target=@litingyes/dsh-git`.
 
 ### Requirements
 
-- DSH `>= 0.2.1-rc.5 < 0.3.0-0` with a right sidebar in the composition (`@deepseek-ai/dsh-client-ui-sidebar-right`). Without it the plugin stays silently absent instead of failing.
+- DSH `>= 0.2.1-rc.5 < 0.3.0-0`. The chip needs the composer's status dock (`@deepseek-ai/dsh-client-ui-conversation`, core) and the full panel needs a right sidebar (`@deepseek-ai/dsh-client-ui-sidebar-right`); a missing half only omits that entry point instead of failing.
 - A working `git` on `PATH` (the plugin calls it through `execFile`, never a shell).
 - The Session's working directory must sit inside a registered DSH workspace. A Session with no directory, or one outside every workspace, gets the matching empty state or error.
 
@@ -96,6 +109,7 @@ Configuration lives on the mount row in `cordis.patch.yml`. **Overriding the row
 - No network operations: no fetch, pull, push, or clone.
 - The panel does not move the Session's directory: a new worktree is only a directory on disk — enter it (or open a Session there) yourself.
 - No stash, rebase, merge, cherry-pick, or conflict resolution.
+- The chip lists local branches only (like the panel; remote branches are not checked out).
 - At most 500 commits and 400 changed files per response.
 - More than eight lanes are folded with a notice instead of widening the graph.
 - Lane colours are a fixed eight-hue palette (data encoding); everything else comes from host theme tokens.

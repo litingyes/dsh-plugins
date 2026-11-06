@@ -172,7 +172,7 @@ test('the factory returns the plugin contract without touching the DOM tree', ()
   assert.equal(typeof exports.apply, 'function')
 })
 
-test('apply contributes the dictionary, one stylesheet, and one right-Sidebar tab', () => {
+test('apply contributes the dictionary, one stylesheet, the composer chip, and one right-Sidebar tab', () => {
   const { registered, styles } = loadBundle()
   const react = makeReact()
   const exports = registered[0].factory(name => {
@@ -190,6 +190,8 @@ test('apply contributes the dictionary, one stylesheet, and one right-Sidebar ta
   assert.ok(harness.localeDicts[0].dictionaries.en['panel.title'])
   assert.ok(harness.localeDicts[0].dictionaries.zh['guide.title'])
   assert.ok(harness.localeDicts[0].dictionaries.en['guide.title'])
+  assert.ok(harness.localeDicts[0].dictionaries.zh['branch.chipLabel'])
+  assert.ok(harness.localeDicts[0].dictionaries.en['branch.chipLabel'])
 
   // Both dictionaries must describe the same panel: a key that exists in only
   // one language renders as its own name in the other.
@@ -202,9 +204,26 @@ test('apply contributes the dictionary, one stylesheet, and one right-Sidebar ta
   assert.match(styles[0].textContent, /\.dgit-panel\{/u)
   assert.match(styles[0].textContent, /@container dgit/u)
 
-  // The tab only exists where the right Sidebar exists.
+  // The branch chip lives in the composer's status dock, the tab only where the
+  // right Sidebar exists: both slots are injected, only the tab behind the
+  // optional sidebar service.
   assert.deepEqual(harness.injectedServices, ['sidebarRightTabs'])
-  assert.deepEqual(harness.injectedSlots, ['sidebar.right.pane.tab', 'sidebar.right.pane.tab.title'])
+  assert.deepEqual(harness.injectedSlots, [
+    'conversation.composer.dock',
+    'sidebar.right.pane.tab',
+    'sidebar.right.pane.tab.title',
+  ])
+
+  const chip = harness.registeredSlots.find(entry => entry.options.name === 'conversation.composer.dock')
+  assert.ok(chip !== undefined, 'the composer-dock branch chip must be registered')
+  assert.equal(chip.options.id, 'dsh-git')
+  assert.equal(chip.options.order, -10)
+  assert.equal(chip.options.locale, 'dsh-git')
+  assert.equal(typeof chip.component, 'function')
+  assert.equal(typeof chip.options.inject, 'function')
+  const injected = chip.options.inject()
+  assert.equal(typeof injected.stores.forDir, 'function')
+  assert.equal(typeof injected.locale.getLocale, 'function')
 
   assert.equal(harness.tabTypes.length, 1)
   const type = harness.tabTypes[0]
@@ -361,6 +380,60 @@ test('lane rows fill their node without re-centring the drawing', () => {
   // as a hairline break at the seam. The svg opts out of aspect correction.
   const source = readFileSync(path.join(packageRoot, 'client.js'), 'utf8')
   assert.match(source, /preserveAspectRatio\s*:\s*["']none["']/u)
+})
+
+test('the composer-dock chip and picker keep their contract', () => {
+  const { registered, styles } = loadBundle()
+  const react = makeReact()
+  const exports = registered[0].factory(name => {
+    if (name === 'react' || name === 'react/jsx-runtime') return react
+    if (name === 'react-dom') return {}
+    throw new Error(`unexpected external module: ${name}`)
+  })
+
+  const harness = makeCtx('zh')
+  exports.apply(harness.ctx)
+  const css = styles[0].textContent
+
+  // The chip is a dock status pill: transparent, label-tertiary, and capped so
+  // a long branch name cannot widen the status row.
+  const chip = styleBlock(css, '.dgit-branchchip')
+  assert.ok(chip !== '')
+  assert.match(chip, /max-width:min\(/u)
+  assert.match(chip, /label-tertiary/u)
+  assert.match(chip, /border-radius:var\(--dsw-radius-sm\)/u)
+  const label = styleBlock(css, '.dgit-branchchip-label')
+  assert.match(label, /text-overflow:ellipsis/u)
+  assert.match(label, /min-width:0/u)
+  // The dock pill expands on hover and while open through the shared overlay.
+  assert.match(css, /\.dgit-branchchip:hover[^{]*\{[^}]*interactive-bg-hover/u)
+
+  // The picker uses the host menu material, not the mid-gray overlay token.
+  const pop = styleBlock(css, '.dgit-branchpop')
+  assert.ok(pop !== '')
+  assert.match(pop, /background:var\(--dsw-specific-menu\)/u)
+  assert.match(pop, /backdrop-filter:var\(--dsw-menu-backdrop-filter\)/u)
+  assert.match(pop, /box-shadow:var\(--dsw-elevation-prominent\)/u)
+  assert.doesNotMatch(pop, /--dsw-alias-bg-overlay/u)
+
+  // The title is a menu group label, not an uppercase banner.
+  const title = styleBlock(css, '.dgit-branchpop-title')
+  assert.doesNotMatch(title, /text-transform:uppercase/u)
+
+  // Held rows stay legible: muted text and a badge, never a whole-row fade.
+  const disabled = styleBlock(css, '.dgit-branchpop-row:disabled')
+  assert.match(disabled, /label-tertiary/u)
+  assert.doesNotMatch(disabled, /opacity/u)
+
+  // Focus is visible and the picker portals above page chrome.
+  assert.match(css, /\.dgit-branchchip:focus-visible\{/u)
+  assert.match(css, /\.dgit-branchpop-positioner\{/u)
+  assert.match(css, /\.dgit-branchpop-row:focus-visible\{/u)
+
+  // The pending row animates a spinner; reduced motion must stop it.
+  assert.match(css, /@keyframes dgit-spin/u)
+  assert.match(css, /prefers-reduced-motion:reduce/u)
+  assert.match(css, /\.dgit-branchpop-spin\{animation:none\}/u)
 })
 
 test('section headers fold their rows', () => {

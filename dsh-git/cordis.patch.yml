@@ -1,14 +1,17 @@
 # @litingyes/dsh-git — Git for the current workspace.
 #
 # Mounts exactly one Host row, and that row registers one thing: a prefix route
-# `/dsh-git/api/...` served by `ctx.webServer`, which the right-Sidebar panel
-# calls to read Git state and to run explicit actions (staging, committing,
-# branch and worktree management).
+# `/dsh-git/api/...` served by `ctx.webServer`, which both browser surfaces call
+# to read Git state and to run explicit actions (staging, committing, branch
+# and worktree management).
 # There are no agent tools: 0.3.0 removed git_status / git_diff / git_commit /
-# git_branch, so the panel is the only surface.
-# The browser half declared by `dsh.client` registers a right-Sidebar tab type:
-# the panel opens beside the conversation, follows the Session it belongs to,
-# and resolves that Session's working directory to a registered workspace.
+# git_branch, so the plugin's UI is the only surface.
+# The browser half declared by `dsh.client` registers a chat-page branch chip in
+# the composer's status dock, below the input (current branch, local-branch
+# picker, create and switch), and a right-Sidebar tab type: the panel opens
+# beside the conversation, follows the Session it belongs to, and resolves that
+# Session's working directory to a registered workspace. Both surfaces share one
+# per-directory snapshot, so a switch in either place updates the other.
 #
 # Every field below is read and validated by this package in `apply`; an
 # invalid value fails the row loudly at mount instead of silently degrading.

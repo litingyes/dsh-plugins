@@ -8,9 +8,11 @@
  * tree resolves its root, and the Host maps that directory to a registered
  * workspace before running anything.
  *
- * State lives here rather than in each view because every mutation answers with
- * a fresh snapshot from the Host, so there is exactly one source of truth and no
- * second read to race.
+ * The snapshot itself lives in `git-store.js`, not here: the chat-page branch
+ * chip shows the same repository, and two surfaces that each keep their own
+ * copy would disagree after either one switches a branch. Every mutation still
+ * answers with a fresh snapshot from the Host, so the store has exactly one
+ * source of truth and no second read to race.
  *
  * @module @litingyes/dsh-git/client/panel
  */
@@ -22,7 +24,9 @@ import { ChangesView } from './changes-view.jsx'
 import { BranchesView } from './branches-view.jsx'
 import { GitMark, RefreshIcon } from './icons.jsx'
 import { relativeTime } from './format.js'
-import { resolveLanguage, translate } from './i18n.js'
+import { failureText } from './failure.js'
+import { useGitStore } from './git-store.js'
+import { useTranslate } from './use-translate.js'
 
 /**
  * A session projection hook for a render that has none.
@@ -33,76 +37,6 @@ import { resolveLanguage, translate } from './i18n.js'
  */
 function useNoSessions() {
   return undefined
-}
-
-/** Machine codes whose message is better written by the panel than by the Host. */
-const FAILURE_KEYS = {
-  outside_workspace: 'panel.outsideWorkspace',
-  unknown_workspace: 'panel.outsideWorkspace',
-  no_workspace: 'panel.noWorkspace',
-  branch_in_worktree: 'panel.branchInWorktree',
-  unknown_worktree: 'panel.unknownWorktree',
-  worktree_in_use: 'panel.worktreeInUse',
-  worktree_exists: 'panel.worktreeExists',
-  invalid_worktree_path: 'panel.invalidWorktreePath',
-}
-
-/**
- * The path a refusal is about, when the Host names one.
- *
- * `GitError.detail` is spread into the wire error, so `detail.path` arrives as a
- * top-level `path`; the nested read keeps a Host that sends the bare `detail`
- * object working too.
- *
- * @param {unknown} failure the thrown value.
- * @returns {string | null} the absolute path, or null when absent.
- */
-function failurePath(failure) {
-  const detail = failure?.detail
-  const nested = typeof detail?.path === 'string' ? detail.path : undefined
-  const flat = typeof failure?.path === 'string' ? failure.path : undefined
-  const found = nested ?? flat
-  return found === '' || found === undefined ? null : found
-}
-
-/**
- * Resolve a failure into the line the banner shows.
- *
- * @param {unknown} failure the thrown value.
- * @param {(key: string, vars?: object) => string} t translator.
- * @returns {string} the message.
- */
-function failureText(failure, t) {
-  const code = failure?.code
-  const key = typeof code === 'string' ? FAILURE_KEYS[code] : undefined
-  if (key !== undefined) {
-    // The path is the actionable half of a worktree refusal: name the directory
-    // the Host rejected so the banner can be acted on without retrying blindly.
-    const at = failurePath(failure)
-    return at === null ? t(key) : `${t(key)} (${at})`
-  }
-  return failure instanceof Error ? failure.message : String(failure)
-}
-
-/**
- * Resolve `t` and the active language, re-rendering when the language changes.
- *
- * @param {object | undefined} locale the Client locale service.
- * @returns {{t: (key: string, vars?: object) => string, language: 'zh'|'en'}} translator.
- */
-export function useTranslate(locale) {
-  const [version, bump] = React.useReducer(count => count + 1, 0)
-  React.useEffect(() => {
-    if (typeof locale?.subscribe !== 'function') return undefined
-    return locale.subscribe(() => bump())
-  }, [locale])
-  const language = resolveLanguage(locale)
-  // `version` participates so a language switch produces a new translator.
-  const t = React.useCallback(
-    (key, vars) => translate(language, key, vars),
-    [language, version],
-  )
-  return { t, language }
 }
 
 /** `↑n ↓m` divergence pill, or nothing when the branch has no upstream. */
@@ -130,19 +64,15 @@ function TabLabel({ text, count }) {
  * The panel body.
  *
  * @param {object} props panel props.
- * @param {object} props.api client from `api-client.js`.
+ * @param {object} props.api client from `api-client.js`, used for commit details and diffs.
+ * @param {object} props.stores shared per-directory store lookup.
  * @param {object | undefined} props.locale Client locale service.
  * @param {string | undefined} props.sessionId Session whose right Sidebar holds this tab.
  * @param {(selector: Function) => unknown} [props.useSessions] session projection hook.
  * @returns {React.ReactElement} the panel.
  */
-export function GitPanel({ api, locale, sessionId, useSessions }) {
+export function GitPanel({ api, stores, locale, sessionId, useSessions }) {
   const { t, language } = useTranslate(locale)
-  const [snapshot, setSnapshot] = React.useState(null)
-  const [loading, setLoading] = React.useState(true)
-  const [busy, setBusy] = React.useState(false)
-  const [error, setError] = React.useState(null)
-  const [refs, setRefs] = React.useState(undefined)
   const [tab, setTab] = React.useState('graph')
 
   const useSessionsHook = typeof useSessions === 'function' ? useSessions : useNoSessions
@@ -155,58 +85,19 @@ export function GitPanel({ api, locale, sessionId, useSessions }) {
   const sessionsPending = useSessionsHook(all => all === undefined || all.phase === 'pending')
   const cwd = typeof rawCwd === 'string' && rawCwd !== '' ? rawCwd : undefined
 
-  const load = React.useCallback(async (signal) => {
-    if (typeof cwd !== 'string') {
-      setSnapshot(null)
-      setLoading(false)
-      return null
-    }
-    setLoading(true)
-    try {
-      const payload = await api.state({ dir: cwd, refs, signal })
-      setSnapshot(payload)
-      setError(null)
-      return payload
-    } catch (failure) {
-      if (failure instanceof DOMException && failure.name === 'AbortError') return null
-      setError(failureText(failure, t))
-      return null
-    } finally {
-      setLoading(false)
-    }
-  }, [api, cwd, refs, t])
+  // One store per repository, shared with the chat-page branch chip. The idle
+  // store keeps the hook call unconditional while the Session directory is
+  // still arriving.
+  const store = cwd === undefined ? stores.idle : stores.forDir(cwd)
+  const state = useGitStore(store)
 
-  React.useEffect(() => {
-    const controller = new AbortController()
-    void load(controller.signal)
-    return () => controller.abort()
-  }, [load])
-
-  React.useEffect(() => {
-    const onFocus = () => {
-      void load(undefined)
-    }
-    window.addEventListener('focus', onFocus)
-    return () => window.removeEventListener('focus', onFocus)
-  }, [load])
-
+  const snapshot = state.snapshot
+  const loading = state.status === 'loading'
+  const busy = state.busy
+  const refs = state.refs
+  const error = state.failure === null ? null : failureText(state.failure, t)
+  const perform = store.perform
   const workspaceId = snapshot?.workspace?.id
-
-  const perform = React.useCallback(async (body) => {
-    if (workspaceId === undefined) return false
-    setBusy(true)
-    setError(null)
-    try {
-      const payload = await api.action({ ...body, workspace: workspaceId })
-      setSnapshot(payload)
-      return true
-    } catch (failure) {
-      setError(failureText(failure, t))
-      return false
-    } finally {
-      setBusy(false)
-    }
-  }, [api, workspaceId, t])
 
   const changes = snapshot?.changes ?? { staged: [], unstaged: [], untracked: [], conflicted: [] }
   const changeCount = (changes.staged?.length ?? 0) + (changes.unstaged?.length ?? 0) +
@@ -276,7 +167,7 @@ export function GitPanel({ api, locale, sessionId, useSessions }) {
         title: t('panel.refresh'),
         'aria-label': t('panel.refresh'),
         disabled: loading || cwd === undefined,
-        onClick: () => void load(undefined),
+        onClick: () => void store.refresh(),
       },
       React.createElement(RefreshIcon, null),
     ),
@@ -290,7 +181,7 @@ export function GitPanel({ api, locale, sessionId, useSessions }) {
       type: 'button',
       className: 'dgit-btn',
       'data-variant': 'ghost',
-      onClick: () => setError(null),
+      onClick: () => store.clearFailure(),
     }, t('action.dismiss')),
   )
 
@@ -307,7 +198,7 @@ export function GitPanel({ api, locale, sessionId, useSessions }) {
       : React.createElement('button', {
           type: 'button',
           className: 'dgit-btn',
-          onClick: () => void load(undefined),
+          onClick: () => void store.refresh(),
         }, t('panel.retry'))
     return React.createElement(
       'div',
@@ -341,7 +232,7 @@ export function GitPanel({ api, locale, sessionId, useSessions }) {
         React.createElement('button', {
           type: 'button',
           className: 'dgit-btn',
-          onClick: () => void load(undefined),
+          onClick: () => void store.refresh(),
         }, t('panel.retry')),
       ),
     )
@@ -375,8 +266,8 @@ export function GitPanel({ api, locale, sessionId, useSessions }) {
           language,
           t,
           headOnly,
-          onToggleHeadOnly: next => setRefs(next ? 'head' : 'all'),
-          onRefresh: () => void load(undefined),
+          onToggleHeadOnly: next => store.setRefs(next ? 'head' : 'all'),
+          onRefresh: () => void store.refresh(),
         }),
       ),
       React.createElement(

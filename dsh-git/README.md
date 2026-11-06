@@ -1,8 +1,21 @@
 # @litingyes/dsh-git
 
-给 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 的 Git 面板：**开在右侧栏里，跟着当前会话的工作区走**。以多分支提交树为主视图，节点显示 description / author / date / commit，点开看提交详情；旁边是变更暂存、提交，以及分支与工作树管理。面板是插件唯一的界面：0.3.0 起不再注册智能体工具。
+给 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 的 Git 插件：**在输入框下方的状态行直接查看并切换当前分支**；右侧栏的 Git 页签**跟着当前会话的工作区走**，以多分支提交树为主视图，节点显示 description / author / date / commit，点开看提交详情；旁边是变更暂存、提交，以及分支与工作树管理。两处共用同一份仓库状态。0.3.0 起不再注册智能体工具。
 
 > 只读写本机的 Git 仓库，不做任何网络操作（没有 fetch / pull / push / clone）。
+
+## 输入框下方的分支切换
+
+输入框下方的状态行（和 token / 性能统计同一行）有一个分支胶囊，显示当前会话工作区所在仓库的分支，不用打开右侧栏。
+
+- 胶囊是状态行里的一个小 pill：透明底，悬停/展开时高亮；分支名过长会省略；当前处于分离 HEAD 时显示短 SHA（悬停看完整 SHA）；有未提交改动时旁边有一个小圆点，悬停显示文件数。
+- 点击胶囊**向上**打开本地分支选择器（宿主菜单材质）：输入框即时过滤，当前分支带勾选标记；已被其它工作树检出的分支保留在列表里，但按钮禁用、悬停提示工作树路径（与面板「分支」页同一规则）。
+- 选择即切换，不弹二次确认：`git switch` 会拒绝会覆盖本地改动的切换，拒绝原因直接显示在选择器里，工作区不会被强制重置。
+- 同一个选择器里可以「新建分支并切换」；分支名由 Host 的 `git check-ref-format --branch` 校验，非法名字会带着 git 的报错显示出来。
+- 分支胶囊和右侧栏 Git 页签共用同一份仓库快照：任意一边切换分支，另一边立即跟着变。打开选择器、或切回窗口时都会重新读取一次，以跟上智能体或终端里改过的分支。
+- 文案跟随 App 语言（中文 / English），面板、页签标题和选择器一起切换。
+- 空白会话的首屏（hero）没有这条状态行，发出第一条消息、进入正常会话后胶囊出现。
+- 会话工作目录不是 Git 仓库、没有工作目录、或目录不在已注册工作区内时，胶囊不出现；对应的解释仍在右侧栏面板里。
 
 ## 界面
 
@@ -57,14 +70,14 @@ plugin_manager action=install_bundle target=/absolute/path/to/dsh-plugins/dsh-gi
 发布到 npm 后可按包名安装：
 
 ```text
-plugin_manager action=install_bundle target=@litingyes/dsh-git@0.3.0
+plugin_manager action=install_bundle target=@litingyes/dsh-git@0.4.0
 ```
 
-安装后左侧栏不再有 Git 图标：入口在右侧栏「+」的起始页里。Host 半边（`index.js` / `git.js` / `api.js`）由 Loader 在启动时载入，**升级后需要重启 DSH** 才生效。卸载：`plugin_manager action=remove_bundle target=@litingyes/dsh-git`。
+安装后左侧栏不再有 Git 图标：会话开始后，输入框下方的状态行会自动出现分支胶囊，完整面板的入口在右侧栏「+」的起始页里。浏览器半边升级后，桌面 App 需要**重启**（或设置 → Plugins 里关开插件）才能加载新的 `client.js`；`dsh web` 刷新页面即可。Host 半边（`index.js` / `git.js` / `api.js`）由 Loader 在启动时载入，**升级后需要重启 DSH** 才生效。卸载：`plugin_manager action=remove_bundle target=@litingyes/dsh-git`。
 
 ### 前提
 
-- DSH `>= 0.2.1-rc.5 < 0.3.0-0`，且组合里有右侧栏（`@deepseek-ai/dsh-client-ui-sidebar-right`）。缺少它时插件静默不出现，不会报错。
+- DSH `>= 0.2.1-rc.5 < 0.3.0-0`。分支胶囊需要 composer 的状态行（core 的 `@deepseek-ai/dsh-client-ui-conversation`），完整面板需要右侧栏（`@deepseek-ai/dsh-client-ui-sidebar-right`）：缺少哪一半就少哪个入口，不会报错。
 - 本机 `PATH` 上有可用的 `git`（插件用 `execFile` 直接调用，不经过 shell）。
 - 当前会话的工作目录要落在某个已注册的 DSH 工作区内。会话没有工作目录、或目录在工作区之外时，面板会给出对应的空态/错误提示。
 
@@ -96,6 +109,7 @@ plugin_manager action=install_bundle target=@litingyes/dsh-git@0.3.0
 - 不做网络操作：没有 fetch / pull / push / clone。
 - 面板不移动会话目录：新建工作树只是登记一个目录，进去开会话要你自己操作。
 - 不做 stash、rebase、merge、cherry-pick、冲突解决。
+- 分支胶囊只列本地分支（与面板一致，不检出远程分支）。
 - 提交历史一次最多 500 条；文件列表一次最多 400 个。
 - 泳道超过 8 条会折叠并提示，不会横向撑破布局。
 - 图上的泳道配色是固定 8 色调色板（数据编码需要），其余颜色全部来自宿主主题令牌。
@@ -123,7 +137,7 @@ dsh-git/
 ├── client.js              # 构建产物（浏览器半边）
 ├── scripts/build-client.mjs
 ├── src/shared/graph.js    # 提交树泳道布局（纯函数，两端共用）
-├── src/client/            # React + Base UI 视图
+├── src/client/            # React + Base UI 视图（面板、会话页分支胶囊、共享 store）
 └── test/                  # node --test：布局、解析、真实仓库、HTTP
 ```
 

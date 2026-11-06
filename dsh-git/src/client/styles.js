@@ -227,6 +227,54 @@ export const CSS = `
 .dgit-title-icon{display:block;flex:none;color:var(--dsw-alias-label-secondary)}
 
 /* ---- narrow right-Sidebar tab ---- */
+/* ---- composer branch status pill ---- */
+/* The chip is one entry of the composer's status dock, next to the token
+   statistics. It therefore borrows the dock pill's metrics (transparent,
+   label-tertiary, 12px, 14px glyph) instead of looking like a toolbar button;
+   the only additions are the branch glyph and the uncommitted-changes dot. */
+.dgit-branchchip{display:inline-flex;align-items:center;gap:6px;min-width:0;max-width:min(200px,42vw);padding:1px 8px;border:0;border-radius:var(--dsw-radius-sm);background:0 0;color:var(--dsw-alias-label-tertiary);font-family:inherit;font-size:calc(var(--dsh-content-font-size-secondary,13px) - 1px);font-variant-numeric:tabular-nums;line-height:calc(20px + var(--dsh-content-font-delta-secondary,0px));white-space:nowrap;cursor:pointer}
+.dgit-branchchip:hover,.dgit-branchchip[aria-expanded=true],.dgit-branchchip[data-open]{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary)}
+.dgit-branchchip:focus-visible{outline:2px solid var(--dsw-alias-brand-primary);outline-offset:1px}
+.dgit-branchchip[data-tone=warn]{color:var(--dsw-alias-state-warn-primary)}
+.dgit-branchchip-icon{width:14px;height:14px;flex:none;color:currentColor}
+.dgit-branchchip-label{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:ltr}
+.dgit-branchchip-dot{width:6px;height:6px;flex:none;border-radius:999px;background:var(--dsw-alias-state-warn-primary)}
+
+/* The picker is portaled to the document body and opens upward from the dock.
+   Its surface is the host's menu material, so text, border, and elevation match
+   the model-selector menu instead of a translucent gray panel. */
+.dgit-branchpop-positioner{z-index:1100}
+.dgit-branchpop{box-sizing:border-box;display:flex;flex-direction:column;width:min(320px,calc(100vw - 24px));max-height:min(420px,calc(100vh - 96px));padding:4px;border:0;border-radius:var(--dsw-radius-lg);background:var(--dsw-specific-menu);-webkit-backdrop-filter:var(--dsw-menu-backdrop-filter);backdrop-filter:var(--dsw-menu-backdrop-filter);--dsw-elevation-stroke-color:var(--dsw-alias-border-l1);box-shadow:var(--dsw-elevation-prominent);color:var(--dsw-alias-label-primary);font-size:12.5px;line-height:1.5;overflow:hidden}
+.dgit-branchpop-head{display:flex;flex:none;align-items:center;gap:8px;min-width:0;padding:6px 6px 2px 8px}
+.dgit-branchpop-title{margin:0;flex:1 1 auto;min-width:0;font-size:12px;font-weight:500;color:var(--dsw-alias-label-tertiary)}
+.dgit-branchpop-head .dgit-btn{flex:none;width:24px;height:24px;padding:0;border-radius:var(--dsw-radius-sm);color:var(--dsw-alias-label-tertiary)}
+.dgit-branchpop-head .dgit-btn:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary)}
+.dgit-branchpop-note{flex:none;margin:4px 8px 0;font-size:11.5px;color:var(--dsw-alias-state-warn-primary)}
+.dgit-branchpop .dgit-branchpop-search,.dgit-branchpop .dgit-branchpop-create{box-sizing:border-box;width:100%;height:28px;border:0;border-radius:var(--dsw-radius-md);background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary);font-family:inherit;font-size:12px;padding:0 9px}
+.dgit-branchpop .dgit-branchpop-search{margin:6px 4px 4px}
+.dgit-branchpop .dgit-branchpop-search::placeholder,.dgit-branchpop .dgit-branchpop-create::placeholder{color:var(--dsw-alias-label-caption);opacity:1}
+.dgit-branchpop .dgit-branchpop-search:focus-visible,.dgit-branchpop .dgit-branchpop-create:focus-visible{outline:1px solid var(--dsw-alias-brand-primary);outline-offset:-1px}
+.dgit-branchpop-list{display:flex;flex:1 1 auto;flex-direction:column;gap:1px;min-height:0;padding:2px 0;overflow-y:auto;overscroll-behavior:contain;--dsh-scrollbar-thumb:var(--dsw-alias-scrollbar-bg-l2);--dsh-scrollbar-thumb-hover:var(--dsw-alias-scrollbar-hover-l2)}
+.dgit-branchpop-row{display:flex;align-items:center;gap:8px;width:100%;box-sizing:border-box;min-height:34px;padding:5px 7px;border:0;border-radius:var(--dsw-radius-md);background:transparent;color:var(--dsw-alias-label-primary);font:inherit;font-size:12.5px;text-align:left;cursor:pointer}
+button.dgit-branchpop-row:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover)}
+.dgit-branchpop-row:focus-visible{outline:2px solid var(--dsw-alias-brand-primary);outline-offset:-2px}
+.dgit-branchpop-row:disabled{color:var(--dsw-alias-label-tertiary);cursor:default}
+.dgit-branchpop-row[data-current]{background:var(--dsw-alias-interactive-bg-hover)}
+.dgit-branchpop-row[data-pending]{color:var(--dsw-alias-label-secondary)}
+.dgit-branchpop-mark{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;flex:none;color:var(--dsw-alias-brand-primary)}
+.dgit-branchpop-name{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:ltr}
+.dgit-branchpop-state{flex:none;color:var(--dsw-alias-label-tertiary);font-size:11.5px}
+.dgit-branchpop-badge{flex:none;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 5px;border-radius:var(--dsw-radius-sm);background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-tertiary);font-size:10.5px;line-height:16px}
+.dgit-branchpop-empty{padding:12px 8px;color:var(--dsw-alias-label-tertiary);text-align:center;font-size:12px}
+.dgit-branchpop-error{display:flex;flex:none;flex-direction:column;gap:2px;margin:6px 4px 2px;padding:6px 8px;border-radius:var(--dsw-radius-md);background:color-mix(in srgb,var(--dsw-alias-state-error-primary) 12%,transparent);font-size:11.5px;color:var(--dsw-alias-label-primary)}
+.dgit-branchpop-error-label{font-weight:600;color:var(--dsw-alias-state-error-primary)}
+.dgit-branchpop-error-text{word-break:break-word}
+.dgit-branchpop-new{display:flex;flex:none;align-items:center;gap:6px;margin-top:4px;padding:8px 4px 4px;border-top:.5px solid var(--dsw-alias-border-l1)}
+.dgit-branchpop-new .dgit-branchpop-create{flex:1 1 auto;min-width:0}
+.dgit-branchpop-new .dgit-btn{flex:none;height:28px;font-size:12px}
+.dgit-branchpop-spin{width:12px;height:12px;border-radius:999px;border:2px solid color-mix(in srgb,var(--dsw-alias-brand-primary) 30%,transparent);border-top-color:var(--dsw-alias-brand-primary);animation:dgit-spin .7s linear infinite}
+@keyframes dgit-spin{to{transform:rotate(360deg)}}
+
 /* The right Sidebar is a column of the page, not a full-width panel: at these
    widths the two-pane layouts stack, chrome tightens, and anything that cannot
    fit is dropped rather than scrolled sideways. */
@@ -265,5 +313,5 @@ export const CSS = `
   .dgit-commitbox{padding:8px 10px 10px}
 }
 
-@media (prefers-reduced-motion:reduce){.dgit-chevron,.dgit-group-chevron{transition:none}}
+@media (prefers-reduced-motion:reduce){.dgit-chevron,.dgit-group-chevron{transition:none}.dgit-branchpop-spin{animation:none}}
 `
