@@ -1,14 +1,43 @@
 {
   "source": {
-    "head": "0c2f9abc35db22bbf67c1140ed50c3d8445eba4d",
-    "headShort": "0c2f9ab",
+    "head": "f9b216129a61ff141650f683438720022d5ada97",
+    "headShort": "f9b2161",
     "headDate": "2026-11-07",
     "currentBranch": "release",
-    "total": 25,
+    "total": 27,
     "limit": 40,
     "truncated": false
   },
   "commits": [
+    {
+      "sha": "f9b216129a61ff141650f683438720022d5ada97",
+      "parents": [
+        "ddb5b396cb07ae61d636412a2f468e3a2ccc0e9f"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-07",
+      "subject": "fix(ci): name the test files instead of the directory",
+      "refs": [],
+      "onCurrent": true
+    },
+    {
+      "sha": "ddb5b396cb07ae61d636412a2f468e3a2ccc0e9f",
+      "parents": [
+        "0c2f9abc35db22bbf67c1140ed50c3d8445eba4d"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-07",
+      "subject": "chore(site): refresh the graph after the release gate",
+      "refs": [
+        {
+          "name": "origin/release",
+          "kind": "remote"
+        }
+      ],
+      "onCurrent": true
+    },
     {
       "sha": "0c2f9abc35db22bbf67c1140ed50c3d8445eba4d",
       "parents": [
@@ -30,12 +59,7 @@
       "email": "luz.liting@gmail.com",
       "date": "2026-11-07",
       "subject": "chore(site): refresh the graph after the 0.5.1 follow-ups",
-      "refs": [
-        {
-          "name": "origin/release",
-          "kind": "remote"
-        }
-      ],
+      "refs": [],
       "onCurrent": true
     },
     {
@@ -350,11 +374,47 @@
   "layout": {
     "rows": [
       {
-        "sha": "0c2f9abc35db22bbf67c1140ed50c3d8445eba4d",
+        "sha": "f9b216129a61ff141650f683438720022d5ada97",
         "lane": 0,
         "color": 0,
         "through": [],
         "incoming": [],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "ddb5b396cb07ae61d636412a2f468e3a2ccc0e9f",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "0c2f9abc35db22bbf67c1140ed50c3d8445eba4d",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
         "outgoing": [
           {
             "to": 0,
@@ -858,8 +918,8 @@
     },
     {
       "name": "release",
-      "sha": "0c2f9abc35db22bbf67c1140ed50c3d8445eba4d",
-      "short": "0c2f9ab",
+      "sha": "f9b216129a61ff141650f683438720022d5ada97",
+      "short": "f9b2161",
       "upstream": "origin/release",
       "date": "2026-11-07",
       "current": true,
@@ -867,6 +927,98 @@
     }
   ],
   "details": {
+    "f9b216129a61ff141650f683438720022d5ada97": {
+      "message": "fix(ci): name the test files instead of the directory\n\nNode 22's test runner takes file arguments; `node --test scripts/` resolves\nthe directory as a module and fails with \"Cannot find module …/scripts\",\nwhich turned the gate's own step red on the first run. Node 26 accepts the\ndirectory, so the local run hid it.\n\nSpell the glob out in the workflow and in the commands AGENTS.md documents.",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-07T15:09:17+08:00",
+      "files": [
+        {
+          "path": ".github/workflows/ci.yml",
+          "status": "M",
+          "added": 2,
+          "deleted": 1,
+          "binary": false
+        },
+        {
+          "path": "AGENTS.md",
+          "status": "M",
+          "added": 1,
+          "deleted": 1,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "AGENTS.md",
+        "lines": [
+          "diff --git a/AGENTS.md b/AGENTS.md",
+          "index 7fc72e1..44ca928 100644",
+          "--- a/AGENTS.md",
+          "+++ b/AGENTS.md",
+          "@@ -45,3 +45,3 @@ npm run check          # 产物新鲜度 + 语法；dsh-git 先跑 build --check",
+          " node scripts/check-release.mjs            # 门禁：每个 manifest 版本都有 tag",
+          "-node --test scripts/                      # 门禁自身的测试",
+          "+node --test scripts/*.test.mjs            # 门禁自身的测试（Node 22 不展开目录参数）",
+          " node scripts/release.mjs <dir> --bump patch --dry-run   # 演练发版"
+        ],
+        "truncated": false
+      }
+    },
+    "ddb5b396cb07ae61d636412a2f468e3a2ccc0e9f": {
+      "message": "chore(site): refresh the graph after the release gate\n\n`pnpm sync` picks up the new commits; the portal data is a snapshot, so any\nchange to plugin code has to land here too.",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-07T15:07:28+08:00",
+      "files": [
+        {
+          "path": "site/src/data/repo-graph.json",
+          "status": "M",
+          "added": 217,
+          "deleted": 120,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "site/src/data/repo-graph.json",
+        "lines": [
+          "diff --git a/site/src/data/repo-graph.json b/site/src/data/repo-graph.json",
+          "index dad3e08..fc0a03b 100644",
+          "--- a/site/src/data/repo-graph.json",
+          "+++ b/site/src/data/repo-graph.json",
+          "@@ -2,7 +2,7 @@",
+          "   \"source\": {",
+          "-    \"head\": \"fac38bfd7a7c7f4137abb5ae2af931ba3d48bab2\",",
+          "-    \"headShort\": \"fac38bf\",",
+          "+    \"head\": \"0c2f9abc35db22bbf67c1140ed50c3d8445eba4d\",",
+          "+    \"headShort\": \"0c2f9ab\",",
+          "     \"headDate\": \"2026-11-07\",",
+          "     \"currentBranch\": \"release\",",
+          "-    \"total\": 23,",
+          "+    \"total\": 25,",
+          "     \"limit\": 40,",
+          "@@ -11,2 +11,31 @@",
+          "   \"commits\": [",
+          "+    {",
+          "+      \"sha\": \"0c2f9abc35db22bbf67c1140ed50c3d8445eba4d\",",
+          "+      \"parents\": ["
+        ],
+        "truncated": true
+      }
+    },
     "0c2f9abc35db22bbf67c1140ed50c3d8445eba4d": {
       "message": "chore(release): make a version bump without a tag impossible\n\nPublishing is tag-triggered, but bumping `package.json` and tagging were\nseparate manual steps. Skip the second one and the version lives only in the\nmanifest: dsh-git reached npm as 0.2.0 → 0.5.0 while 0.3.0 and 0.4.0 were\nnever published, which is exactly the kind of gap a registry should not show.\n\nThree pieces, so the rule is enforced rather than remembered:\n\n- `scripts/check-release.mjs` asserts, for every package, that the manifest\n  version is tagged at a commit which declares the same version and is an\n  ancestor of HEAD. Offline on purpose: publishing only happens from tags, so\n  asking npm would just make the gate flaky. Covered by five tests against\n  throwaway repositories.\n- `release.mjs --bump <patch|minor|major>` does the whole release in one\n  command: bump, rebuild the browser half (its banner carries the version),\n  rewrite the install pins, commit `release: <dir> <version>`, tag, and with\n  `--push` push both refs in a single push. `--dry-run` prints the plan.\n- `.github/workflows/ci.yml` runs the gate on every push to `release` and on\n  pull requests. `publish.yml` now refuses a tag older than npm's `latest`,\n  so a stray old tag cannot move the dist-tag backwards.\n\nAGENTS.md records the conventions this repository actually follows: artifacts\nthat must be committed and rebuilt, the no-hand-edited-version rule, bilingual\ndocs, portal data sync, dependency discipline, and what not to touch.\n\nThe dsh-git README now anchors the tool removal on 0.5.0 — the first published\nversion after 0.2.0 — instead of the unpublished 0.3.0.",
       "author": {
@@ -1024,87 +1176,6 @@
           "       \"parents\": ["
         ],
         "truncated": true
-      }
-    },
-    "fac38bfd7a7c7f4137abb5ae2af931ba3d48bab2": {
-      "message": "build(git): assert the committed client.js is fresh\n\n`npm run check` validated only syntax, so a version bump that never rebuilt\nthe browser half shipped a bundle whose banner disagreed with package.json.\nThat is exactly how 0.5.1's tagged tree ended up stale while CI published a\nfresh build.\n\n`node scripts/build-client.mjs --check` rebuilds in memory and fails on any\nbyte difference; `check` now runs it before the syntax passes.\n`prepublishOnly` already builds first, so CI is unaffected.",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-07T12:55:29+08:00",
-      "files": [
-        {
-          "path": "dsh-git/package.json",
-          "status": "M",
-          "added": 1,
-          "deleted": 1,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/scripts/build-client.mjs",
-          "status": "M",
-          "added": 36,
-          "deleted": 6,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": "dsh-git/package.json",
-        "lines": [
-          "diff --git a/dsh-git/package.json b/dsh-git/package.json",
-          "index 4864c35..bc83fd6 100644",
-          "--- a/dsh-git/package.json",
-          "+++ b/dsh-git/package.json",
-          "@@ -77,3 +77,3 @@",
-          "     \"test\": \"node --test test/\",",
-          "-    \"check\": \"node --check index.js && node --check git.js && node --check api.js && node --check client.js\",",
-          "+    \"check\": \"node scripts/build-client.mjs --check && node --check index.js && node --check git.js && node --check api.js && node --check client.js\",",
-          "     \"prepublishOnly\": \"npm run build && npm run check\""
-        ],
-        "truncated": false
-      }
-    },
-    "31418abb4f9c917af0e95e5b05d452afd5128159": {
-      "message": "fix(git): rebuild the browser half for 0.5.1\n\nThe bundle banner carries the manifest version, and the 0.5.1 commit bumped\npackage.json without re-running the build. CI's prepublishOnly rebuilds\nbefore publishing, so npm received the right file, but the tagged tree still\ncarried a 0.5.0 banner. Rebuild so the tag matches what was published.",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-07T12:55:23+08:00",
-      "files": [
-        {
-          "path": "dsh-git/client.js",
-          "status": "M",
-          "added": 1,
-          "deleted": 1,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": "dsh-git/client.js",
-        "lines": [
-          "diff --git a/dsh-git/client.js b/dsh-git/client.js",
-          "index 1d4dfb1..07e0244 100644",
-          "--- a/dsh-git/client.js",
-          "+++ b/dsh-git/client.js",
-          "@@ -1,3 +1,3 @@",
-          " /*",
-          "- * @litingyes/dsh-git@0.5.0 — browser half.",
-          "+ * @litingyes/dsh-git@0.5.1 — browser half.",
-          "  *"
-        ],
-        "truncated": false
       }
     }
   }
