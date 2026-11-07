@@ -1,14 +1,55 @@
 {
   "source": {
-    "head": "4d1e1f677742618f2efe27bd1ed9dc7f57e12979",
-    "headShort": "4d1e1f6",
+    "head": "fac38bfd7a7c7f4137abb5ae2af931ba3d48bab2",
+    "headShort": "fac38bf",
     "headDate": "2026-11-07",
     "currentBranch": "release",
-    "total": 20,
+    "total": 23,
     "limit": 40,
     "truncated": false
   },
   "commits": [
+    {
+      "sha": "fac38bfd7a7c7f4137abb5ae2af931ba3d48bab2",
+      "parents": [
+        "31418abb4f9c917af0e95e5b05d452afd5128159"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-07",
+      "subject": "build(git): assert the committed client.js is fresh",
+      "refs": [],
+      "onCurrent": true
+    },
+    {
+      "sha": "31418abb4f9c917af0e95e5b05d452afd5128159",
+      "parents": [
+        "b4a027aca9b889b6fa06069794d86ae711fd380e"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-07",
+      "subject": "fix(git): rebuild the browser half for 0.5.1",
+      "refs": [
+        {
+          "name": "dsh-git-v0.5.1",
+          "kind": "tag"
+        }
+      ],
+      "onCurrent": true
+    },
+    {
+      "sha": "b4a027aca9b889b6fa06069794d86ae711fd380e",
+      "parents": [
+        "4d1e1f677742618f2efe27bd1ed9dc7f57e12979"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-07",
+      "subject": "chore(site): refresh the data for dsh-git 0.5.1",
+      "refs": [],
+      "onCurrent": true
+    },
     {
       "sha": "4d1e1f677742618f2efe27bd1ed9dc7f57e12979",
       "parents": [
@@ -18,12 +59,7 @@
       "email": "luz.liting@gmail.com",
       "date": "2026-11-07",
       "subject": "docs(git): correct claims the source contradicts",
-      "refs": [
-        {
-          "name": "dsh-git-v0.5.1",
-          "kind": "tag"
-        }
-      ],
+      "refs": [],
       "onCurrent": true
     },
     {
@@ -290,11 +326,65 @@
   "layout": {
     "rows": [
       {
-        "sha": "4d1e1f677742618f2efe27bd1ed9dc7f57e12979",
+        "sha": "fac38bfd7a7c7f4137abb5ae2af931ba3d48bab2",
         "lane": 0,
         "color": 0,
         "through": [],
         "incoming": [],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "31418abb4f9c917af0e95e5b05d452afd5128159",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "b4a027aca9b889b6fa06069794d86ae711fd380e",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "4d1e1f677742618f2efe27bd1ed9dc7f57e12979",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
         "outgoing": [
           {
             "to": 0,
@@ -708,8 +798,8 @@
     },
     {
       "name": "release",
-      "sha": "4d1e1f677742618f2efe27bd1ed9dc7f57e12979",
-      "short": "4d1e1f6",
+      "sha": "fac38bfd7a7c7f4137abb5ae2af931ba3d48bab2",
+      "short": "fac38bf",
       "upstream": "origin/release",
       "date": "2026-11-07",
       "current": true,
@@ -717,6 +807,131 @@
     }
   ],
   "details": {
+    "fac38bfd7a7c7f4137abb5ae2af931ba3d48bab2": {
+      "message": "build(git): assert the committed client.js is fresh\n\n`npm run check` validated only syntax, so a version bump that never rebuilt\nthe browser half shipped a bundle whose banner disagreed with package.json.\nThat is exactly how 0.5.1's tagged tree ended up stale while CI published a\nfresh build.\n\n`node scripts/build-client.mjs --check` rebuilds in memory and fails on any\nbyte difference; `check` now runs it before the syntax passes.\n`prepublishOnly` already builds first, so CI is unaffected.",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-07T12:55:29+08:00",
+      "files": [
+        {
+          "path": "dsh-git/package.json",
+          "status": "M",
+          "added": 1,
+          "deleted": 1,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/scripts/build-client.mjs",
+          "status": "M",
+          "added": 36,
+          "deleted": 6,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "dsh-git/package.json",
+        "lines": [
+          "diff --git a/dsh-git/package.json b/dsh-git/package.json",
+          "index 4864c35..bc83fd6 100644",
+          "--- a/dsh-git/package.json",
+          "+++ b/dsh-git/package.json",
+          "@@ -77,3 +77,3 @@",
+          "     \"test\": \"node --test test/\",",
+          "-    \"check\": \"node --check index.js && node --check git.js && node --check api.js && node --check client.js\",",
+          "+    \"check\": \"node scripts/build-client.mjs --check && node --check index.js && node --check git.js && node --check api.js && node --check client.js\",",
+          "     \"prepublishOnly\": \"npm run build && npm run check\""
+        ],
+        "truncated": false
+      }
+    },
+    "31418abb4f9c917af0e95e5b05d452afd5128159": {
+      "message": "fix(git): rebuild the browser half for 0.5.1\n\nThe bundle banner carries the manifest version, and the 0.5.1 commit bumped\npackage.json without re-running the build. CI's prepublishOnly rebuilds\nbefore publishing, so npm received the right file, but the tagged tree still\ncarried a 0.5.0 banner. Rebuild so the tag matches what was published.",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-07T12:55:23+08:00",
+      "files": [
+        {
+          "path": "dsh-git/client.js",
+          "status": "M",
+          "added": 1,
+          "deleted": 1,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "dsh-git/client.js",
+        "lines": [
+          "diff --git a/dsh-git/client.js b/dsh-git/client.js",
+          "index 1d4dfb1..07e0244 100644",
+          "--- a/dsh-git/client.js",
+          "+++ b/dsh-git/client.js",
+          "@@ -1,3 +1,3 @@",
+          " /*",
+          "- * @litingyes/dsh-git@0.5.0 — browser half.",
+          "+ * @litingyes/dsh-git@0.5.1 — browser half.",
+          "  *"
+        ],
+        "truncated": false
+      }
+    },
+    "b4a027aca9b889b6fa06069794d86ae711fd380e": {
+      "message": "chore(site): refresh the data for dsh-git 0.5.1\n\n`pnpm sync` records the new tag and the manifest version, so the portal's\ninstall command and version fact move to 0.5.1 on their own.",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-07T12:41:27+08:00",
+      "files": [
+        {
+          "path": "site/src/data/plugins-meta.json",
+          "status": "M",
+          "added": 1,
+          "deleted": 1,
+          "binary": false
+        },
+        {
+          "path": "site/src/data/repo-graph.json",
+          "status": "M",
+          "added": 206,
+          "deleted": 317,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "site/src/data/plugins-meta.json",
+        "lines": [
+          "diff --git a/site/src/data/plugins-meta.json b/site/src/data/plugins-meta.json",
+          "index 7e7489d..2c6036e 100644",
+          "--- a/site/src/data/plugins-meta.json",
+          "+++ b/site/src/data/plugins-meta.json",
+          "@@ -3,3 +3,3 @@",
+          "     \"name\": \"@litingyes/dsh-git\",",
+          "-    \"version\": \"0.5.0\",",
+          "+    \"version\": \"0.5.1\",",
+          "     \"dsh\": \">=0.2.1-rc.5 <0.3.0-0\","
+        ],
+        "truncated": false
+      }
+    },
     "4d1e1f677742618f2efe27bd1ed9dc7f57e12979": {
       "message": "docs(git): correct claims the source contradicts\n\nAn expanded commit shows message, identities, parents and files; the refs\nthe Host returns for it are never rendered, and the row badges cap at\nthree plus \"+N\". The invalid-branch path answers with the Host's own\nsentence (\"… is not a valid branch name\") and keeps git's stderr in\n`cause`, so the README cannot promise git's message on screen. Both\nREADMEs now describe what actually happens.\n\nDocument two things the panel silently does: commit, merge and rebase all\nrun with --no-verify, so the repository's hooks never fire, and\nconflicted rows carry no inline buttons — select them and use the group\nheader instead.\n\ndsh-context7 gains one caveat: renaming `serverName` moves the guidance\nand the tool prefix, but the browser half matches a hardcoded\nmcp__context7__ prefix, so the presentation rows fall back to the default\ntool card.\n\nBump dsh-git to 0.5.1 so the corrected README reaches npm; no runtime\ncode changed. The portal copy follows, and context7 keeps 0.2.1 — its\nonly change here is an omission, not a false statement.",
       "author": {
@@ -791,199 +1006,6 @@
           " - `guidance`: defaults to `true`. Setting it to `false` removes only the paragraph above; tools, presentation, and the connection are unaffected.",
           "-- `serverName`: defaults to `context7` and **must match the connector row's `serverName`**; after a rename the guidance follows the new tool prefix, otherwise it hides itself because the names no longer line up.",
           "+- `serverName`: defaults to `context7` and **must match the connector row's `serverName`**; after a rename the guidance follows the new tool prefix, otherwise it hides itself because the names no longer line up. Note that the browser half's presentation rows match the hardcoded `mcp__context7__` prefix, so after a rename both tools fall back to the default tool card (the tools themselves keep working)."
-        ],
-        "truncated": false
-      }
-    },
-    "4e7b35671dcae1cb410eeb0e02a22c73170725aa": {
-      "message": "chore(site): refresh the repo graph after the release tags\n\n`pnpm sync` now sees dsh-git-v0.5.0 and dsh-context7-v0.2.1, so the portal's\ngraph carries the release badges, and plugins-meta.json moves to 0.5.0 /\n0.2.1 to match the manifests. The install commands and version facts are\nderived from that file, so no other copy changes.",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-07T00:35:30+08:00",
-      "files": [
-        {
-          "path": "site/src/data/plugins-meta.json",
-          "status": "M",
-          "added": 3,
-          "deleted": 3,
-          "binary": false
-        },
-        {
-          "path": "site/src/data/repo-graph.json",
-          "status": "M",
-          "added": 396,
-          "deleted": 145,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": "site/src/data/plugins-meta.json",
-        "lines": [
-          "diff --git a/site/src/data/plugins-meta.json b/site/src/data/plugins-meta.json",
-          "index d1c53bb..7e7489d 100644",
-          "--- a/site/src/data/plugins-meta.json",
-          "+++ b/site/src/data/plugins-meta.json",
-          "@@ -3,5 +3,5 @@",
-          "     \"name\": \"@litingyes/dsh-git\",",
-          "-    \"version\": \"0.4.0\",",
-          "+    \"version\": \"0.5.0\",",
-          "     \"dsh\": \">=0.2.1-rc.5 <0.3.0-0\",",
-          "-    \"description\": \"Git for DeepSeek Harness: a chat-page branch switcher in the status row below the composer, plus a right-sidebar tab with a multi-branch commit graph, expandable nodes, working-tree staging and committing, and branch and worktree management for the Session's workspace.\",",
-          "+    \"description\": \"Git for DeepSeek Harness: a chat-page branch switcher in the status row below the composer, plus a right-sidebar tab with a multi-branch commit graph, right-click commit actions (cherry-pick, revert, drop), working-tree staging and committing, branch merge/rebase, and branch and worktree management for the Session's workspace.\",",
-          "     \"homepage\": \"https://dsh-plugins.vercel.app\"",
-          "@@ -10,3 +10,3 @@",
-          "     \"name\": \"@litingyes/dsh-context7\",",
-          "-    \"version\": \"0.2.0\",",
-          "+    \"version\": \"0.2.1\",",
-          "     \"dsh\": \">=0.2.1-rc.5 <0.3.0-0\","
-        ],
-        "truncated": false
-      }
-    },
-    "2c5cba07e3c30fc1d80788ef57c4bf6a6731261c": {
-      "message": "chore(site): align the portal with dsh-git 0.5.0\n\nThe portal still advertised four dsh-git agent tools (removed in 0.3.0),\nsix tools in total, the removed `tools` and `defaultWorkspaceId` config\nkeys, and \"no merge, rebase, cherry-pick\" limits. It never mentioned the\ncomposer branch chip or worktree management, and the dsh-git page kept a\nsecond hardcoded copy of the feature list beside the one in plugins.ts —\nwhich is why the two drifted.\n\nRender `plugin.features` instead of a local copy, drop the git tools\nsection, and show a tools count only where a plugin has tools. Install\ncommands, the DSH requirement and the header version now come from\nplugins-meta.json, so a version bump cannot leave copy behind again.\n\nBoundaries now describe what the API actually accepts (a snapshot read\nmay name the Session directory; mutations may not), and limits list what\nthe panel really does: no stash, no conflict resolution, rebase flattens\nmerges, drop refuses a range containing them.",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-07T00:34:32+08:00",
-      "files": [
-        {
-          "path": "site/src/components/PluginIndex.astro",
-          "status": "M",
-          "added": 10,
-          "deleted": 5,
-          "binary": false
-        },
-        {
-          "path": "site/src/components/PluginPage.astro",
-          "status": "M",
-          "added": 19,
-          "deleted": 53,
-          "binary": false
-        },
-        {
-          "path": "site/src/data/plugins.ts",
-          "status": "M",
-          "added": 99,
-          "deleted": 63,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": "site/src/components/PluginIndex.astro",
-        "lines": [
-          "diff --git a/site/src/components/PluginIndex.astro b/site/src/components/PluginIndex.astro",
-          "index 3e18a45..e2b8e50 100644",
-          "--- a/site/src/components/PluginIndex.astro",
-          "+++ b/site/src/components/PluginIndex.astro",
-          "@@ -1,3 +1,3 @@",
-          " ---",
-          "-import { plugins, pageCopy, siteCopy } from '../data/plugins'",
-          "+import { manifest, plugins, pageCopy, siteCopy } from '../data/plugins'",
-          " import { url } from '../lib/i18n'",
-          "@@ -25,6 +25,11 @@ const repo = siteCopy.home.index.repoRow",
-          "         <div class=\"plugin-facts\">",
-          "-          <span class=\"tag\">",
-          "-            {plugin.tools.length}",
-          "-            {locale === 'zh' ? ' 个工具' : ' tools'}",
-          "-          </span>",
-          "+          <span class=\"tag tag-mono\">{manifest(plugin.slug).version}</span>",
-          "+          {",
-          "+            plugin.tools.length > 0 && (",
-          "+              <span class=\"tag\">",
-          "+                {plugin.tools.length}"
-        ],
-        "truncated": true
-      }
-    },
-    "0899728420a5d2d9cacd30ffc9ec36c50f456b1e": {
-      "message": "docs: sync the plugin docs with the released behaviour\n\nThe dsh-git README already described 0.5.0, but its install note still\nsaid \"once published to npm\"; this release makes that sentence true, so\nit changes here.\n\ndsh-context7: the index.js header carried an older measurement (5,900\ncalls at 0.3%) than both READMEs (5,527 at 0.33%), the verification note\nnamed only 0.2.1-rc.5 although the running desktop runtime is 0.2.2-rc.1\n(where both tools and the guidance section are visible), and\nfailOnStartupError read as if `true` were the DSH default when it is this\nbundle that sets it. The manifest moves to 0.2.1 so the corrected README\nreaches npm.\n\nThe root README's install pins move to the versions being released.",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-07T00:34:26+08:00",
-      "files": [
-        {
-          "path": "README.md",
-          "status": "M",
-          "added": 4,
-          "deleted": 4,
-          "binary": false
-        },
-        {
-          "path": "dsh-context7/README.en.md",
-          "status": "M",
-          "added": 3,
-          "deleted": 3,
-          "binary": false
-        },
-        {
-          "path": "dsh-context7/README.md",
-          "status": "M",
-          "added": 3,
-          "deleted": 3,
-          "binary": false
-        },
-        {
-          "path": "dsh-context7/index.js",
-          "status": "M",
-          "added": 2,
-          "deleted": 2,
-          "binary": false
-        },
-        {
-          "path": "dsh-context7/package.json",
-          "status": "M",
-          "added": 1,
-          "deleted": 1,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/README.en.md",
-          "status": "M",
-          "added": 1,
-          "deleted": 1,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/README.md",
-          "status": "M",
-          "added": 1,
-          "deleted": 1,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": "dsh-context7/package.json",
-        "lines": [
-          "diff --git a/dsh-context7/package.json b/dsh-context7/package.json",
-          "index 6c1ec74..d0bdeca 100644",
-          "--- a/dsh-context7/package.json",
-          "+++ b/dsh-context7/package.json",
-          "@@ -2,3 +2,3 @@",
-          "   \"name\": \"@litingyes/dsh-context7\",",
-          "-  \"version\": \"0.2.0\",",
-          "+  \"version\": \"0.2.1\",",
-          "   \"description\": \"Context7 documentation for DeepSeek Harness: connects the official Context7 MCP server so agents can resolve libraries and fetch current documentation and code examples.\","
         ],
         "truncated": false
       }
