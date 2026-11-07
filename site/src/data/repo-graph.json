@@ -1,14 +1,43 @@
 {
   "source": {
-    "head": "ff4e216df3146069f9ec728711b51f8dcf2c385c",
-    "headShort": "ff4e216",
+    "head": "92d574f4388c3f94ee2f13583eda409267c02770",
+    "headShort": "92d574f",
     "headDate": "2026-11-07",
     "currentBranch": "feature/dsh-director",
-    "total": 30,
+    "total": 32,
     "limit": 40,
     "truncated": false
   },
   "commits": [
+    {
+      "sha": "92d574f4388c3f94ee2f13583eda409267c02770",
+      "parents": [
+        "b1ca7be235280616e1ed337b9f7c3551c1ca2bba"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-07",
+      "subject": "fix(director): enforce the prompt length bound on writes",
+      "refs": [],
+      "onCurrent": true
+    },
+    {
+      "sha": "b1ca7be235280616e1ed337b9f7c3551c1ca2bba",
+      "parents": [
+        "ff4e216df3146069f9ec728711b51f8dcf2c385c"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-07",
+      "subject": "chore(site): refresh the graph after dsh-director",
+      "refs": [
+        {
+          "name": "feature/comfy",
+          "kind": "branch"
+        }
+      ],
+      "onCurrent": true
+    },
     {
       "sha": "ff4e216df3146069f9ec728711b51f8dcf2c385c",
       "parents": [
@@ -414,11 +443,47 @@
   "layout": {
     "rows": [
       {
-        "sha": "ff4e216df3146069f9ec728711b51f8dcf2c385c",
+        "sha": "92d574f4388c3f94ee2f13583eda409267c02770",
         "lane": 0,
         "color": 0,
         "through": [],
         "incoming": [],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "b1ca7be235280616e1ed337b9f7c3551c1ca2bba",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "ff4e216df3146069f9ec728711b51f8dcf2c385c",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
         "outgoing": [
           {
             "to": 0,
@@ -1002,9 +1067,18 @@
   },
   "branches": [
     {
+      "name": "feature/comfy",
+      "sha": "b1ca7be235280616e1ed337b9f7c3551c1ca2bba",
+      "short": "b1ca7be",
+      "upstream": "",
+      "date": "2026-11-07",
+      "current": false,
+      "symref": ""
+    },
+    {
       "name": "feature/dsh-director",
-      "sha": "ff4e216df3146069f9ec728711b51f8dcf2c385c",
-      "short": "ff4e216",
+      "sha": "92d574f4388c3f94ee2f13583eda409267c02770",
+      "short": "92d574f",
       "upstream": "",
       "date": "2026-11-07",
       "current": true,
@@ -1030,6 +1104,109 @@
     }
   ],
   "details": {
+    "92d574f4388c3f94ee2f13583eda409267c02770": {
+      "message": "fix(director): enforce the prompt length bound on writes\n\nThe review already warned about an over-long prompt, but the write path let it\nthrough. Reject text/negative above maxPromptChars at add_shot and update_shot\nso the bound is real, and cover it in the domain tests.",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-07T16:03:52+08:00",
+      "files": [
+        {
+          "path": "dsh-director/production.js",
+          "status": "M",
+          "added": 12,
+          "deleted": 1,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/test/production.test.js",
+          "status": "M",
+          "added": 24,
+          "deleted": 0,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "dsh-director/production.js",
+        "lines": [
+          "diff --git a/dsh-director/production.js b/dsh-director/production.js",
+          "index 1d1688f..c6d5e8f 100644",
+          "--- a/dsh-director/production.js",
+          "+++ b/dsh-director/production.js",
+          "@@ -866,3 +866,14 @@ function readShotFields(input, limits, requireDuration) {",
+          "   if (input.audio !== undefined) out.audio = readShotAudioPartial(input.audio)",
+          "-  if (input.prompt !== undefined) out.prompt = readPromptPartial(input.prompt)",
+          "+  if (input.prompt !== undefined) {",
+          "+    out.prompt = readPromptPartial(input.prompt)",
+          "+    for (const key of ['text', 'negative']) {",
+          "+      const value = out.prompt[key]",
+          "+      if (typeof value === 'string' && value.length > limits.maxPromptChars) {",
+          "+        fail(",
+          "+          'VIDEO_LIMIT',",
+          "+          `prompt ${key} is ${value.length} characters; maxPromptChars is ${limits.maxPromptChars} — split the idea or trim it`,",
+          "+        )",
+          "+      }",
+          "+    }",
+          "+  }",
+          "   if (input.continuity !== undefined) out.continuity = readContinuityPartial(input.continuity)"
+        ],
+        "truncated": false
+      }
+    },
+    "b1ca7be235280616e1ed337b9f7c3551c1ca2bba": {
+      "message": "chore(site): refresh the graph after dsh-director",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-07T15:59:02+08:00",
+      "files": [
+        {
+          "path": "site/src/data/repo-graph.json",
+          "status": "M",
+          "added": 515,
+          "deleted": 156,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "site/src/data/repo-graph.json",
+        "lines": [
+          "diff --git a/site/src/data/repo-graph.json b/site/src/data/repo-graph.json",
+          "index 103bf7f..79e3122 100644",
+          "--- a/site/src/data/repo-graph.json",
+          "+++ b/site/src/data/repo-graph.json",
+          "@@ -2,7 +2,7 @@",
+          "   \"source\": {",
+          "-    \"head\": \"f9b216129a61ff141650f683438720022d5ada97\",",
+          "-    \"headShort\": \"f9b2161\",",
+          "+    \"head\": \"ff4e216df3146069f9ec728711b51f8dcf2c385c\",",
+          "+    \"headShort\": \"ff4e216\",",
+          "     \"headDate\": \"2026-11-07\",",
+          "-    \"currentBranch\": \"release\",",
+          "-    \"total\": 27,",
+          "+    \"currentBranch\": \"feature/dsh-director\",",
+          "+    \"total\": 30,",
+          "     \"limit\": 40,",
+          "@@ -12,5 +12,5 @@",
+          "     {",
+          "-      \"sha\": \"f9b216129a61ff141650f683438720022d5ada97\",",
+          "+      \"sha\": \"ff4e216df3146069f9ec728711b51f8dcf2c385c\","
+        ],
+        "truncated": true
+      }
+    },
     "ff4e216df3146069f9ec728711b51f8dcf2c385c": {
       "message": "feat(director): add the AI video director plugin\n\nA production workspace for AI video: six agent tools keep the project,\nstoryboard, takes and audio under `video/`, an embedded skill carries the\ndirecting method (story structure, shot design, prompt recipe, sound), and a\nread-only right-sidebar board copies paste-ready prompts and shows the review.\n\nThe plugin never generates video or calls a generation API; its product is the\npositive prompt, negative prompt and parameters the user pastes into\nKling/Jimeng/Hailuo, plus the plan and take log around them.\n\n- domain: pure validation, ids, mutations and the deterministic review\n- host: ctx.fs store with optimistic version guards, six tool definitions,\n  the embedded skill and guidance, read-only /dsh-director/api/state\n- client: React board (storyboard, prompts, audio, review) built to client.js\n- repo: packages.mjs, publish workflow, release-gate test, root README,\n  AGENTS.md",
       "author": {
@@ -1441,98 +1618,6 @@
           "+│   ├── check-release.mjs   # 门禁：每个 manifest 版本都必须有匹配 tag",
           "+│   └── packages.mjs        # 两个脚本共用的包清单与 tag 命名",
           " ├── site/                   # Astro 门户（独立 pnpm 包，Vercel 的 Root Directory）"
-        ],
-        "truncated": false
-      }
-    },
-    "a84cc906e522c1ee20a123cd7af644282abad770": {
-      "message": "chore(site): refresh the graph after the gate's CI fix",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-07T15:09:37+08:00",
-      "files": [
-        {
-          "path": "site/src/data/repo-graph.json",
-          "status": "M",
-          "added": 164,
-          "deleted": 93,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": "site/src/data/repo-graph.json",
-        "lines": [
-          "diff --git a/site/src/data/repo-graph.json b/site/src/data/repo-graph.json",
-          "index fc0a03b..103bf7f 100644",
-          "--- a/site/src/data/repo-graph.json",
-          "+++ b/site/src/data/repo-graph.json",
-          "@@ -2,7 +2,7 @@",
-          "   \"source\": {",
-          "-    \"head\": \"0c2f9abc35db22bbf67c1140ed50c3d8445eba4d\",",
-          "-    \"headShort\": \"0c2f9ab\",",
-          "+    \"head\": \"f9b216129a61ff141650f683438720022d5ada97\",",
-          "+    \"headShort\": \"f9b2161\",",
-          "     \"headDate\": \"2026-11-07\",",
-          "     \"currentBranch\": \"release\",",
-          "-    \"total\": 25,",
-          "+    \"total\": 27,",
-          "     \"limit\": 40,",
-          "@@ -12,5 +12,5 @@",
-          "     {",
-          "-      \"sha\": \"0c2f9abc35db22bbf67c1140ed50c3d8445eba4d\",",
-          "+      \"sha\": \"f9b216129a61ff141650f683438720022d5ada97\",",
-          "       \"parents\": ["
-        ],
-        "truncated": true
-      }
-    },
-    "f9b216129a61ff141650f683438720022d5ada97": {
-      "message": "fix(ci): name the test files instead of the directory\n\nNode 22's test runner takes file arguments; `node --test scripts/` resolves\nthe directory as a module and fails with \"Cannot find module …/scripts\",\nwhich turned the gate's own step red on the first run. Node 26 accepts the\ndirectory, so the local run hid it.\n\nSpell the glob out in the workflow and in the commands AGENTS.md documents.",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-07T15:09:17+08:00",
-      "files": [
-        {
-          "path": ".github/workflows/ci.yml",
-          "status": "M",
-          "added": 2,
-          "deleted": 1,
-          "binary": false
-        },
-        {
-          "path": "AGENTS.md",
-          "status": "M",
-          "added": 1,
-          "deleted": 1,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": "AGENTS.md",
-        "lines": [
-          "diff --git a/AGENTS.md b/AGENTS.md",
-          "index 7fc72e1..44ca928 100644",
-          "--- a/AGENTS.md",
-          "+++ b/AGENTS.md",
-          "@@ -45,3 +45,3 @@ npm run check          # 产物新鲜度 + 语法；dsh-git 先跑 build --check",
-          " node scripts/check-release.mjs            # 门禁：每个 manifest 版本都有 tag",
-          "-node --test scripts/                      # 门禁自身的测试",
-          "+node --test scripts/*.test.mjs            # 门禁自身的测试（Node 22 不展开目录参数）",
-          " node scripts/release.mjs <dir> --bump patch --dry-run   # 演练发版"
         ],
         "truncated": false
       }
