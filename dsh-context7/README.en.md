@@ -97,7 +97,7 @@ Guidance row `context7-ui`:
 ```
 
 - `guidance`: defaults to `true`. Setting it to `false` removes only the paragraph above; tools, presentation, and the connection are unaffected.
-- `serverName`: defaults to `context7` and **must match the connector row's `serverName`**; after a rename the guidance follows the new tool prefix, otherwise it hides itself because the names no longer line up.
+- `serverName`: defaults to `context7` and **must match the connector row's `serverName`**; after a rename the guidance follows the new tool prefix, otherwise it hides itself because the names no longer line up. Note that the browser half's presentation rows match the hardcoded `mcp__context7__` prefix, so after a rename both tools fall back to the default tool card (the tools themselves keep working).
 
 ## Verify
 

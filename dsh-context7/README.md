@@ -97,7 +97,7 @@ CONTEXT7_API_KEY=ctx7sk_...
 ```
 
 - `guidance`：默认 `true`。设为 `false` 只关掉上面那段常驻提示，工具、展示和连接都不受影响。
-- `serverName`：默认 `context7`，**必须与 `context7` 行的 `serverName` 一致**；改名后引导会自动指向新的工具名前缀，否则会因工具名对不上而自动隐藏。
+- `serverName`：默认 `context7`，**必须与 `context7` 行的 `serverName` 一致**；改名后引导会自动指向新的工具名前缀，否则会因工具名对不上而自动隐藏。注意浏览器半边的展示行匹配的是写死的 `mcp__context7__` 前缀，改名后这两个工具会退回默认工具卡片（工具本身照常可用）。
 
 ## 验证
 

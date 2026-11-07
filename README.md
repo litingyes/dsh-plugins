@@ -30,7 +30,7 @@ pnpm dev      # http://localhost:4321
 
 ```text
 plugin_manager action=install_bundle target=@litingyes/dsh-context7@0.2.1
-plugin_manager action=install_bundle target=@litingyes/dsh-git@0.5.0
+plugin_manager action=install_bundle target=@litingyes/dsh-git@0.5.1
 ```
 
 本地开发时按目录安装：
@@ -55,7 +55,7 @@ Web 侧边栏的 **Plugins** 页面同样接受包名、Git 地址、压缩包�
 
    ```bash
    (cd dsh-git && npm version patch --no-git-tag-version)
-   git add -A && git commit -m "release: dsh-git 0.5.1"
+   git add -A && git commit -m "release: dsh-git 0.5.2"
    ```
 
 2. 打 tag 并推送，CI 随即发布：

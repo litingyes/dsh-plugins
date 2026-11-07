@@ -11,7 +11,7 @@
 - 胶囊是状态行里的一个小 pill：透明底，悬停/展开时高亮；分支名过长会省略；当前处于分离 HEAD 时显示短 SHA（悬停看完整 SHA）；有未提交改动时旁边有一个小圆点，悬停显示文件数。
 - 点击胶囊**向上**打开本地分支选择器（宿主菜单材质）：输入框即时过滤，当前分支带勾选标记；已被其它工作树检出的分支保留在列表里，但按钮禁用、悬停提示工作树路径（与面板「分支」页同一规则）。
 - 选择即切换，不弹二次确认：`git switch` 会拒绝会覆盖本地改动的切换，拒绝原因直接显示在选择器里，工作区不会被强制重置。
-- 同一个选择器里可以「新建分支并切换」；分支名由 Host 的 `git check-ref-format --branch` 校验，非法名字会带着 git 的报错显示出来。
+- 同一个选择器里可以「新建分支并切换」；分支名由 Host 的 `git check-ref-format --branch` 校验，非法名字会被拒绝并给出说明（git 的原始报错不进界面，只作为结构化错误的 `cause` 返回）。
 - 分支胶囊和右侧栏 Git 页签共用同一份仓库快照：任意一边切换分支，另一边立即跟着变。打开选择器、或切回窗口时都会重新读取一次，以跟上智能体或终端里改过的分支。
 - 文案跟随 App 语言（中文 / English），面板、页签标题和选择器一起切换。
 - 空白会话的首屏（hero）没有这条状态行，发出第一条消息、进入正常会话后胶囊出现。
@@ -33,16 +33,16 @@
   | 位置 | 内容 |
   | --- | --- |
   | 左侧泳道 | 分叉、合并、分支推进的连线与节点圆点 |
-  | 主题 | 提交 description（subject）+ 指向该提交的分支/标签徽标 |
+  | 主题 | 提交 description（subject）+ 指向该提交的分支/标签徽标（最多 3 个，其余折成 `+N`） |
   | 右侧 | author · 相对日期 · 短 SHA |
 
-- **点击节点展开详情**：完整 commit message、author 与 committer、绝对/相对时间、父提交、全部 refs、变更文件列表（状态字母 + `+/-` 行数）；再点某个文件即可看该文件在该提交中的 diff。
+- **点击节点展开详情**：完整 commit message、author 与 committer（含提交时间，绝对与相对写法都有）、父提交、变更文件列表（状态字母 + `+/-` 行数）；再点某个文件即可看该文件在该提交中的 diff。refs 只在行内徽标上出现，详情不重复列出。
 - **右键节点行打开提交菜单**：复制 SHA、拣选到当前分支（cherry-pick）、撤销此提交（revert）、删除此提交（drop）。不满足条件的项留在菜单里但禁用，并用 tooltip 说明原因（合并提交、第一个提交、不在当前分支、工作区有改动、仓库正在合并或变基等）；删除提交还要过一次确认框。
 - 工具行提供「仅当前分支 / 全部分支」切换、提交搜索（subject / author / SHA）与刷新。
 
 ### 变更
 
-- 已暂存 / 未暂存 / 未跟踪 / 冲突四组，逐文件或整组勾选，图标按钮执行「暂存 / 取消暂存 / 丢弃」（悬停或键盘聚焦显示 tooltip）。
+- 已暂存 / 未暂存 / 未跟踪 / 冲突四组，逐文件或整组勾选，图标按钮执行「暂存 / 取消暂存 / 丢弃」（悬停或键盘聚焦显示 tooltip）。前两组与未跟踪的行上有行内按钮；冲突行没有，选中后用分组标题栏上的按钮执行。
 - 选中文件在右侧看 diff（宽屏两栏，窄屏上下堆叠），新增/删除行按主题的成功/错误色高亮。
 - 底部提交框：填信息后「提交」；已暂存为空或信息为空时禁用；`Cmd/Ctrl+Enter` 快捷提交。
 - 「丢弃」会先弹确认框，确认后才带 `confirm: true` 请求 Host，Host 还会再校验一次。
@@ -73,7 +73,7 @@ plugin_manager action=install_bundle target=/absolute/path/to/dsh-plugins/dsh-gi
 已发布到 npm，可直接按包名安装：
 
 ```text
-plugin_manager action=install_bundle target=@litingyes/dsh-git@0.5.0
+plugin_manager action=install_bundle target=@litingyes/dsh-git@0.5.1
 ```
 
 安装后左侧栏不再有 Git 图标：会话开始后，输入框下方的状态行会自动出现分支胶囊，完整面板的入口在右侧栏「+」的起始页里。浏览器半边升级后，桌面 App 需要**重启**（或设置 → Plugins 里关开插件）才能加载新的 `client.js`；`dsh web` 刷新页面即可。Host 半边（`index.js` / `git.js` / `api.js`）由 Loader 在启动时载入，**升级后需要重启 DSH** 才生效。卸载：`plugin_manager action=remove_bundle target=@litingyes/dsh-git`。
@@ -112,6 +112,7 @@ plugin_manager action=install_bundle target=@litingyes/dsh-git@0.5.0
 ## 限制
 
 - 不做网络操作：没有 fetch / pull / push / clone。
+- 一律带 `--no-verify` 执行提交、合并与变基：仓库里的 `pre-commit`、`commit-msg`、`pre-merge-commit`、`pre-rebase` 钩子不会运行，别指望面板触发它们。
 - 面板不移动会话目录：新建工作树只是登记一个目录，进去开会话要你自己操作。
 - 不做 stash，也不做冲突解决：merge / rebase / cherry-pick / revert 遇到冲突会自动中止，没有 continue / skip / 冲突编辑器。
 - rebase 使用 git 默认行为：重放范围里已有的合并提交会被压平；drop 遇到这种范围会直接拒绝。

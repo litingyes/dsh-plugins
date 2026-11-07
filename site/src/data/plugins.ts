@@ -268,15 +268,15 @@ export const plugins: PluginDoc[] = [
       {
         title: { zh: '多分支提交树', en: 'Multi-branch commit graph' },
         body: {
-          zh: '按 --date-order 展开所有本地与远程分支，泳道并排；点开一行看完整 message、作者、committer、父提交、全部 refs 与文件 diff。',
-          en: 'Every local and remote branch in --date-order, drawn as parallel lanes. Open a row for the message, author and committer, parents, every ref and the file diffs.',
+          zh: '按 --date-order 展开所有本地与远程分支，泳道并排，行上最多 3 个分支/标签徽标（其余折成 +N）；点开一行看完整 message、作者、committer、父提交与文件 diff。',
+          en: 'Every local and remote branch in --date-order, drawn as parallel lanes, with up to three ref badges per row (the rest collapse into +N). Open a row for the message, author and committer, parents and file diffs.',
         },
       },
       {
         title: { zh: '变更与提交', en: 'Changes and commits' },
         body: {
-          zh: '已暂存、未暂存、未跟踪、冲突四组，整组或逐文件勾选；丢弃要过 UI 弹框与 Host 的 confirm 两道确认，提交支持 Cmd/Ctrl+Enter。',
-          en: 'Staged, unstaged, untracked and conflicted groups, selected by file or as a group. Discard needs the dialog and the Host’s confirm check; Cmd/Ctrl+Enter commits.',
+          zh: '已暂存、未暂存、未跟踪、冲突四组，整组或逐文件勾选；前三种的行上有行内图标按钮，冲突行勾选后用分组标题栏的按钮。丢弃要过 UI 弹框与 Host 的 confirm 两道确认，提交支持 Cmd/Ctrl+Enter。',
+          en: 'Staged, unstaged, untracked and conflicted groups, selected by file or as a group. The first three carry inline row buttons; conflicted rows use the group header once selected. Discard needs the dialog and the Host’s confirm check; Cmd/Ctrl+Enter commits.',
         },
       },
       {
@@ -319,6 +319,7 @@ export const plugins: PluginDoc[] = [
     ],
     limits: [
       { zh: '不做网络操作：没有 fetch、pull、push、clone。', en: 'No network operations: no fetch, pull, push or clone.' },
+      { zh: '提交、合并、变基一律带 --no-verify：仓库里的 pre-commit / commit-msg / pre-merge-commit / pre-rebase 钩子不会运行。', en: 'Commit, merge and rebase always run with --no-verify, so the repository’s pre-commit, commit-msg, pre-merge-commit and pre-rebase hooks never run.' },
       { zh: '不做 stash，也不做冲突解决：历史操作遇到冲突自动中止，没有 continue / skip / 冲突编辑器。', en: 'No stash and no conflict resolution: history actions abort on conflict, with no continue, skip or conflict editor.' },
       { zh: 'rebase 用 git 默认行为，重放范围内的合并提交会被压平；drop 遇到这种范围直接拒绝。', en: 'Rebase uses git’s default, so merge commits in the replayed range are flattened; drop refuses such a range outright.' },
       { zh: '右键菜单靠鼠标右键或触屏长按打开；提交行与分支行没有额外的「更多」按钮入口。', en: 'Context menus open by right-click or touch long-press; commit and branch rows have no extra “more” button.' },
@@ -389,8 +390,9 @@ export const plugins: PluginDoc[] = [
     ],
     tools: context7Tools,
     config: [
-      { field: 'serverName', value: 'context7', desc: { zh: '连接行与引导行必须一致；改名后工具前缀跟着变', en: 'The connection row and the guidance row must agree; renaming changes the tool prefix' } },
-      { field: 'transport', value: 'streamable-http', desc: { zh: '固定连到 https://mcp.context7.com/mcp', en: 'Points at https://mcp.context7.com/mcp' } },
+      { field: 'serverName', value: 'context7', desc: { zh: '连接行与引导行必须一致；改名后工具前缀跟着变，但浏览器半边的展示行只认 mcp__context7__，会退回默认工具卡片', en: 'The connection row and the guidance row must agree; renaming changes the tool prefix, but the browser rows only match mcp__context7__ and fall back to the default card' } },
+      { field: 'transport', value: 'streamable-http', desc: { zh: '固定使用 streamable-http', en: 'Always streamable-http' } },
+      { field: 'url', value: 'https://mcp.context7.com/mcp', desc: { zh: '官方 MCP 端点；可换成自建或代理地址', en: 'The official MCP endpoint; point it at a proxy or self-hosted one if needed' } },
       { field: 'failOnStartupError', value: 'true', desc: { zh: '连不上时明确报失败；false 交给重连在后台恢复', en: 'Fail loudly when unreachable; false leaves recovery to the reconnect policy' } },
       { field: 'toolCallTimeoutMs', value: '60000', desc: { zh: 'Context7 检索较重时可以调大', en: 'Raise it when Context7 retrieval is slow' } },
       { field: 'guidance', value: 'true', desc: { zh: '引导行开关；false 只关掉常驻提示，工具与展示不受影响', en: 'The guidance row switch; false removes only the paragraph, not the tools or the rows' } },
@@ -401,6 +403,7 @@ export const plugins: PluginDoc[] = [
       { zh: '不支持 OAuth：DSH 的 MCP 客户端未实现 OAuth，只能 API key 或匿名访问。', en: 'No OAuth: the DSH MCP client does not implement it, so it is an API key or anonymous access.' },
       { zh: '数据外发：查询内容离开本机，额度与计费以 Context7 账户为准。', en: 'Data egress: queries leave the machine, and quota and billing follow the Context7 account.' },
       { zh: '核心提示里的 resource 行对 Context7 是死路，插件删不掉，只能靠引导把路径指回工具。', en: 'The core MCP resource line is a dead end for Context7; the plugin cannot remove it and routes around it with the guidance.' },
+      { zh: '命名冲突：serverName 在同一注册作用域内必须唯一，改名后工具前缀、引导行与展示行都要同步考虑。', en: 'Naming: serverName must be unique inside a registration scope, and a rename touches the tool prefix, the guidance row and the presentation rows.' },
       { zh: '叠装同名 skill 会分流触发；引导段落每次请求约 90 tokens，可用 guidance: false 关掉。', en: 'Overlapping skills siphon triggers; the paragraph costs about 90 tokens per request and guidance: false turns it off.' },
     ],
   },
@@ -443,7 +446,11 @@ export const context7Story = {
   ],
 }
 
-/** The guidance paragraph the plugin adds, quoted verbatim from its source. */
+/**
+ * The guidance paragraph the plugin adds, quoted from its source. The card shows
+ * an excerpt: the opening clause ("For third-party library…") is dropped, and the
+ * apostrophes are typographic, so compare against `index.js`, not this string.
+ */
 export const context7Guidance = {
   title: { zh: '插件补上的那一段', en: 'The paragraph the plugin adds' } as L,
   lead: {

@@ -11,7 +11,7 @@ A branch chip in the status row below the composer (the row with the token and p
 - The chip is a status pill: transparent, highlighted on hover/open. Long names ellipsize; a detached HEAD shows the short SHA (hover for the full id); a small dot appears when the working tree has uncommitted changes, with the file count in its tooltip.
 - Clicking the chip opens the local-branch picker **upward** (host menu material): the filter updates as you type, the current branch is marked, and a branch checked out in another worktree stays listed but is disabled with that worktree's path in the tooltip (the same rule as the panel's Branches tab).
 - Choosing a branch switches immediately, with no second confirmation: `git switch` refuses a switch that would overwrite local changes, that refusal is shown inside the picker, and nothing is force-reset.
-- The same picker can create a branch at HEAD and switch to it; the Host validates the name with `git check-ref-format --branch` and shows git's own error for an invalid one.
+- The same picker can create a branch at HEAD and switch to it; the Host validates the name with `git check-ref-format --branch`, and an invalid name is refused with an explanation (git's raw error stays in the structured failure's `cause` and never reaches the UI).
 - The chip and the right-sidebar Git tab share one snapshot per working directory, so a switch in either place moves the other immediately. Opening the picker, or returning focus to the window, re-reads the repository so a branch changed by the agent or a terminal shows up.
 - Copy follows the app language (Chinese / English), including the panel, the tab guide, and the picker.
 - The blank-session hero has no status row; the chip appears once the conversation starts (after the first message).
@@ -33,16 +33,16 @@ Inside the panel there are three tabs.
   | Where | What |
   | --- | --- |
   | Left gutter | Fork, merge, and advance lines plus the commit dot |
-  | Middle | The commit description (subject) and the branch/tag badges pointing at it |
+  | Middle | The commit description (subject) and the branch/tag badges pointing at it (at most three; the rest collapse into `+N`) |
   | Right | author · relative date · short SHA |
 
-- **Click a node to expand it**: full commit message, author and committer, absolute and relative times, parents, every ref, and the changed-file list with status letters and `+/-` counts. Click a file to see that file's diff inside that commit.
+- **Click a node to expand it**: full commit message, author and committer (with the commit time in both absolute and relative form), parents, and the changed-file list with status letters and `+/-` counts. Click a file to see that file's diff inside that commit. Refs appear as the row badges only; the detail does not repeat them.
 - **Right-click a node row for the commit menu**: copy the SHA, cherry-pick it onto the current branch, revert it, or drop it. Entries a snapshot cannot allow stay in the menu but are disabled, with a tooltip naming the reason (merge commit, first commit, not on the current branch, dirty worktree, an operation already in progress). Dropping asks for confirmation first.
 - The toolbar toggles "current branch only" / "all branches", searches by subject, author, or SHA, and refreshes.
 
 ### Changes
 
-- Staged, unstaged, untracked, and conflicted groups; select a file or a whole group and use the stage, unstage, or discard icon button (hover or keyboard focus shows a tooltip).
+- Staged, unstaged, untracked, and conflicted groups; select a file or a whole group and use the stage, unstage, or discard icon button (hover or keyboard focus shows a tooltip). Staged, unstaged, and untracked rows carry their own buttons; conflicted rows do not — select them and use the group header's buttons.
 - The selected file's diff sits beside the list (two columns when wide, stacked when narrow) with added and removed lines tinted from the theme's success and error tokens.
 - Commit box at the bottom: write a message and commit. It stays disabled while nothing is staged or the message is empty; `Cmd/Ctrl+Enter` submits.
 - **Discard** opens a confirmation dialog first; only the confirmed request carries `confirm: true`, and the Host checks it again.
@@ -73,7 +73,7 @@ plugin_manager action=install_bundle target=/absolute/path/to/dsh-plugins/dsh-gi
 Published on npm; install it by package name:
 
 ```text
-plugin_manager action=install_bundle target=@litingyes/dsh-git@0.5.0
+plugin_manager action=install_bundle target=@litingyes/dsh-git@0.5.1
 ```
 
 There is no left-sidebar icon: once a conversation starts, a branch chip appears in the status row below the composer, and the full panel's way in is the right sidebar's add control. After a browser-half upgrade the desktop app must be **restarted** (or the plugin toggled in Settings → Plugins) to load the new `client.js`; `dsh web` only needs a page refresh; the Host half (`index.js` / `git.js` / `api.js`) is imported by the Loader at startup, so **restart DSH after upgrading**. Remove it with `plugin_manager action=remove_bundle target=@litingyes/dsh-git`.
@@ -112,6 +112,7 @@ Configuration lives on the mount row in `cordis.patch.yml`. **Overriding the row
 ## Limits
 
 - No network operations: no fetch, pull, push, or clone.
+- Commit, merge, and rebase always run with `--no-verify`: the repository's `pre-commit`, `commit-msg`, `pre-merge-commit`, and `pre-rebase` hooks never run from the panel.
 - The panel does not move the Session's directory: a new worktree is only a directory on disk — enter it (or open a Session there) yourself.
 - No stash, and no conflict resolution: merge / rebase / cherry-pick / revert abort on conflict, with no continue, skip, or in-panel conflict editor.
 - Rebase uses git's default behaviour, so existing merge commits in the replayed range are flattened; drop refuses such a range outright.
