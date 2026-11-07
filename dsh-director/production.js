@@ -864,7 +864,18 @@ function readShotFields(input, limits, requireDuration) {
     out.onScreenText = readString(input, 'on_screen_text', { label: 'on_screen_text', max: 200 })
   }
   if (input.audio !== undefined) out.audio = readShotAudioPartial(input.audio)
-  if (input.prompt !== undefined) out.prompt = readPromptPartial(input.prompt)
+  if (input.prompt !== undefined) {
+    out.prompt = readPromptPartial(input.prompt)
+    for (const key of ['text', 'negative']) {
+      const value = out.prompt[key]
+      if (typeof value === 'string' && value.length > limits.maxPromptChars) {
+        fail(
+          'VIDEO_LIMIT',
+          `prompt ${key} is ${value.length} characters; maxPromptChars is ${limits.maxPromptChars} — split the idea or trim it`,
+        )
+      }
+    }
+  }
   if (input.continuity !== undefined) out.continuity = readContinuityPartial(input.continuity)
   if (input.status !== undefined) out.status = readEnum(input, 'status', STATUSES, { label: 'shot status' })
   return out

@@ -133,6 +133,30 @@ test('addShot requires a duration inside the configured range', () => {
   assert.throws(() => addShot(board, 'S1', { duration_sec: 20 }, { now: clock }), /duration_sec must be <= 10/)
 })
 
+test('the prompt length bound is enforced on writes', () => {
+  const board = storyboard()
+  assert.throws(
+    () =>
+      updateShot(
+        board,
+        'S1-01',
+        { prompt: { text: 'x'.repeat(DEFAULT_LIMITS.maxPromptChars + 1) } },
+        { now: clock },
+      ),
+    error => error.code === 'VIDEO_LIMIT',
+  )
+  assert.throws(
+    () =>
+      addShot(
+        board,
+        'S1',
+        { duration_sec: 3, prompt: { negative: 'x'.repeat(DEFAULT_LIMITS.maxPromptChars + 1) } },
+        { now: clock },
+      ),
+    error => error.code === 'VIDEO_LIMIT',
+  )
+})
+
 test('addShot honours maxShotsPerScene', () => {
   const board = storyboard()
   let current = board
