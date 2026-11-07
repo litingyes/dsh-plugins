@@ -1,14 +1,59 @@
 {
   "source": {
-    "head": "f9b216129a61ff141650f683438720022d5ada97",
-    "headShort": "f9b2161",
+    "head": "ff4e216df3146069f9ec728711b51f8dcf2c385c",
+    "headShort": "ff4e216",
     "headDate": "2026-11-07",
-    "currentBranch": "release",
-    "total": 27,
+    "currentBranch": "feature/dsh-director",
+    "total": 30,
     "limit": 40,
     "truncated": false
   },
   "commits": [
+    {
+      "sha": "ff4e216df3146069f9ec728711b51f8dcf2c385c",
+      "parents": [
+        "eb7be432e0b423ebaddd7a6cd3b24a27e2931cfb"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-07",
+      "subject": "feat(director): add the AI video director plugin",
+      "refs": [],
+      "onCurrent": true
+    },
+    {
+      "sha": "eb7be432e0b423ebaddd7a6cd3b24a27e2931cfb",
+      "parents": [
+        "a84cc906e522c1ee20a123cd7af644282abad770"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-07",
+      "subject": "docs: list the release gate in the directory map",
+      "refs": [
+        {
+          "name": "origin/release",
+          "kind": "remote"
+        },
+        {
+          "name": "release",
+          "kind": "branch"
+        }
+      ],
+      "onCurrent": true
+    },
+    {
+      "sha": "a84cc906e522c1ee20a123cd7af644282abad770",
+      "parents": [
+        "f9b216129a61ff141650f683438720022d5ada97"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-07",
+      "subject": "chore(site): refresh the graph after the gate's CI fix",
+      "refs": [],
+      "onCurrent": true
+    },
     {
       "sha": "f9b216129a61ff141650f683438720022d5ada97",
       "parents": [
@@ -30,12 +75,7 @@
       "email": "luz.liting@gmail.com",
       "date": "2026-11-07",
       "subject": "chore(site): refresh the graph after the release gate",
-      "refs": [
-        {
-          "name": "origin/release",
-          "kind": "remote"
-        }
-      ],
+      "refs": [],
       "onCurrent": true
     },
     {
@@ -374,11 +414,65 @@
   "layout": {
     "rows": [
       {
-        "sha": "f9b216129a61ff141650f683438720022d5ada97",
+        "sha": "ff4e216df3146069f9ec728711b51f8dcf2c385c",
         "lane": 0,
         "color": 0,
         "through": [],
         "incoming": [],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "eb7be432e0b423ebaddd7a6cd3b24a27e2931cfb",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "a84cc906e522c1ee20a123cd7af644282abad770",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "f9b216129a61ff141650f683438720022d5ada97",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
         "outgoing": [
           {
             "to": 0,
@@ -908,6 +1002,15 @@
   },
   "branches": [
     {
+      "name": "feature/dsh-director",
+      "sha": "ff4e216df3146069f9ec728711b51f8dcf2c385c",
+      "short": "ff4e216",
+      "upstream": "",
+      "date": "2026-11-07",
+      "current": true,
+      "symref": ""
+    },
+    {
       "name": "feature/dsh-git",
       "sha": "8737129fbc999197a83288d90a0c8278ccb0cbf3",
       "short": "8737129",
@@ -918,15 +1021,478 @@
     },
     {
       "name": "release",
-      "sha": "f9b216129a61ff141650f683438720022d5ada97",
-      "short": "f9b2161",
+      "sha": "eb7be432e0b423ebaddd7a6cd3b24a27e2931cfb",
+      "short": "eb7be43",
       "upstream": "origin/release",
       "date": "2026-11-07",
-      "current": true,
+      "current": false,
       "symref": ""
     }
   ],
   "details": {
+    "ff4e216df3146069f9ec728711b51f8dcf2c385c": {
+      "message": "feat(director): add the AI video director plugin\n\nA production workspace for AI video: six agent tools keep the project,\nstoryboard, takes and audio under `video/`, an embedded skill carries the\ndirecting method (story structure, shot design, prompt recipe, sound), and a\nread-only right-sidebar board copies paste-ready prompts and shows the review.\n\nThe plugin never generates video or calls a generation API; its product is the\npositive prompt, negative prompt and parameters the user pastes into\nKling/Jimeng/Hailuo, plus the plan and take log around them.\n\n- domain: pure validation, ids, mutations and the deterministic review\n- host: ctx.fs store with optimistic version guards, six tool definitions,\n  the embedded skill and guidance, read-only /dsh-director/api/state\n- client: React board (storyboard, prompts, audio, review) built to client.js\n- repo: packages.mjs, publish workflow, release-gate test, root README,\n  AGENTS.md",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-07T15:58:31+08:00",
+      "files": [
+        {
+          "path": ".github/workflows/publish.yml",
+          "status": "M",
+          "added": 4,
+          "deleted": 1,
+          "binary": false
+        },
+        {
+          "path": "AGENTS.md",
+          "status": "M",
+          "added": 11,
+          "deleted": 8,
+          "binary": false
+        },
+        {
+          "path": "README.md",
+          "status": "M",
+          "added": 29,
+          "deleted": 8,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/LICENSE",
+          "status": "A",
+          "added": 21,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/README.en.md",
+          "status": "A",
+          "added": 178,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/README.md",
+          "status": "A",
+          "added": 178,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/api.js",
+          "status": "A",
+          "added": 244,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/client.js",
+          "status": "A",
+          "added": 148,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/cordis.patch.yml",
+          "status": "A",
+          "added": 49,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/icon.svg",
+          "status": "A",
+          "added": 8,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/index.js",
+          "status": "A",
+          "added": 253,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/locale/en.json",
+          "status": "A",
+          "added": 6,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/locale/zh.json",
+          "status": "A",
+          "added": 6,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/package-lock.json",
+          "status": "A",
+          "added": 503,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/package.json",
+          "status": "A",
+          "added": 92,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/production.js",
+          "status": "A",
+          "added": 1880,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/scripts/build-client.mjs",
+          "status": "A",
+          "added": 125,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/skill.js",
+          "status": "A",
+          "added": 59,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/skill.md",
+          "status": "A",
+          "added": 249,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/src/client/api-client.js",
+          "status": "A",
+          "added": 87,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/src/client/audio-view.jsx",
+          "status": "A",
+          "added": 118,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/src/client/copy-button.jsx",
+          "status": "A",
+          "added": 84,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/src/client/format.js",
+          "status": "A",
+          "added": 102,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/src/client/i18n.js",
+          "status": "A",
+          "added": 294,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/src/client/icons.jsx",
+          "status": "A",
+          "added": 138,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/src/client/index.jsx",
+          "status": "A",
+          "added": 140,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/src/client/panel.jsx",
+          "status": "A",
+          "added": 309,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/src/client/prompts-view.jsx",
+          "status": "A",
+          "added": 279,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/src/client/review-view.jsx",
+          "status": "A",
+          "added": 130,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/src/client/store.js",
+          "status": "A",
+          "added": 136,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/src/client/storyboard-view.jsx",
+          "status": "A",
+          "added": 210,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/src/client/styles.js",
+          "status": "A",
+          "added": 137,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/src/client/use-translate.js",
+          "status": "A",
+          "added": 26,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/src/shared/prompt.js",
+          "status": "A",
+          "added": 221,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/store.js",
+          "status": "A",
+          "added": 311,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/test/api.test.js",
+          "status": "A",
+          "added": 223,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/test/client-format.test.js",
+          "status": "A",
+          "added": 66,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/test/client-i18n.test.js",
+          "status": "A",
+          "added": 67,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/test/config.test.js",
+          "status": "A",
+          "added": 67,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/test/fake-fs.js",
+          "status": "A",
+          "added": 158,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/test/integration.test.js",
+          "status": "A",
+          "added": 114,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/test/production.test.js",
+          "status": "A",
+          "added": 365,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/test/prompt.test.js",
+          "status": "A",
+          "added": 117,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/test/skill.test.js",
+          "status": "A",
+          "added": 39,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/test/store.test.js",
+          "status": "A",
+          "added": 173,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/test/tools.test.js",
+          "status": "A",
+          "added": 376,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-director/tools.js",
+          "status": "A",
+          "added": 1022,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "scripts/check-release.test.mjs",
+          "status": "M",
+          "added": 5,
+          "deleted": 2,
+          "binary": false
+        },
+        {
+          "path": "scripts/packages.mjs",
+          "status": "M",
+          "added": 1,
+          "deleted": 1,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "scripts/packages.mjs",
+        "lines": [
+          "diff --git a/scripts/packages.mjs b/scripts/packages.mjs",
+          "index 3c4583e..d0328f6 100644",
+          "--- a/scripts/packages.mjs",
+          "+++ b/scripts/packages.mjs",
+          "@@ -9,3 +9,3 @@",
+          " /** Plugin directories that ship to npm, in the order the docs list them. */",
+          "-export const PACKAGES = ['dsh-context7', 'dsh-git']",
+          "+export const PACKAGES = ['dsh-context7', 'dsh-git', 'dsh-director']"
+        ],
+        "truncated": false
+      }
+    },
+    "eb7be432e0b423ebaddd7a6cd3b24a27e2931cfb": {
+      "message": "docs: list the release gate in the directory map",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-07T15:10:49+08:00",
+      "files": [
+        {
+          "path": "README.md",
+          "status": "M",
+          "added": 6,
+          "deleted": 2,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "README.md",
+        "lines": [
+          "diff --git a/README.md b/README.md",
+          "index 15338f6..784f619 100644",
+          "--- a/README.md",
+          "+++ b/README.md",
+          "@@ -73,4 +73,8 @@ dsh-plugins/",
+          " ├── README.md",
+          "-├── .github/workflows/      # 推 tag 触发 npm 发布",
+          "-├── scripts/release.mjs     # 打 tag / 推送",
+          "+├── AGENTS.md               # 仓库规范：发版、产物、双语、站点数据",
+          "+├── .github/workflows/      # push 到 release 跑版本门禁；推 tag 触发 npm 发布",
+          "+├── scripts/",
+          "+│   ├── release.mjs         # 发版：bump / 重建 / 改 pin / 提交 / 打 tag / 推送",
+          "+│   ├── check-release.mjs   # 门禁：每个 manifest 版本都必须有匹配 tag",
+          "+│   └── packages.mjs        # 两个脚本共用的包清单与 tag 命名",
+          " ├── site/                   # Astro 门户（独立 pnpm 包，Vercel 的 Root Directory）"
+        ],
+        "truncated": false
+      }
+    },
+    "a84cc906e522c1ee20a123cd7af644282abad770": {
+      "message": "chore(site): refresh the graph after the gate's CI fix",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-07T15:09:37+08:00",
+      "files": [
+        {
+          "path": "site/src/data/repo-graph.json",
+          "status": "M",
+          "added": 164,
+          "deleted": 93,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "site/src/data/repo-graph.json",
+        "lines": [
+          "diff --git a/site/src/data/repo-graph.json b/site/src/data/repo-graph.json",
+          "index fc0a03b..103bf7f 100644",
+          "--- a/site/src/data/repo-graph.json",
+          "+++ b/site/src/data/repo-graph.json",
+          "@@ -2,7 +2,7 @@",
+          "   \"source\": {",
+          "-    \"head\": \"0c2f9abc35db22bbf67c1140ed50c3d8445eba4d\",",
+          "-    \"headShort\": \"0c2f9ab\",",
+          "+    \"head\": \"f9b216129a61ff141650f683438720022d5ada97\",",
+          "+    \"headShort\": \"f9b2161\",",
+          "     \"headDate\": \"2026-11-07\",",
+          "     \"currentBranch\": \"release\",",
+          "-    \"total\": 25,",
+          "+    \"total\": 27,",
+          "     \"limit\": 40,",
+          "@@ -12,5 +12,5 @@",
+          "     {",
+          "-      \"sha\": \"0c2f9abc35db22bbf67c1140ed50c3d8445eba4d\",",
+          "+      \"sha\": \"f9b216129a61ff141650f683438720022d5ada97\",",
+          "       \"parents\": ["
+        ],
+        "truncated": true
+      }
+    },
     "f9b216129a61ff141650f683438720022d5ada97": {
       "message": "fix(ci): name the test files instead of the directory\n\nNode 22's test runner takes file arguments; `node --test scripts/` resolves\nthe directory as a module and fails with \"Cannot find module …/scripts\",\nwhich turned the gate's own step red on the first run. Node 26 accepts the\ndirectory, so the local run hid it.\n\nSpell the glob out in the workflow and in the commands AGENTS.md documents.",
       "author": {
@@ -969,213 +1535,6 @@
           " node scripts/release.mjs <dir> --bump patch --dry-run   # 演练发版"
         ],
         "truncated": false
-      }
-    },
-    "ddb5b396cb07ae61d636412a2f468e3a2ccc0e9f": {
-      "message": "chore(site): refresh the graph after the release gate\n\n`pnpm sync` picks up the new commits; the portal data is a snapshot, so any\nchange to plugin code has to land here too.",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-07T15:07:28+08:00",
-      "files": [
-        {
-          "path": "site/src/data/repo-graph.json",
-          "status": "M",
-          "added": 217,
-          "deleted": 120,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": "site/src/data/repo-graph.json",
-        "lines": [
-          "diff --git a/site/src/data/repo-graph.json b/site/src/data/repo-graph.json",
-          "index dad3e08..fc0a03b 100644",
-          "--- a/site/src/data/repo-graph.json",
-          "+++ b/site/src/data/repo-graph.json",
-          "@@ -2,7 +2,7 @@",
-          "   \"source\": {",
-          "-    \"head\": \"fac38bfd7a7c7f4137abb5ae2af931ba3d48bab2\",",
-          "-    \"headShort\": \"fac38bf\",",
-          "+    \"head\": \"0c2f9abc35db22bbf67c1140ed50c3d8445eba4d\",",
-          "+    \"headShort\": \"0c2f9ab\",",
-          "     \"headDate\": \"2026-11-07\",",
-          "     \"currentBranch\": \"release\",",
-          "-    \"total\": 23,",
-          "+    \"total\": 25,",
-          "     \"limit\": 40,",
-          "@@ -11,2 +11,31 @@",
-          "   \"commits\": [",
-          "+    {",
-          "+      \"sha\": \"0c2f9abc35db22bbf67c1140ed50c3d8445eba4d\",",
-          "+      \"parents\": ["
-        ],
-        "truncated": true
-      }
-    },
-    "0c2f9abc35db22bbf67c1140ed50c3d8445eba4d": {
-      "message": "chore(release): make a version bump without a tag impossible\n\nPublishing is tag-triggered, but bumping `package.json` and tagging were\nseparate manual steps. Skip the second one and the version lives only in the\nmanifest: dsh-git reached npm as 0.2.0 → 0.5.0 while 0.3.0 and 0.4.0 were\nnever published, which is exactly the kind of gap a registry should not show.\n\nThree pieces, so the rule is enforced rather than remembered:\n\n- `scripts/check-release.mjs` asserts, for every package, that the manifest\n  version is tagged at a commit which declares the same version and is an\n  ancestor of HEAD. Offline on purpose: publishing only happens from tags, so\n  asking npm would just make the gate flaky. Covered by five tests against\n  throwaway repositories.\n- `release.mjs --bump <patch|minor|major>` does the whole release in one\n  command: bump, rebuild the browser half (its banner carries the version),\n  rewrite the install pins, commit `release: <dir> <version>`, tag, and with\n  `--push` push both refs in a single push. `--dry-run` prints the plan.\n- `.github/workflows/ci.yml` runs the gate on every push to `release` and on\n  pull requests. `publish.yml` now refuses a tag older than npm's `latest`,\n  so a stray old tag cannot move the dist-tag backwards.\n\nAGENTS.md records the conventions this repository actually follows: artifacts\nthat must be committed and rebuilt, the no-hand-edited-version rule, bilingual\ndocs, portal data sync, dependency discipline, and what not to touch.\n\nThe dsh-git README now anchors the tool removal on 0.5.0 — the first published\nversion after 0.2.0 — instead of the unpublished 0.3.0.",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-07T15:06:57+08:00",
-      "files": [
-        {
-          "path": ".github/workflows/ci.yml",
-          "status": "A",
-          "added": 47,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": ".github/workflows/publish.yml",
-          "status": "M",
-          "added": 36,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "AGENTS.md",
-          "status": "A",
-          "added": 97,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "README.md",
-          "status": "M",
-          "added": 11,
-          "deleted": 13,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/README.en.md",
-          "status": "M",
-          "added": 2,
-          "deleted": 2,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/README.md",
-          "status": "M",
-          "added": 2,
-          "deleted": 2,
-          "binary": false
-        },
-        {
-          "path": "scripts/check-release.mjs",
-          "status": "A",
-          "added": 149,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "scripts/check-release.test.mjs",
-          "status": "A",
-          "added": 132,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "scripts/packages.mjs",
-          "status": "A",
-          "added": 32,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "scripts/release.mjs",
-          "status": "M",
-          "added": 158,
-          "deleted": 17,
-          "binary": false
-        },
-        {
-          "path": "site/scripts/check-data.mjs",
-          "status": "M",
-          "added": 9,
-          "deleted": 3,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": "dsh-git/README.en.md",
-        "lines": [
-          "diff --git a/dsh-git/README.en.md b/dsh-git/README.en.md",
-          "index f2a63af..f503787 100644",
-          "--- a/dsh-git/README.en.md",
-          "+++ b/dsh-git/README.en.md",
-          "@@ -2,3 +2,3 @@",
-          " ",
-          "-A Git plugin for DeepSeek Harness: **the current branch is shown and switchable in the status row below the composer**, and a **right-sidebar tab follows the Session's workspace** with **a multi-branch commit graph as the primary view**, where every node shows its description, author, date, and commit and expands into full details — beside staging, committing, and branch and worktree management. Right-click a commit for cherry-pick / revert / drop, or a branch row to merge it into the current branch or rebase onto it. Both surfaces share one repository snapshot. 0.3.0 no longer registers agent tools.",
-          "+A Git plugin for DeepSeek Harness: **the current branch is shown and switchable in the status row below the composer**, and a **right-sidebar tab follows the Session's workspace** with **a multi-branch commit graph as the primary view**, where every node shows its description, author, date, and commit and expands into full details — beside staging, committing, and branch and worktree management. Right-click a commit for cherry-pick / revert / drop, or a branch row to merge it into the current branch or rebase onto it. Both surfaces share one repository snapshot. 0.5.0 no longer registers agent tools.",
-          " ",
-          "@@ -90,3 +90,3 @@ Configuration lives on the mount row in `cordis.patch.yml`. **Overriding the row",
-          " ",
-          "-> 0.3.0 removed the four agent tools (`git_status` / `git_diff` / `git_commit` / `git_branch`) along with the `tools` and `defaultWorkspaceId` fields. Legacy keys left in a profile patch are ignored, not rejected.",
-          "+> 0.5.0 removed the four agent tools (`git_status` / `git_diff` / `git_commit` / `git_branch`) along with the `tools` and `defaultWorkspaceId` fields (the change itself landed in the 0.3.0 commit, but 0.3.0 and 0.4.0 were never published on their own — 0.5.0 is the first npm version after 0.2.0). Legacy keys left in a profile patch are ignored, not rejected."
-        ],
-        "truncated": false
-      }
-    },
-    "0813c53e59eb7e13ca84b76a286b65c400c2dcf5": {
-      "message": "chore(site): refresh the graph after the 0.5.1 follow-ups\n\nThe bundle rebuild and the freshness guard touch plugin files, which the\ndata guard treats as code: regenerate the snapshot so the portal keeps\ndescribing HEAD.",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-07T12:56:42+08:00",
-      "files": [
-        {
-          "path": "site/src/data/repo-graph.json",
-          "status": "M",
-          "added": 180,
-          "deleted": 158,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": "site/src/data/repo-graph.json",
-        "lines": [
-          "diff --git a/site/src/data/repo-graph.json b/site/src/data/repo-graph.json",
-          "index fc04a64..dad3e08 100644",
-          "--- a/site/src/data/repo-graph.json",
-          "+++ b/site/src/data/repo-graph.json",
-          "@@ -2,7 +2,7 @@",
-          "   \"source\": {",
-          "-    \"head\": \"4d1e1f677742618f2efe27bd1ed9dc7f57e12979\",",
-          "-    \"headShort\": \"4d1e1f6\",",
-          "+    \"head\": \"fac38bfd7a7c7f4137abb5ae2af931ba3d48bab2\",",
-          "+    \"headShort\": \"fac38bf\",",
-          "     \"headDate\": \"2026-11-07\",",
-          "     \"currentBranch\": \"release\",",
-          "-    \"total\": 20,",
-          "+    \"total\": 23,",
-          "     \"limit\": 40,",
-          "@@ -12,5 +12,5 @@",
-          "     {",
-          "-      \"sha\": \"4d1e1f677742618f2efe27bd1ed9dc7f57e12979\",",
-          "+      \"sha\": \"fac38bfd7a7c7f4137abb5ae2af931ba3d48bab2\",",
-          "       \"parents\": ["
-        ],
-        "truncated": true
       }
     }
   }
