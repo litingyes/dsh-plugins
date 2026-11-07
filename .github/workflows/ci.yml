@@ -44,4 +44,5 @@ jobs:
         run: node scripts/check-release.mjs
 
       - name: The gate itself is tested
-        run: node --test scripts/
+        # Explicit files: Node 22 does not expand a directory argument here.
+        run: node --test scripts/*.test.mjs

@@ -43,7 +43,7 @@ npm run check          # 产物新鲜度 + 语法；dsh-git 先跑 build --check
 
 # 仓库根
 node scripts/check-release.mjs            # 门禁：每个 manifest 版本都有 tag
-node --test scripts/                      # 门禁自身的测试
+node --test scripts/*.test.mjs            # 门禁自身的测试（Node 22 不展开目录参数）
 node scripts/release.mjs <dir> --bump patch --dry-run   # 演练发版
 node scripts/release.mjs <dir> --bump patch --push      # 发版
 
