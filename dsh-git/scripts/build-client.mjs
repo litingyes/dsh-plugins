@@ -13,7 +13,13 @@
  * A new bare `require` in the output means the esbuild config lost an external,
  * so the build fails instead of shipping a bundle that cannot resolve.
  *
- * Usage: `npm run build`
+ * Usage:
+ *   `npm run build`     rewrite client.js
+ *   `node scripts/build-client.mjs --check`
+ *                      build in memory and fail when the committed client.js no
+ *                      longer matches the sources or the manifest version. The
+ *                      banner carries `<name>@<version>`, so a version bump
+ *                      without a rebuild is exactly the drift this catches.
  */
 
 import { build } from 'esbuild'
@@ -26,6 +32,9 @@ const packageRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)))
 
 /** Modules the Web UI's shared module table supplies at runtime. */
 const PLATFORM_MODULES = ['react', 'react-dom', 'react/jsx-runtime']
+
+/** `--check` compares instead of writing, so CI and `npm run check` can assert freshness. */
+const checkOnly = process.argv.includes('--check')
 
 const manifest = JSON.parse(await readFile(path.join(packageRoot, 'package.json'), 'utf8'))
 
@@ -91,16 +100,37 @@ const tail = [
 
 const output = `${inline}\n${body}\n${tail}`
 const outFile = path.join(packageRoot, 'client.js')
-await writeFile(outFile, output, 'utf8')
 
 const bytes = Buffer.byteLength(output, 'utf8')
 const gzipped = gzipSync(Buffer.from(output, 'utf8')).length
 const inputs = Object.keys(result.metafile.inputs).length
+const summary =
+  `${(bytes / 1024).toFixed(1)} KiB raw, ${(gzipped / 1024).toFixed(1)} KiB gzip, ` +
+  `${inputs} inputs, externals: ${[...required].join(', ') || 'none'}`
 
-console.log(
-  `built client.js — ${(bytes / 1024).toFixed(1)} KiB raw, ${(gzipped / 1024).toFixed(1)} KiB gzip, ` +
-    `${inputs} inputs, externals: ${[...required].join(', ') || 'none'}`,
-)
+if (checkOnly) {
+  // A stale bundle is invisible: `npm run check` used to say only "syntax is
+  // valid", so a version bump that never rebuilt shipped a banner that
+  // disagreed with package.json.
+  const committed = await readFile(outFile, 'utf8').catch(() => null)
+  if (committed === null) {
+    console.error('client.js is missing; run `npm run build`')
+    process.exit(1)
+  }
+  if (committed !== output) {
+    console.error(
+      `client.js is stale — rebuild it and commit the result.\n` +
+        `  committed: ${Buffer.byteLength(committed, 'utf8')} bytes\n` +
+        `  rebuilt:   ${bytes} bytes (${summary})\n` +
+        'The banner carries the manifest version, so a version bump alone also lands here.',
+    )
+    process.exit(1)
+  }
+  console.log(`client.js is up to date — ${summary}`)
+} else {
+  await writeFile(outFile, output, 'utf8')
+  console.log(`built client.js — ${summary}`)
+}
 if (bytes > 1_500_000) {
   console.warn(`warning: client.js is ${(bytes / 1024 / 1024).toFixed(2)} MiB; check for an unintended dependency`)
 }
