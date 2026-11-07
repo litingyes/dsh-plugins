@@ -1,0 +1,47 @@
+# Branch gate: a manifest version without a tag is a version users never see.
+#
+# Publishing is tag-triggered, so bumping `package.json` and tagging are two
+# steps, and skipping the second one leaves a number that never reaches npm —
+# dsh-git went 0.2.0 → 0.5.0 that way, with 0.3.0 and 0.4.0 living only in the
+# manifest. `scripts/check-release.mjs` fails every push where a package's
+# current version is not tagged at an ancestor of HEAD, so the drift is caught
+# on the push that introduces it instead of at the next release.
+#
+# Make this workflow a required status check for `release` in the repository
+# settings, otherwise it only paints a red cross.
+name: CI
+
+on:
+  push:
+    branches:
+      - release
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the branch and its tags
+        uses: actions/checkout@v4
+        with:
+          # The gate reads tags and asks whether a tagged commit is an ancestor
+          # of HEAD; a shallow clone answers neither question.
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Every manifest version must be tagged
+        run: node scripts/check-release.mjs
+
+      - name: The gate itself is tested
+        run: node --test scripts/

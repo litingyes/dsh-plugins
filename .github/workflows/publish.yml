@@ -87,6 +87,42 @@ jobs:
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Refuse to move the latest tag backwards
+        if: steps.existing.outputs.skip != 'true'
+        env:
+          PACKAGE_NAME: ${{ steps.target.outputs.name }}
+          PACKAGE_VERSION: ${{ steps.target.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          # `npm publish` points the `latest` dist-tag at whatever it publishes, so
+          # an old tag pushed by mistake would downgrade every fresh install.
+          # Versions already on npm never reach this step (the skip above).
+          latest="$(npm view "${PACKAGE_NAME}" version 2>/dev/null || true)"
+          if [ -z "${latest}" ]; then
+            echo "::notice::${PACKAGE_NAME} has no published version yet; nothing to compare."
+            exit 0
+          fi
+
+          LATEST="${latest}" NEXT="${PACKAGE_VERSION}" node -e '
+            const parts = (value) => value.split("-")[0].split(".").map(Number)
+            const compare = (a, b) => {
+              const left = parts(a)
+              const right = parts(b)
+              for (let index = 0; index < 3; index += 1) {
+                if (left[index] !== right[index]) return left[index] - right[index]
+              }
+              return 0
+            }
+            const latest = process.env.LATEST
+            const next = process.env.NEXT
+            if (compare(next, latest) <= 0) {
+              console.error(`::error::${next} is not newer than the published latest ${latest}; refusing to move the dist-tag backwards.`)
+              process.exit(1)
+            }
+            console.log(`${next} is newer than latest ${latest}`)
+          '
+
       - name: Publish
         if: steps.existing.outputs.skip != 'true'
         working-directory: ${{ steps.target.outputs.dir }}

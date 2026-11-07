@@ -1,6 +1,6 @@
 # @litingyes/dsh-git
 
-A Git plugin for DeepSeek Harness: **the current branch is shown and switchable in the status row below the composer**, and a **right-sidebar tab follows the Session's workspace** with **a multi-branch commit graph as the primary view**, where every node shows its description, author, date, and commit and expands into full details — beside staging, committing, and branch and worktree management. Right-click a commit for cherry-pick / revert / drop, or a branch row to merge it into the current branch or rebase onto it. Both surfaces share one repository snapshot. 0.3.0 no longer registers agent tools.
+A Git plugin for DeepSeek Harness: **the current branch is shown and switchable in the status row below the composer**, and a **right-sidebar tab follows the Session's workspace** with **a multi-branch commit graph as the primary view**, where every node shows its description, author, date, and commit and expands into full details — beside staging, committing, and branch and worktree management. Right-click a commit for cherry-pick / revert / drop, or a branch row to merge it into the current branch or rebase onto it. Both surfaces share one repository snapshot. 0.5.0 no longer registers agent tools.
 
 > Reads and writes local Git repositories only. No network operations: no fetch, pull, push, or clone.
 
@@ -88,7 +88,7 @@ There is no left-sidebar icon: once a conversation starts, a branch chip appears
 
 Configuration lives on the mount row in `cordis.patch.yml`. **Overriding the row replaces `config` wholesale**, so restate every field. Invalid values fail loudly at mount instead of degrading at request time.
 
-> 0.3.0 removed the four agent tools (`git_status` / `git_diff` / `git_commit` / `git_branch`) along with the `tools` and `defaultWorkspaceId` fields. Legacy keys left in a profile patch are ignored, not rejected.
+> 0.5.0 removed the four agent tools (`git_status` / `git_diff` / `git_commit` / `git_branch`) along with the `tools` and `defaultWorkspaceId` fields (the change itself landed in the 0.3.0 commit, but 0.3.0 and 0.4.0 were never published on their own — 0.5.0 is the first npm version after 0.2.0). Legacy keys left in a profile patch are ignored, not rejected.
 
 | Field | Default | Meaning |
 | --- | --- | --- |

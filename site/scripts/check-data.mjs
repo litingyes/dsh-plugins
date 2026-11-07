@@ -49,12 +49,18 @@ if (head && graph.source.head !== head) {
       `commit graph is at ${graph.source.head.slice(0, 7)}, which is not an ancestor of HEAD ${head.slice(0, 7)}: run \`pnpm sync\` and commit src/data/*.json`,
     )
   } else {
-    // Commits that only touch the portal or the root README are the site's own
-    // bookkeeping; the graph may lag those, but never a plugin change.
+    // Commits that only touch the portal or the repository's own tooling are the
+    // site's bookkeeping; the graph may lag those, but never a plugin change.
+    // Root prefixes only: `dsh-git/scripts/...` is plugin code and stays counted.
+    const BOOKKEEPING = new Set(['README.md', 'AGENTS.md', 'LICENSE'])
+    const BOOKKEEPING_PREFIXES = ['site/', '.github/', 'scripts/']
     const changed = (git(['diff', '--name-only', `${graph.source.head}..${head}`]) ?? '')
       .split('\n')
       .filter(Boolean)
-    const code = changed.filter((file) => file !== 'README.md' && !file.startsWith('site/'))
+    const code = changed.filter(
+      (file) =>
+        !BOOKKEEPING.has(file) && !BOOKKEEPING_PREFIXES.some((prefix) => file.startsWith(prefix)),
+    )
     if (code.length > 0) {
       problems.push(
         `code changed since the graph (${code.slice(0, 3).join(', ')}${code.length > 3 ? ', ...' : ''}): run \`pnpm sync\` and commit src/data/*.json`,

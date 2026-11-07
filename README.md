@@ -49,24 +49,22 @@ Web 侧边栏的 **Plugins** 页面同样接受包名、Git 地址、压缩包�
 
 ## 发布
 
-发布由 tag 触发 GitHub Actions（[`.github/workflows/publish.yml`](./.github/workflows/publish.yml)），tag 名形如 `dsh-git-v0.5.0`、`dsh-context7-v0.2.1`：
+发布由 tag 触发 GitHub Actions（[`publish.yml`](./.github/workflows/publish.yml)），tag 名形如 `dsh-git-v0.5.1`、`dsh-context7-v0.2.1`。
 
-1. 改版本并提交（`npm version` 只改 manifest，不打 tag）：
+**规则：版本号只在发版提交里改。** 功能提交不要顺手 bump `package.json`——发布只认 tag，改了版本却没打 tag，那个版本永远不会进 npm，registry 就会跳号（本仓库曾经从 0.2.0 直接跳到 0.5.0，0.3.0 / 0.4.0 只活在 manifest 里）。[`ci.yml`](./.github/workflows/ci.yml) 在每次推 `release` 时跑 `scripts/check-release.mjs`，manifest 版本没有匹配 tag 就变红。
 
-   ```bash
-   (cd dsh-git && npm version patch --no-git-tag-version)
-   git add -A && git commit -m "release: dsh-git 0.5.2"
-   ```
+一条命令完成一次发版（bump、重建产物、改写安装 pin、提交、打 annotated tag、推送）：
 
-2. 打 tag 并推送，CI 随即发布：
+```bash
+node scripts/release.mjs dsh-git --bump patch --push
+```
 
-   ```bash
-   node scripts/release.mjs dsh-git --push
-   ```
+- 0.x 语义：破坏性变更与功能升 `minor`，修复 / 文档升 `patch`。
+- 先演练：加 `--dry-run` 只打印计划；省略 `--bump` 则只给已经 bump 好的 manifest 打 tag（重打 tag 时用）。
+- 工作流校验 tag 与 `package.json` 版本一致、拒绝比 npm `latest` 更旧的版本，然后 `npm publish --access public --provenance`；该版本已在 npm 上时跳过，所以先手动 `npm publish` 再推 tag 也不会失败。
+- 发版后记得 `cd site && pnpm sync` 并提交 `site/src/data/*.json`，门户的版本号与提交图都来自那里。
 
-3. 工作流校验 tag 与 `package.json` 版本一致后执行 `npm publish --access public --provenance`。该版本已在 npm 上时跳过，所以先手动 `npm publish` 再推 tag 也不会失败。
-
-仓库需要配置 `NPM_TOKEN` secret（npm automation token，或改用 npm trusted publishing）。本地手动发布时，`prepublishOnly` 会先跑构建与检查（`dsh-git` 是 `npm run build && npm run check`），避免把旧的 `client.js` 发出去。
+仓库需要配置 `NPM_TOKEN` secret（npm automation token，或改用 npm trusted publishing）。`prepublishOnly` 会在打包前重建并检查（`dsh-git` 是 `npm run build && npm run check`），避免把旧的 `client.js` 发出去。完整的仓库规范见 [`AGENTS.md`](./AGENTS.md)。
 
 ## 目录结构
 

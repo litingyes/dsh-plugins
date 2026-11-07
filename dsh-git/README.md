@@ -1,6 +1,6 @@
 # @litingyes/dsh-git
 
-给 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 的 Git 插件：**在输入框下方的状态行直接查看并切换当前分支**；右侧栏的 Git 页签**跟着当前会话的工作区走**，以多分支提交树为主视图，节点显示 description / author / date / commit，点开看提交详情；旁边是变更暂存、提交，以及分支与工作树管理；提交节点右键可做 cherry-pick / revert / drop，分支行右键可把分支 merge 或 rebase 到当前分支。两处共用同一份仓库状态。0.3.0 起不再注册智能体工具。
+给 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 的 Git 插件：**在输入框下方的状态行直接查看并切换当前分支**；右侧栏的 Git 页签**跟着当前会话的工作区走**，以多分支提交树为主视图，节点显示 description / author / date / commit，点开看提交详情；旁边是变更暂存、提交，以及分支与工作树管理；提交节点右键可做 cherry-pick / revert / drop，分支行右键可把分支 merge 或 rebase 到当前分支。两处共用同一份仓库状态。0.5.0 起不再注册智能体工具。
 
 > 只读写本机的 Git 仓库，不做任何网络操作（没有 fetch / pull / push / clone）。
 
@@ -88,7 +88,7 @@ plugin_manager action=install_bundle target=@litingyes/dsh-git@0.5.1
 
 配置写在 `cordis.patch.yml` 的挂载行里；**覆盖这一行会整体替换 `config`**，需要重述所有字段。非法值会在挂载时直接报错，不会静默降级。
 
-> 0.3.0 移除了四个智能体工具（`git_status` / `git_diff` / `git_commit` / `git_branch`）与 `tools`、`defaultWorkspaceId` 两个配置项。profile patch 里遗留的这两个键会被忽略，不会报错。
+> 0.5.0 移除了四个智能体工具（`git_status` / `git_diff` / `git_commit` / `git_branch`）与 `tools`、`defaultWorkspaceId` 两个配置项（这个改动实际提交在 0.3.0，但 0.3.0 与 0.4.0 从未单独发布，0.2.0 之后第一个上 npm 的版本就是 0.5.0）。profile patch 里遗留的这两个键会被忽略，不会报错。
 
 | 字段 | 默认 | 说明 |
 | --- | --- | --- |
