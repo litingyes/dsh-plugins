@@ -71,8 +71,12 @@ node scripts/release.mjs dsh-git --bump patch --push
 ```
 dsh-plugins/
 ├── README.md
-├── .github/workflows/      # 推 tag 触发 npm 发布
-├── scripts/release.mjs     # 打 tag / 推送
+├── AGENTS.md               # 仓库规范：发版、产物、双语、站点数据
+├── .github/workflows/      # push 到 release 跑版本门禁；推 tag 触发 npm 发布
+├── scripts/
+│   ├── release.mjs         # 发版：bump / 重建 / 改 pin / 提交 / 打 tag / 推送
+│   ├── check-release.mjs   # 门禁：每个 manifest 版本都必须有匹配 tag
+│   └── packages.mjs        # 两个脚本共用的包清单与 tag 命名
 ├── site/                   # Astro 门户（独立 pnpm 包，Vercel 的 Root Directory）
 ├── dsh-context7/           # 纯手写 JS，无需构建
 │   ├── package.json        # bundle manifest（dsh.bundle.patch + dsh.client）
