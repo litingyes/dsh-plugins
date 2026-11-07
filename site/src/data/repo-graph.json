@@ -1,14 +1,48 @@
 {
   "source": {
-    "head": "2c5cba07e3c30fc1d80788ef57c4bf6a6731261c",
-    "headShort": "2c5cba0",
+    "head": "4d1e1f677742618f2efe27bd1ed9dc7f57e12979",
+    "headShort": "4d1e1f6",
     "headDate": "2026-11-07",
     "currentBranch": "release",
-    "total": 18,
+    "total": 20,
     "limit": 40,
     "truncated": false
   },
   "commits": [
+    {
+      "sha": "4d1e1f677742618f2efe27bd1ed9dc7f57e12979",
+      "parents": [
+        "4e7b35671dcae1cb410eeb0e02a22c73170725aa"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-07",
+      "subject": "docs(git): correct claims the source contradicts",
+      "refs": [
+        {
+          "name": "dsh-git-v0.5.1",
+          "kind": "tag"
+        }
+      ],
+      "onCurrent": true
+    },
+    {
+      "sha": "4e7b35671dcae1cb410eeb0e02a22c73170725aa",
+      "parents": [
+        "2c5cba07e3c30fc1d80788ef57c4bf6a6731261c"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-06",
+      "subject": "chore(site): refresh the repo graph after the release tags",
+      "refs": [
+        {
+          "name": "origin/release",
+          "kind": "remote"
+        }
+      ],
+      "onCurrent": true
+    },
     {
       "sha": "2c5cba07e3c30fc1d80788ef57c4bf6a6731261c",
       "parents": [
@@ -52,10 +86,6 @@
       "date": "2026-11-06",
       "subject": "feat(git): act on commits and branches from the panel",
       "refs": [
-        {
-          "name": "origin/release",
-          "kind": "remote"
-        },
         {
           "name": "feature/dsh-git",
           "kind": "branch"
@@ -260,11 +290,47 @@
   "layout": {
     "rows": [
       {
-        "sha": "2c5cba07e3c30fc1d80788ef57c4bf6a6731261c",
+        "sha": "4d1e1f677742618f2efe27bd1ed9dc7f57e12979",
         "lane": 0,
         "color": 0,
         "through": [],
         "incoming": [],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "4e7b35671dcae1cb410eeb0e02a22c73170725aa",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "2c5cba07e3c30fc1d80788ef57c4bf6a6731261c",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
         "outgoing": [
           {
             "to": 0,
@@ -642,8 +708,8 @@
     },
     {
       "name": "release",
-      "sha": "2c5cba07e3c30fc1d80788ef57c4bf6a6731261c",
-      "short": "2c5cba0",
+      "sha": "4d1e1f677742618f2efe27bd1ed9dc7f57e12979",
+      "short": "4d1e1f6",
       "upstream": "origin/release",
       "date": "2026-11-07",
       "current": true,
@@ -651,6 +717,136 @@
     }
   ],
   "details": {
+    "4d1e1f677742618f2efe27bd1ed9dc7f57e12979": {
+      "message": "docs(git): correct claims the source contradicts\n\nAn expanded commit shows message, identities, parents and files; the refs\nthe Host returns for it are never rendered, and the row badges cap at\nthree plus \"+N\". The invalid-branch path answers with the Host's own\nsentence (\"… is not a valid branch name\") and keeps git's stderr in\n`cause`, so the README cannot promise git's message on screen. Both\nREADMEs now describe what actually happens.\n\nDocument two things the panel silently does: commit, merge and rebase all\nrun with --no-verify, so the repository's hooks never fire, and\nconflicted rows carry no inline buttons — select them and use the group\nheader instead.\n\ndsh-context7 gains one caveat: renaming `serverName` moves the guidance\nand the tool prefix, but the browser half matches a hardcoded\nmcp__context7__ prefix, so the presentation rows fall back to the default\ntool card.\n\nBump dsh-git to 0.5.1 so the corrected README reaches npm; no runtime\ncode changed. The portal copy follows, and context7 keeps 0.2.1 — its\nonly change here is an omission, not a false statement.",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-07T12:41:03+08:00",
+      "files": [
+        {
+          "path": "README.md",
+          "status": "M",
+          "added": 2,
+          "deleted": 2,
+          "binary": false
+        },
+        {
+          "path": "dsh-context7/README.en.md",
+          "status": "M",
+          "added": 1,
+          "deleted": 1,
+          "binary": false
+        },
+        {
+          "path": "dsh-context7/README.md",
+          "status": "M",
+          "added": 1,
+          "deleted": 1,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/README.en.md",
+          "status": "M",
+          "added": 6,
+          "deleted": 5,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/README.md",
+          "status": "M",
+          "added": 6,
+          "deleted": 5,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/package.json",
+          "status": "M",
+          "added": 1,
+          "deleted": 1,
+          "binary": false
+        },
+        {
+          "path": "site/src/data/plugins.ts",
+          "status": "M",
+          "added": 14,
+          "deleted": 7,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "dsh-context7/README.en.md",
+        "lines": [
+          "diff --git a/dsh-context7/README.en.md b/dsh-context7/README.en.md",
+          "index 6ee713d..26c54a6 100644",
+          "--- a/dsh-context7/README.en.md",
+          "+++ b/dsh-context7/README.en.md",
+          "@@ -99,3 +99,3 @@ Guidance row `context7-ui`:",
+          " - `guidance`: defaults to `true`. Setting it to `false` removes only the paragraph above; tools, presentation, and the connection are unaffected.",
+          "-- `serverName`: defaults to `context7` and **must match the connector row's `serverName`**; after a rename the guidance follows the new tool prefix, otherwise it hides itself because the names no longer line up.",
+          "+- `serverName`: defaults to `context7` and **must match the connector row's `serverName`**; after a rename the guidance follows the new tool prefix, otherwise it hides itself because the names no longer line up. Note that the browser half's presentation rows match the hardcoded `mcp__context7__` prefix, so after a rename both tools fall back to the default tool card (the tools themselves keep working)."
+        ],
+        "truncated": false
+      }
+    },
+    "4e7b35671dcae1cb410eeb0e02a22c73170725aa": {
+      "message": "chore(site): refresh the repo graph after the release tags\n\n`pnpm sync` now sees dsh-git-v0.5.0 and dsh-context7-v0.2.1, so the portal's\ngraph carries the release badges, and plugins-meta.json moves to 0.5.0 /\n0.2.1 to match the manifests. The install commands and version facts are\nderived from that file, so no other copy changes.",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-07T00:35:30+08:00",
+      "files": [
+        {
+          "path": "site/src/data/plugins-meta.json",
+          "status": "M",
+          "added": 3,
+          "deleted": 3,
+          "binary": false
+        },
+        {
+          "path": "site/src/data/repo-graph.json",
+          "status": "M",
+          "added": 396,
+          "deleted": 145,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "site/src/data/plugins-meta.json",
+        "lines": [
+          "diff --git a/site/src/data/plugins-meta.json b/site/src/data/plugins-meta.json",
+          "index d1c53bb..7e7489d 100644",
+          "--- a/site/src/data/plugins-meta.json",
+          "+++ b/site/src/data/plugins-meta.json",
+          "@@ -3,5 +3,5 @@",
+          "     \"name\": \"@litingyes/dsh-git\",",
+          "-    \"version\": \"0.4.0\",",
+          "+    \"version\": \"0.5.0\",",
+          "     \"dsh\": \">=0.2.1-rc.5 <0.3.0-0\",",
+          "-    \"description\": \"Git for DeepSeek Harness: a chat-page branch switcher in the status row below the composer, plus a right-sidebar tab with a multi-branch commit graph, expandable nodes, working-tree staging and committing, and branch and worktree management for the Session's workspace.\",",
+          "+    \"description\": \"Git for DeepSeek Harness: a chat-page branch switcher in the status row below the composer, plus a right-sidebar tab with a multi-branch commit graph, right-click commit actions (cherry-pick, revert, drop), working-tree staging and committing, branch merge/rebase, and branch and worktree management for the Session's workspace.\",",
+          "     \"homepage\": \"https://dsh-plugins.vercel.app\"",
+          "@@ -10,3 +10,3 @@",
+          "     \"name\": \"@litingyes/dsh-context7\",",
+          "-    \"version\": \"0.2.0\",",
+          "+    \"version\": \"0.2.1\",",
+          "     \"dsh\": \">=0.2.1-rc.5 <0.3.0-0\","
+        ],
+        "truncated": false
+      }
+    },
     "2c5cba07e3c30fc1d80788ef57c4bf6a6731261c": {
       "message": "chore(site): align the portal with dsh-git 0.5.0\n\nThe portal still advertised four dsh-git agent tools (removed in 0.3.0),\nsix tools in total, the removed `tools` and `defaultWorkspaceId` config\nkeys, and \"no merge, rebase, cherry-pick\" limits. It never mentioned the\ncomposer branch chip or worktree management, and the dsh-git page kept a\nsecond hardcoded copy of the feature list beside the one in plugins.ts —\nwhich is why the two drifted.\n\nRender `plugin.features` instead of a local copy, drop the git tools\nsection, and show a tools count only where a plugin has tools. Install\ncommands, the DSH requirement and the header version now come from\nplugins-meta.json, so a version bump cannot leave copy behind again.\n\nBoundaries now describe what the API actually accepts (a snapshot read\nmay name the Session directory; mutations may not), and limits list what\nthe panel really does: no stash, no conflict resolution, rebase flattens\nmerges, drop refuses a range containing them.",
       "author": {
@@ -788,313 +984,6 @@
           "-  \"version\": \"0.2.0\",",
           "+  \"version\": \"0.2.1\",",
           "   \"description\": \"Context7 documentation for DeepSeek Harness: connects the official Context7 MCP server so agents can resolve libraries and fetch current documentation and code examples.\","
-        ],
-        "truncated": false
-      }
-    },
-    "8737129fbc999197a83288d90a0c8278ccb0cbf3": {
-      "message": "feat(git): act on commits and branches from the panel\n\nRight-click a commit node for copy SHA, cherry-pick, revert, and drop;\ndropping removes that one commit from the current branch and replays its\ndescendants onto its parent. Right-click a branch row to merge it into the\ncurrent branch or rebase the current branch onto it; local and remote\nbranches are both targets.\n\nThe Host gained five history actions on the existing action route. Each\nrequires an attached HEAD, no stopped operation, and a clean tracked\nworktree, and a conflict runs the matching `--abort` before returning a\nstructured code, so the repository is never left half-way. Drop needs\n`confirm: true` and refuses a root or merge commit, a commit outside the\ncurrent branch, and a rewrite range that contains merges. `state` now\nreports the in-progress operation, so both tabs can disable an entry and\nsay why instead of failing after the click.\n\nEvery panel action that used a text label is now an icon button with a\nhost-styled tooltip that also carries the disabled reason; the commit CTA,\nmodal dialog buttons, and the graph's mode toggle keep their labels.\nTooltips and context menus use the host menu material, and the new pure\n`commit-actions` / `branch-actions` modules keep the availability rules\ntestable without a DOM.\n\nDocument the new actions and limits, update the locale metadata, and bump\nthe package to 0.5.0 with a rebuilt client.js.",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-06T23:39:47+08:00",
-      "files": [
-        {
-          "path": "README.md",
-          "status": "M",
-          "added": 1,
-          "deleted": 1,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/README.en.md",
-          "status": "M",
-          "added": 13,
-          "deleted": 6,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/README.md",
-          "status": "M",
-          "added": 13,
-          "deleted": 6,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/api.js",
-          "status": "M",
-          "added": 47,
-          "deleted": 1,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/client.js",
-          "status": "M",
-          "added": 49,
-          "deleted": 21,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/cordis.patch.yml",
-          "status": "M",
-          "added": 4,
-          "deleted": 1,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/git.js",
-          "status": "M",
-          "added": 418,
-          "deleted": 5,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/locale/en.json",
-          "status": "M",
-          "added": 1,
-          "deleted": 1,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/locale/zh.json",
-          "status": "M",
-          "added": 1,
-          "deleted": 1,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/package-lock.json",
-          "status": "M",
-          "added": 2,
-          "deleted": 2,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/package.json",
-          "status": "M",
-          "added": 2,
-          "deleted": 2,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/src/client/branch-actions.js",
-          "status": "A",
-          "added": 53,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/src/client/branches-view.jsx",
-          "status": "M",
-          "added": 184,
-          "deleted": 68,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/src/client/changes-view.jsx",
-          "status": "M",
-          "added": 24,
-          "deleted": 26,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/src/client/commit-actions.js",
-          "status": "A",
-          "added": 128,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/src/client/commit-detail.jsx",
-          "status": "M",
-          "added": 11,
-          "deleted": 13,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/src/client/commit-menu.jsx",
-          "status": "A",
-          "added": 115,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/src/client/controls.jsx",
-          "status": "A",
-          "added": 122,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/src/client/failure.js",
-          "status": "M",
-          "added": 18,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/src/client/graph-view.jsx",
-          "status": "M",
-          "added": 126,
-          "deleted": 25,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/src/client/i18n.js",
-          "status": "M",
-          "added": 82,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/src/client/icons.jsx",
-          "status": "M",
-          "added": 78,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/src/client/index.jsx",
-          "status": "M",
-          "added": 14,
-          "deleted": 7,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/src/client/menu.jsx",
-          "status": "A",
-          "added": 111,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/src/client/panel.jsx",
-          "status": "M",
-          "added": 58,
-          "deleted": 27,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/src/client/styles.js",
-          "status": "M",
-          "added": 26,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/test/api.test.js",
-          "status": "M",
-          "added": 91,
-          "deleted": 1,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/test/branch-actions.test.js",
-          "status": "A",
-          "added": 97,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/test/client.test.js",
-          "status": "M",
-          "added": 82,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/test/commit-actions.test.js",
-          "status": "A",
-          "added": 121,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/test/http.test.js",
-          "status": "M",
-          "added": 38,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/test/i18n.test.js",
-          "status": "M",
-          "added": 11,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/test/repo.test.js",
-          "status": "M",
-          "added": 360,
-          "deleted": 0,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": "README.md",
-        "lines": [
-          "diff --git a/README.md b/README.md",
-          "index a9f85d8..a147215 100644",
-          "--- a/README.md",
-          "+++ b/README.md",
-          "@@ -9,3 +9,3 @@",
-          " | [`dsh-context7`](./dsh-context7) | `@litingyes/dsh-context7` | 通过官方 MCP 服务接入 [Context7](https://context7.com)，为智能体提供库解析与最新文档查询 |",
-          "-| [`dsh-git`](./dsh-git) | `@litingyes/dsh-git` | 输入框下方状态行直接显示并切换 Git 分支；右侧栏 Git 页签跟着会话工作区走：多分支提交树（节点可展开看详情）、变更暂存与提交、分支与工作树管理 |",
-          "+| [`dsh-git`](./dsh-git) | `@litingyes/dsh-git` | 输入框下方状态行直接显示并切换 Git 分支；右侧栏 Git 页签跟着会话工作区走：多分支提交树（节点可展开看详情，右键 cherry-pick / revert / drop）、变更暂存与提交、分支右键 merge / rebase、分支与工作树管理 |"
-        ],
-        "truncated": false
-      }
-    },
-    "c0e204c9e1662f3ea1e52f17ce0345d197fdcb45": {
-      "message": "chore(site): refresh the repo graph after the dsh-git merge\n\nSync the committed data with the merged HEAD: 14 commits, the dsh-git 0.4.0 manifest, and the new status-row branch switcher.",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-06T19:55:15+08:00",
-      "files": [
-        {
-          "path": "site/src/data/plugins-meta.json",
-          "status": "M",
-          "added": 2,
-          "deleted": 2,
-          "binary": false
-        },
-        {
-          "path": "site/src/data/repo-graph.json",
-          "status": "M",
-          "added": 385,
-          "deleted": 455,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": "site/src/data/plugins-meta.json",
-        "lines": [
-          "diff --git a/site/src/data/plugins-meta.json b/site/src/data/plugins-meta.json",
-          "index 371f09b..d1c53bb 100644",
-          "--- a/site/src/data/plugins-meta.json",
-          "+++ b/site/src/data/plugins-meta.json",
-          "@@ -3,5 +3,5 @@",
-          "     \"name\": \"@litingyes/dsh-git\",",
-          "-    \"version\": \"0.2.0\",",
-          "+    \"version\": \"0.4.0\",",
-          "     \"dsh\": \">=0.2.1-rc.5 <0.3.0-0\",",
-          "-    \"description\": \"Git for DeepSeek Harness: a right-sidebar tab with a multi-branch commit graph, expandable nodes, working-tree staging and committing, and branch management for the Session's workspace — plus matching agent tools.\",",
-          "+    \"description\": \"Git for DeepSeek Harness: a chat-page branch switcher in the status row below the composer, plus a right-sidebar tab with a multi-branch commit graph, expandable nodes, working-tree staging and committing, and branch and worktree management for the Session's workspace.\",",
-          "     \"homepage\": \"https://dsh-plugins.vercel.app\""
         ],
         "truncated": false
       }
