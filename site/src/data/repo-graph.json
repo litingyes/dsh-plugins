@@ -1,14 +1,43 @@
 {
   "source": {
-    "head": "fac38bfd7a7c7f4137abb5ae2af931ba3d48bab2",
-    "headShort": "fac38bf",
+    "head": "0c2f9abc35db22bbf67c1140ed50c3d8445eba4d",
+    "headShort": "0c2f9ab",
     "headDate": "2026-11-07",
     "currentBranch": "release",
-    "total": 23,
+    "total": 25,
     "limit": 40,
     "truncated": false
   },
   "commits": [
+    {
+      "sha": "0c2f9abc35db22bbf67c1140ed50c3d8445eba4d",
+      "parents": [
+        "0813c53e59eb7e13ca84b76a286b65c400c2dcf5"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-07",
+      "subject": "chore(release): make a version bump without a tag impossible",
+      "refs": [],
+      "onCurrent": true
+    },
+    {
+      "sha": "0813c53e59eb7e13ca84b76a286b65c400c2dcf5",
+      "parents": [
+        "fac38bfd7a7c7f4137abb5ae2af931ba3d48bab2"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-07",
+      "subject": "chore(site): refresh the graph after the 0.5.1 follow-ups",
+      "refs": [
+        {
+          "name": "origin/release",
+          "kind": "remote"
+        }
+      ],
+      "onCurrent": true
+    },
     {
       "sha": "fac38bfd7a7c7f4137abb5ae2af931ba3d48bab2",
       "parents": [
@@ -71,12 +100,7 @@
       "email": "luz.liting@gmail.com",
       "date": "2026-11-06",
       "subject": "chore(site): refresh the repo graph after the release tags",
-      "refs": [
-        {
-          "name": "origin/release",
-          "kind": "remote"
-        }
-      ],
+      "refs": [],
       "onCurrent": true
     },
     {
@@ -326,11 +350,47 @@
   "layout": {
     "rows": [
       {
-        "sha": "fac38bfd7a7c7f4137abb5ae2af931ba3d48bab2",
+        "sha": "0c2f9abc35db22bbf67c1140ed50c3d8445eba4d",
         "lane": 0,
         "color": 0,
         "through": [],
         "incoming": [],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "0813c53e59eb7e13ca84b76a286b65c400c2dcf5",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "fac38bfd7a7c7f4137abb5ae2af931ba3d48bab2",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
         "outgoing": [
           {
             "to": 0,
@@ -798,8 +858,8 @@
     },
     {
       "name": "release",
-      "sha": "fac38bfd7a7c7f4137abb5ae2af931ba3d48bab2",
-      "short": "fac38bf",
+      "sha": "0c2f9abc35db22bbf67c1140ed50c3d8445eba4d",
+      "short": "0c2f9ab",
       "upstream": "origin/release",
       "date": "2026-11-07",
       "current": true,
@@ -807,6 +867,165 @@
     }
   ],
   "details": {
+    "0c2f9abc35db22bbf67c1140ed50c3d8445eba4d": {
+      "message": "chore(release): make a version bump without a tag impossible\n\nPublishing is tag-triggered, but bumping `package.json` and tagging were\nseparate manual steps. Skip the second one and the version lives only in the\nmanifest: dsh-git reached npm as 0.2.0 → 0.5.0 while 0.3.0 and 0.4.0 were\nnever published, which is exactly the kind of gap a registry should not show.\n\nThree pieces, so the rule is enforced rather than remembered:\n\n- `scripts/check-release.mjs` asserts, for every package, that the manifest\n  version is tagged at a commit which declares the same version and is an\n  ancestor of HEAD. Offline on purpose: publishing only happens from tags, so\n  asking npm would just make the gate flaky. Covered by five tests against\n  throwaway repositories.\n- `release.mjs --bump <patch|minor|major>` does the whole release in one\n  command: bump, rebuild the browser half (its banner carries the version),\n  rewrite the install pins, commit `release: <dir> <version>`, tag, and with\n  `--push` push both refs in a single push. `--dry-run` prints the plan.\n- `.github/workflows/ci.yml` runs the gate on every push to `release` and on\n  pull requests. `publish.yml` now refuses a tag older than npm's `latest`,\n  so a stray old tag cannot move the dist-tag backwards.\n\nAGENTS.md records the conventions this repository actually follows: artifacts\nthat must be committed and rebuilt, the no-hand-edited-version rule, bilingual\ndocs, portal data sync, dependency discipline, and what not to touch.\n\nThe dsh-git README now anchors the tool removal on 0.5.0 — the first published\nversion after 0.2.0 — instead of the unpublished 0.3.0.",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-07T15:06:57+08:00",
+      "files": [
+        {
+          "path": ".github/workflows/ci.yml",
+          "status": "A",
+          "added": 47,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": ".github/workflows/publish.yml",
+          "status": "M",
+          "added": 36,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "AGENTS.md",
+          "status": "A",
+          "added": 97,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "README.md",
+          "status": "M",
+          "added": 11,
+          "deleted": 13,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/README.en.md",
+          "status": "M",
+          "added": 2,
+          "deleted": 2,
+          "binary": false
+        },
+        {
+          "path": "dsh-git/README.md",
+          "status": "M",
+          "added": 2,
+          "deleted": 2,
+          "binary": false
+        },
+        {
+          "path": "scripts/check-release.mjs",
+          "status": "A",
+          "added": 149,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "scripts/check-release.test.mjs",
+          "status": "A",
+          "added": 132,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "scripts/packages.mjs",
+          "status": "A",
+          "added": 32,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "scripts/release.mjs",
+          "status": "M",
+          "added": 158,
+          "deleted": 17,
+          "binary": false
+        },
+        {
+          "path": "site/scripts/check-data.mjs",
+          "status": "M",
+          "added": 9,
+          "deleted": 3,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "dsh-git/README.en.md",
+        "lines": [
+          "diff --git a/dsh-git/README.en.md b/dsh-git/README.en.md",
+          "index f2a63af..f503787 100644",
+          "--- a/dsh-git/README.en.md",
+          "+++ b/dsh-git/README.en.md",
+          "@@ -2,3 +2,3 @@",
+          " ",
+          "-A Git plugin for DeepSeek Harness: **the current branch is shown and switchable in the status row below the composer**, and a **right-sidebar tab follows the Session's workspace** with **a multi-branch commit graph as the primary view**, where every node shows its description, author, date, and commit and expands into full details — beside staging, committing, and branch and worktree management. Right-click a commit for cherry-pick / revert / drop, or a branch row to merge it into the current branch or rebase onto it. Both surfaces share one repository snapshot. 0.3.0 no longer registers agent tools.",
+          "+A Git plugin for DeepSeek Harness: **the current branch is shown and switchable in the status row below the composer**, and a **right-sidebar tab follows the Session's workspace** with **a multi-branch commit graph as the primary view**, where every node shows its description, author, date, and commit and expands into full details — beside staging, committing, and branch and worktree management. Right-click a commit for cherry-pick / revert / drop, or a branch row to merge it into the current branch or rebase onto it. Both surfaces share one repository snapshot. 0.5.0 no longer registers agent tools.",
+          " ",
+          "@@ -90,3 +90,3 @@ Configuration lives on the mount row in `cordis.patch.yml`. **Overriding the row",
+          " ",
+          "-> 0.3.0 removed the four agent tools (`git_status` / `git_diff` / `git_commit` / `git_branch`) along with the `tools` and `defaultWorkspaceId` fields. Legacy keys left in a profile patch are ignored, not rejected.",
+          "+> 0.5.0 removed the four agent tools (`git_status` / `git_diff` / `git_commit` / `git_branch`) along with the `tools` and `defaultWorkspaceId` fields (the change itself landed in the 0.3.0 commit, but 0.3.0 and 0.4.0 were never published on their own — 0.5.0 is the first npm version after 0.2.0). Legacy keys left in a profile patch are ignored, not rejected."
+        ],
+        "truncated": false
+      }
+    },
+    "0813c53e59eb7e13ca84b76a286b65c400c2dcf5": {
+      "message": "chore(site): refresh the graph after the 0.5.1 follow-ups\n\nThe bundle rebuild and the freshness guard touch plugin files, which the\ndata guard treats as code: regenerate the snapshot so the portal keeps\ndescribing HEAD.",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-07T12:56:42+08:00",
+      "files": [
+        {
+          "path": "site/src/data/repo-graph.json",
+          "status": "M",
+          "added": 180,
+          "deleted": 158,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "site/src/data/repo-graph.json",
+        "lines": [
+          "diff --git a/site/src/data/repo-graph.json b/site/src/data/repo-graph.json",
+          "index fc04a64..dad3e08 100644",
+          "--- a/site/src/data/repo-graph.json",
+          "+++ b/site/src/data/repo-graph.json",
+          "@@ -2,7 +2,7 @@",
+          "   \"source\": {",
+          "-    \"head\": \"4d1e1f677742618f2efe27bd1ed9dc7f57e12979\",",
+          "-    \"headShort\": \"4d1e1f6\",",
+          "+    \"head\": \"fac38bfd7a7c7f4137abb5ae2af931ba3d48bab2\",",
+          "+    \"headShort\": \"fac38bf\",",
+          "     \"headDate\": \"2026-11-07\",",
+          "     \"currentBranch\": \"release\",",
+          "-    \"total\": 20,",
+          "+    \"total\": 23,",
+          "     \"limit\": 40,",
+          "@@ -12,5 +12,5 @@",
+          "     {",
+          "-      \"sha\": \"4d1e1f677742618f2efe27bd1ed9dc7f57e12979\",",
+          "+      \"sha\": \"fac38bfd7a7c7f4137abb5ae2af931ba3d48bab2\",",
+          "       \"parents\": ["
+        ],
+        "truncated": true
+      }
+    },
     "fac38bfd7a7c7f4137abb5ae2af931ba3d48bab2": {
       "message": "build(git): assert the committed client.js is fresh\n\n`npm run check` validated only syntax, so a version bump that never rebuilt\nthe browser half shipped a bundle whose banner disagreed with package.json.\nThat is exactly how 0.5.1's tagged tree ended up stale while CI published a\nfresh build.\n\n`node scripts/build-client.mjs --check` rebuilds in memory and fails on any\nbyte difference; `check` now runs it before the syntax passes.\n`prepublishOnly` already builds first, so CI is unaffected.",
       "author": {
@@ -884,128 +1103,6 @@
           "- * @litingyes/dsh-git@0.5.0 — browser half.",
           "+ * @litingyes/dsh-git@0.5.1 — browser half.",
           "  *"
-        ],
-        "truncated": false
-      }
-    },
-    "b4a027aca9b889b6fa06069794d86ae711fd380e": {
-      "message": "chore(site): refresh the data for dsh-git 0.5.1\n\n`pnpm sync` records the new tag and the manifest version, so the portal's\ninstall command and version fact move to 0.5.1 on their own.",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-07T12:41:27+08:00",
-      "files": [
-        {
-          "path": "site/src/data/plugins-meta.json",
-          "status": "M",
-          "added": 1,
-          "deleted": 1,
-          "binary": false
-        },
-        {
-          "path": "site/src/data/repo-graph.json",
-          "status": "M",
-          "added": 206,
-          "deleted": 317,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": "site/src/data/plugins-meta.json",
-        "lines": [
-          "diff --git a/site/src/data/plugins-meta.json b/site/src/data/plugins-meta.json",
-          "index 7e7489d..2c6036e 100644",
-          "--- a/site/src/data/plugins-meta.json",
-          "+++ b/site/src/data/plugins-meta.json",
-          "@@ -3,3 +3,3 @@",
-          "     \"name\": \"@litingyes/dsh-git\",",
-          "-    \"version\": \"0.5.0\",",
-          "+    \"version\": \"0.5.1\",",
-          "     \"dsh\": \">=0.2.1-rc.5 <0.3.0-0\","
-        ],
-        "truncated": false
-      }
-    },
-    "4d1e1f677742618f2efe27bd1ed9dc7f57e12979": {
-      "message": "docs(git): correct claims the source contradicts\n\nAn expanded commit shows message, identities, parents and files; the refs\nthe Host returns for it are never rendered, and the row badges cap at\nthree plus \"+N\". The invalid-branch path answers with the Host's own\nsentence (\"… is not a valid branch name\") and keeps git's stderr in\n`cause`, so the README cannot promise git's message on screen. Both\nREADMEs now describe what actually happens.\n\nDocument two things the panel silently does: commit, merge and rebase all\nrun with --no-verify, so the repository's hooks never fire, and\nconflicted rows carry no inline buttons — select them and use the group\nheader instead.\n\ndsh-context7 gains one caveat: renaming `serverName` moves the guidance\nand the tool prefix, but the browser half matches a hardcoded\nmcp__context7__ prefix, so the presentation rows fall back to the default\ntool card.\n\nBump dsh-git to 0.5.1 so the corrected README reaches npm; no runtime\ncode changed. The portal copy follows, and context7 keeps 0.2.1 — its\nonly change here is an omission, not a false statement.",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-07T12:41:03+08:00",
-      "files": [
-        {
-          "path": "README.md",
-          "status": "M",
-          "added": 2,
-          "deleted": 2,
-          "binary": false
-        },
-        {
-          "path": "dsh-context7/README.en.md",
-          "status": "M",
-          "added": 1,
-          "deleted": 1,
-          "binary": false
-        },
-        {
-          "path": "dsh-context7/README.md",
-          "status": "M",
-          "added": 1,
-          "deleted": 1,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/README.en.md",
-          "status": "M",
-          "added": 6,
-          "deleted": 5,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/README.md",
-          "status": "M",
-          "added": 6,
-          "deleted": 5,
-          "binary": false
-        },
-        {
-          "path": "dsh-git/package.json",
-          "status": "M",
-          "added": 1,
-          "deleted": 1,
-          "binary": false
-        },
-        {
-          "path": "site/src/data/plugins.ts",
-          "status": "M",
-          "added": 14,
-          "deleted": 7,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": "dsh-context7/README.en.md",
-        "lines": [
-          "diff --git a/dsh-context7/README.en.md b/dsh-context7/README.en.md",
-          "index 6ee713d..26c54a6 100644",
-          "--- a/dsh-context7/README.en.md",
-          "+++ b/dsh-context7/README.en.md",
-          "@@ -99,3 +99,3 @@ Guidance row `context7-ui`:",
-          " - `guidance`: defaults to `true`. Setting it to `false` removes only the paragraph above; tools, presentation, and the connection are unaffected.",
-          "-- `serverName`: defaults to `context7` and **must match the connector row's `serverName`**; after a rename the guidance follows the new tool prefix, otherwise it hides itself because the names no longer line up.",
-          "+- `serverName`: defaults to `context7` and **must match the connector row's `serverName`**; after a rename the guidance follows the new tool prefix, otherwise it hides itself because the names no longer line up. Note that the browser half's presentation rows match the hardcoded `mcp__context7__` prefix, so after a rename both tools fall back to the default tool card (the tools themselves keep working)."
         ],
         "truncated": false
       }
