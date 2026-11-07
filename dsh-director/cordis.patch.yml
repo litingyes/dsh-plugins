@@ -1,0 +1,49 @@
+# @litingyes/dsh-director — AI video direction: storyboard, paste-ready prompts, audio plan.
+#
+# Mounts one Host row. That row registers:
+#   - six agent tools (`video_project`, `video_storyboard`, `video_take`,
+#     `video_audio`, `video_prompt`, `video_review`) that keep a production in
+#     `<session cwd>/video/` as three JSON files;
+#   - the embedded `ai-video-direction` skill (the craft: story structure,
+#     shot design, prompting for Kling/Jimeng/Hailuo, audio-visual design);
+#   - one always-on prompt section that names the tools and the skill;
+#   - one read-only HTTP route `/dsh-director/api/state` for the right-sidebar
+#     board, which is what `dsh.client` below loads.
+#
+# The plugin never generates video and never calls a generation API. Its output
+# is a prompt sheet the user pastes into Kling/Jimeng/Hailuo (positive prompt,
+# negative prompt and parameters kept apart), plus the storyboard, audio plan,
+# take log and a review.
+#
+# Every field below is read and validated by this package in `apply`; an invalid
+# value fails the row loudly at mount instead of silently degrading. Overriding
+# this row in the profile patch layer replaces `config` wholesale, so restate
+# every field you still want.
+#
+# Files live under `root` relative to the Session's working directory. The
+# panel is read-only: every mutation goes through the agent tools, so there is
+# no second write path that could overwrite the agent's edits.
+- insert:
+    - id: dsh-director
+      name: '@litingyes/dsh-director'
+      config:
+        # Directory (relative to the Session cwd) that holds project.json,
+        # storyboard.json and audio.json. No absolute paths, no `..` segments.
+        root: video
+        # Always-on prompt section that makes the model reach for the tools.
+        guidance: true
+        # Register the embedded `ai-video-direction` skill.
+        skill: true
+        # Aspect ratio seeded into a new project (16:9 | 9:16 | 1:1 | 4:5 |
+        # 4:3 | 3:4 | 21:9).
+        defaultAspect: '9:16'
+        # Upper bounds. The tools refuse to grow a production past these.
+        maxScenes: 40
+        maxShotsPerScene: 60
+        maxTakesPerShot: 20
+        maxPromptChars: 2000
+        # One shot's duration range, in seconds, and the acceptable drift
+        # between the planned total and the target duration (0-1).
+        minShotSeconds: 1
+        maxShotSeconds: 10
+        durationTolerance: 0.15

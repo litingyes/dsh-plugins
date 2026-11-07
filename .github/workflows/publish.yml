@@ -2,6 +2,7 @@
 #
 #   dsh-context7-v0.1.0  ->  @litingyes/dsh-context7@0.1.0
 #   dsh-git-v0.2.0       ->  @litingyes/dsh-git@0.2.0
+#   dsh-director-v0.1.0  ->  @litingyes/dsh-director@0.1.0
 #
 # The tag must point at a commit whose package.json already declares that exact
 # version. Versions already on npm are skipped, so a local `npm publish`
@@ -13,6 +14,7 @@ on:
     tags:
       - 'dsh-context7-v*'
       - 'dsh-git-v*'
+      - 'dsh-director-v*'
 
 permissions:
   contents: read
@@ -38,6 +40,7 @@ jobs:
           case "$tag" in
             dsh-context7-v*) dir="dsh-context7" ;;
             dsh-git-v*) dir="dsh-git" ;;
+            dsh-director-v*) dir="dsh-director" ;;
             *)
               echo "::error::unexpected release tag ${tag}"
               exit 1
@@ -136,5 +139,5 @@ jobs:
             exit 1
           fi
 
-          # prepublishOnly rebuilds client.js (dsh-git) and re-checks the package before packing.
+          # prepublishOnly rebuilds client.js (dsh-git, dsh-director) and re-checks the package before packing.
           npm publish --access public --provenance

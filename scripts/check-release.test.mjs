@@ -52,13 +52,15 @@ function commitVersion(root, dir, version) {
   return git(root, ['rev-parse', 'HEAD'])
 }
 
-/** A repository whose two plugins are committed and tagged at HEAD. */
-function taggedRepo(t, gitVersion = '0.5.1', context7Version = '0.2.1') {
+/** A repository whose plugins are committed and tagged at HEAD. */
+function taggedRepo(t, gitVersion = '0.5.1', context7Version = '0.2.1', directorVersion = '0.1.0') {
   const root = makeRepo(t)
   commitVersion(root, 'dsh-git', gitVersion)
   commitVersion(root, 'dsh-context7', context7Version)
+  commitVersion(root, 'dsh-director', directorVersion)
   git(root, ['tag', '-a', `dsh-git-v${gitVersion}`, '-m', `release dsh-git ${gitVersion}`])
   git(root, ['tag', '-a', `dsh-context7-v${context7Version}`, '-m', `release dsh-context7 ${context7Version}`])
+  git(root, ['tag', '-a', `dsh-director-v${directorVersion}`, '-m', `release dsh-director ${directorVersion}`])
   return root
 }
 
@@ -81,6 +83,7 @@ test('passes when every manifest version is tagged', (t) => {
   assert.equal(result.code, 0, result.output)
   assert.match(result.output, /dsh-git 0\.5\.1 → dsh-git-v0\.5\.1/)
   assert.match(result.output, /dsh-context7 0\.2\.1 → dsh-context7-v0\.2\.1/)
+  assert.match(result.output, /dsh-director 0\.1\.0 → dsh-director-v0\.1\.0/)
 })
 
 test('fails when a version was bumped without a tag', (t) => {

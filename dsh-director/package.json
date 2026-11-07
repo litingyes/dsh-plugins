@@ -1,0 +1,92 @@
+{
+  "name": "@litingyes/dsh-director",
+  "version": "0.1.0",
+  "description": "AI video direction for DeepSeek Harness: turn an idea into a storyboard, paste-ready prompts for Kling/Jimeng/Hailuo, and an audio plan kept as workspace files, with a right-sidebar board and a built-in directing skill.",
+  "type": "module",
+  "license": "MIT",
+  "author": {
+    "name": "Liting",
+    "url": "https://github.com/litingyes"
+  },
+  "homepage": "https://dsh-plugins.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/litingyes/dsh-plugins.git",
+    "directory": "dsh-director"
+  },
+  "bugs": {
+    "url": "https://github.com/litingyes/dsh-plugins/issues"
+  },
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "ai-video",
+    "storyboard",
+    "prompt",
+    "director",
+    "kling",
+    "jimeng",
+    "hailuo"
+  ],
+  "engines": {
+    "dsh": ">=0.2.1-rc.5 <0.3.0-0"
+  },
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "production.js",
+    "store.js",
+    "api.js",
+    "tools.js",
+    "skill.js",
+    "skill.md",
+    "client.js",
+    "cordis.patch.yml",
+    "icon.svg",
+    "locale/*.json",
+    "src/shared",
+    "src/client",
+    "scripts/build-client.mjs",
+    "README.md",
+    "README.en.md",
+    "LICENSE"
+  ],
+  "icon": "./icon.svg",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dsh": {
+    "manifestVersion": 1,
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-ui-sidebar-right"
+      ]
+    }
+  },
+  "scripts": {
+    "build": "node scripts/build-client.mjs",
+    "test": "node --test test/",
+    "check": "node scripts/build-client.mjs --check && node --check index.js && node --check production.js && node --check store.js && node --check api.js && node --check tools.js && node --check skill.js && node --check client.js",
+    "prepublishOnly": "npm run build && npm run check"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.12"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true
+  }
+}

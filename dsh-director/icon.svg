@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 32 32" role="img" aria-label="AI Video Director">
+	<rect width="32" height="32" rx="7" fill="#7c3aed" />
+	<path d="M6.6 9.8 24.1 6.5l.9 4.3L7.5 14.1z" fill="#fff" />
+	<rect x="6.6" y="13.5" width="18.9" height="12" rx="2" fill="#fff" />
+	<path d="M10.5 9.3l2.4 3.8M15.2 8.5l2.4 3.8M19.9 7.7l2.4 3.8" stroke="#7c3aed" stroke-width="1.1" stroke-linecap="round" />
+	<path d="M9.6 17.7h6.4M9.6 20.3h4.6M9.6 22.9h7.4" stroke="#7c3aed" stroke-width="1.2" stroke-linecap="round" />
+	<path d="M20.3 17.3l2.8 1.7-2.8 1.7z" fill="#7c3aed" />
+</svg>
