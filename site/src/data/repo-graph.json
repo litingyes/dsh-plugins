@@ -1,14 +1,76 @@
 {
   "source": {
-    "head": "92d574f4388c3f94ee2f13583eda409267c02770",
-    "headShort": "92d574f",
+    "head": "fcaeecac6e2538e437ab87ed8a50d78e68629e22",
+    "headShort": "fcaeeca",
     "headDate": "2026-11-07",
-    "currentBranch": "feature/dsh-director",
-    "total": 32,
+    "currentBranch": "release",
+    "total": 36,
     "limit": 40,
     "truncated": false
   },
   "commits": [
+    {
+      "sha": "04dc528bef5407f96a714f9419b1fb6eda9a77e0",
+      "parents": [
+        "69b2db231a38f4046de4bcafd547c0279d208424"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-09",
+      "subject": "feat(comfy): show each loader's files and prove the image pipeline end to end",
+      "refs": [
+        {
+          "name": "feature/comfy",
+          "kind": "branch"
+        }
+      ],
+      "onCurrent": false
+    },
+    {
+      "sha": "69b2db231a38f4046de4bcafd547c0279d208424",
+      "parents": [
+        "b2ecc649927f3bf37c89cceade57b50383a458c1"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-09",
+      "subject": "refactor(comfy): report what the install has instead of grading a fixed catalog",
+      "refs": [],
+      "onCurrent": false
+    },
+    {
+      "sha": "b2ecc649927f3bf37c89cceade57b50383a458c1",
+      "parents": [
+        "fcaeecac6e2538e437ab87ed8a50d78e68629e22"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-07",
+      "subject": "feat(comfy): add a capability catalog and a local availability probe",
+      "refs": [],
+      "onCurrent": false
+    },
+    {
+      "sha": "fcaeecac6e2538e437ab87ed8a50d78e68629e22",
+      "parents": [
+        "92d574f4388c3f94ee2f13583eda409267c02770"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-07",
+      "subject": "chore(site): refresh the graph after the director prompt bound",
+      "refs": [
+        {
+          "name": "dsh-director-v0.1.0",
+          "kind": "tag"
+        },
+        {
+          "name": "origin/release",
+          "kind": "remote"
+        }
+      ],
+      "onCurrent": true
+    },
     {
       "sha": "92d574f4388c3f94ee2f13583eda409267c02770",
       "parents": [
@@ -30,12 +92,7 @@
       "email": "luz.liting@gmail.com",
       "date": "2026-11-07",
       "subject": "chore(site): refresh the graph after dsh-director",
-      "refs": [
-        {
-          "name": "feature/comfy",
-          "kind": "branch"
-        }
-      ],
+      "refs": [],
       "onCurrent": true
     },
     {
@@ -59,16 +116,7 @@
       "email": "luz.liting@gmail.com",
       "date": "2026-11-07",
       "subject": "docs: list the release gate in the directory map",
-      "refs": [
-        {
-          "name": "origin/release",
-          "kind": "remote"
-        },
-        {
-          "name": "release",
-          "kind": "branch"
-        }
-      ],
+      "refs": [],
       "onCurrent": true
     },
     {
@@ -443,11 +491,83 @@
   "layout": {
     "rows": [
       {
-        "sha": "92d574f4388c3f94ee2f13583eda409267c02770",
+        "sha": "04dc528bef5407f96a714f9419b1fb6eda9a77e0",
         "lane": 0,
         "color": 0,
         "through": [],
         "incoming": [],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "69b2db231a38f4046de4bcafd547c0279d208424",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "b2ecc649927f3bf37c89cceade57b50383a458c1",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "fcaeecac6e2538e437ab87ed8a50d78e68629e22",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "92d574f4388c3f94ee2f13583eda409267c02770",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
         "outgoing": [
           {
             "to": 0,
@@ -1068,20 +1188,11 @@
   "branches": [
     {
       "name": "feature/comfy",
-      "sha": "b1ca7be235280616e1ed337b9f7c3551c1ca2bba",
-      "short": "b1ca7be",
+      "sha": "04dc528bef5407f96a714f9419b1fb6eda9a77e0",
+      "short": "04dc528",
       "upstream": "",
-      "date": "2026-11-07",
+      "date": "2026-11-09",
       "current": false,
-      "symref": ""
-    },
-    {
-      "name": "feature/dsh-director",
-      "sha": "92d574f4388c3f94ee2f13583eda409267c02770",
-      "short": "92d574f",
-      "upstream": "",
-      "date": "2026-11-07",
-      "current": true,
       "symref": ""
     },
     {
@@ -1095,17 +1206,17 @@
     },
     {
       "name": "release",
-      "sha": "eb7be432e0b423ebaddd7a6cd3b24a27e2931cfb",
-      "short": "eb7be43",
+      "sha": "fcaeecac6e2538e437ab87ed8a50d78e68629e22",
+      "short": "fcaeeca",
       "upstream": "origin/release",
       "date": "2026-11-07",
-      "current": false,
+      "current": true,
       "symref": ""
     }
   ],
   "details": {
-    "92d574f4388c3f94ee2f13583eda409267c02770": {
-      "message": "fix(director): enforce the prompt length bound on writes\n\nThe review already warned about an over-long prompt, but the write path let it\nthrough. Reject text/negative above maxPromptChars at add_shot and update_shot\nso the bound is real, and cover it in the domain tests.",
+    "04dc528bef5407f96a714f9419b1fb6eda9a77e0": {
+      "message": "feat(comfy): show each loader's files and prove the image pipeline end to end\n\nTwo follow-ups the report itself raises.\n\n`可加载项`: `/object_info` already carries the enum every loader offers, and\nthose strings are exactly what a workflow must write. The report now lists them\nper loader node (`CheckpointLoaderSimple.ckpt_name → 2 files: …`) and mirrors\nthem under `server.loaders` in the JSON. This is also the most reliable\ninventory ComfyUI exposes: it works even when `/models/{folder}` does not.\n\n`comfy verify`: the report says a pipeline is *ready*, which only ever meant the\nparts are present. This command builds the smallest text-to-image graph from the\nlive object info — checkpoint, sampler and scheduler are read from the enums the\nserver offers, so a renamed dropdown cannot fake a failure — queues it, waits on\n`/history`, and downloads the output to `./comfy-verify/`. Failures carry stable\ncodes (MISSING_NODES, NO_CHECKPOINTS, MODEL_NOT_FOUND, NODE_ERROR,\nEXECUTION_ERROR, TIMEOUT, NO_IMAGE) and exit 1; `--json` returns them as JSON.\n\n- probe: `readLoaderOptions` extracts the per-loader dropdowns\n- verify: builder, submit, poll, download, all against the public HTTP API\n- mock: loader enums, `/prompt`, `/history/{id}`, `/view`, plus a real 1×1 PNG\n  and configurable history modes (immediate / never / error)\n- docs: bilingual README, exit code 1, five new tests (34 total)",
       "author": {
         "name": "litingyes",
         "email": "luz.liting@gmail.com"
@@ -1114,53 +1225,365 @@
         "name": "litingyes",
         "email": "luz.liting@gmail.com"
       },
-      "committedAt": "2026-11-07T16:03:52+08:00",
+      "committedAt": "2026-11-09T22:48:20+08:00",
       "files": [
         {
-          "path": "dsh-director/production.js",
+          "path": "comfy-tools/README.en.md",
           "status": "M",
-          "added": 12,
+          "added": 20,
+          "deleted": 3,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/README.md",
+          "status": "M",
+          "added": 20,
+          "deleted": 3,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/comfy.mjs",
+          "status": "M",
+          "added": 120,
+          "deleted": 2,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/docs/report.md",
+          "status": "M",
+          "added": 2,
+          "deleted": 2,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/lib/probe.mjs",
+          "status": "M",
+          "added": 28,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/lib/verify.mjs",
+          "status": "A",
+          "added": 223,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/test/cli.test.mjs",
+          "status": "M",
+          "added": 68,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/test/mock-comfy.mjs",
+          "status": "M",
+          "added": 139,
+          "deleted": 11,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "comfy-tools/docs/report.md",
+        "lines": [
+          "diff --git a/comfy-tools/docs/report.md b/comfy-tools/docs/report.md",
+          "index 9b07d69..8a0f170 100644",
+          "--- a/comfy-tools/docs/report.md",
+          "+++ b/comfy-tools/docs/report.md",
+          "@@ -2,6 +2,6 @@",
+          " ",
+          "-- 生成时间: 2026-11-09 22:37",
+          "+- 生成时间: 2026-11-09 22:48",
+          " - 服务: http://127.0.0.1:8188 — 不可达",
+          " - 安装: /Users/liting/Documents/ComfyUI",
+          "-- 硬件: Apple M2 · 16 GB · 磁盘剩余 63.1 GB",
+          "+- 硬件: Apple M2 · 16 GB · 磁盘剩余 60.7 GB"
+        ],
+        "truncated": false
+      }
+    },
+    "69b2db231a38f4046de4bcafd547c0279d208424": {
+      "message": "refactor(comfy): report what the install has instead of grading a fixed catalog\n\nThe first version carried an 83-entry `capabilities.json` that declared what\nComfyUI can do and graded the machine against it. That answered a question\nnobody asked and cost real maintenance: every entry duplicated knowledge that\nthe install itself already exposes, and adding a model family meant editing a\ndata file before the tool could see it.\n\nThis replaces the declaration with inspection. The tool now reports what is on\nthis machine and what that adds up to:\n\n- `classify`: guesses a weight's family from its folder and file name (SDXL,\n  WAN video, VAE, upscaler, LoRA, …) and buckets node classes by purpose. A file\n  that matches nothing stays unclassified rather than being forced into a family.\n- `pipelines`: ten common pipelines, each judged by the weights and node classes\n  found, with the evidence printed next to the verdict. States are ready /\n  needs weights / needs nodes / needs both / unknown — `unknown` is what an\n  offline scan reports for anything only its nodes could decide.\n- `report`: environment, weights by folder with sizes, custom nodes, node\n  buckets, then the pipeline table. `doctor`, `models` and `nodes` stay as the\n  follow-up questions. `--json` and `--md` carry the same facts.\n\nThe install is never written to, and the tool still decides everything from one\nprobe: no stored claims, no download, no process control.\n\nRemoved: capabilities.json, lib/grade.mjs, the catalog schema test and its\nfixture. Tests: 29 cases, including the fake ComfyUI and the offline scan.",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-09T22:38:08+08:00",
+      "files": [
+        {
+          "path": "comfy-tools/README.en.md",
+          "status": "M",
+          "added": 59,
+          "deleted": 76,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/README.md",
+          "status": "M",
+          "added": 60,
+          "deleted": 77,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/capabilities.json",
+          "status": "D",
+          "added": 0,
+          "deleted": 3308,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/comfy.mjs",
+          "status": "M",
+          "added": 424,
+          "deleted": 437,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/docs/report.md",
+          "status": "M",
+          "added": 18,
+          "deleted": 125,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/lib/classify.mjs",
+          "status": "A",
+          "added": 303,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/lib/grade.mjs",
+          "status": "D",
+          "added": 0,
+          "deleted": 430,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/lib/pipelines.mjs",
+          "status": "A",
+          "added": 171,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/lib/probe.mjs",
+          "status": "M",
+          "added": 10,
           "deleted": 1,
           "binary": false
         },
         {
-          "path": "dsh-director/test/production.test.js",
+          "path": "comfy-tools/test/classify.test.mjs",
+          "status": "A",
+          "added": 76,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/test/cli.test.mjs",
           "status": "M",
-          "added": 24,
+          "added": 76,
+          "deleted": 58,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/test/fixtures/spec.json",
+          "status": "D",
+          "added": 0,
+          "deleted": 128,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/test/grade.test.mjs",
+          "status": "D",
+          "added": 0,
+          "deleted": 160,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/test/pipelines.test.mjs",
+          "status": "A",
+          "added": 92,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/test/spec.test.mjs",
+          "status": "D",
+          "added": 0,
+          "deleted": 108,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "comfy-tools/lib/probe.mjs",
+        "lines": [
+          "diff --git a/comfy-tools/lib/probe.mjs b/comfy-tools/lib/probe.mjs",
+          "index 4e5cf5d..ec901c2 100644",
+          "--- a/comfy-tools/lib/probe.mjs",
+          "+++ b/comfy-tools/lib/probe.mjs",
+          "@@ -204,2 +204,3 @@ export async function readModelInventory(base, objectInfo) {",
+          "  *   nodes: Set<string>|null,",
+          "+ *   nodeNames: string[]|null,",
+          "  *   models: Record<string, Array<{name: string, bytes?: number}>>,",
+          "@@ -218,2 +219,3 @@ export async function probeServer(base) {",
+          "     nodes: null,",
+          "+    nodeNames: null,",
+          "     models: {},",
+          "@@ -233,5 +235,9 @@ export async function probeServer(base) {",
+          "   let nodeNames = null",
+          "+  let nodeClasses = null",
+          "   try {",
+          "     objectInfo = await fetchJson(url, '/object_info')",
+          "-    if (objectInfo && typeof objectInfo === 'object') nodeNames = new Set(Object.keys(objectInfo))",
+          "+    if (objectInfo && typeof objectInfo === 'object') {",
+          "+      nodeClasses = Object.keys(objectInfo)"
+        ],
+        "truncated": true
+      }
+    },
+    "b2ecc649927f3bf37c89cceade57b50383a458c1": {
+      "message": "feat(comfy): add a capability catalog and a local availability probe\n\nTwo questions, one data file: ComfyUI can do a lot, but which of it works on\nthis machine right now?\n\n`capabilities.json` lists 83 capabilities across eight families (text-to-image,\nediting, vision utilities, video, audio, 3D, LLM nodes, engine), each with the\nnode classes and weight files it needs, plus memory and disk thresholds and the\ncustom node worth installing. The file is machine-independent on purpose: it is\nthe catalogue of what ComfyUI can do, not what one laptop can.\n\n`comfy.mjs` grades that catalogue against one installation on two axes that are\nnever collapsed: install (ready / partial / blocked / unknown) and machine\n(recommended / tight / too big). It reads a running server through\n`/system_stats`, `/object_info` and `/models`, and falls back to scanning\n`models/`, `custom_nodes/` and `comfyui_version.py` when the server is down —\nreporting node-dependent entries as unknown instead of guessing. `--plan\n--budget` turns the grades into a download order: one step installs everything\na capability still lacks, ranked by the value of what it turns on.\n\n- probe: online inventory with an `/object_info` fallback, offline directory\n  scan, machine facts (chip, memory, free disk via df)\n- grade: two-axis verdicts, missing dependency detail, greedy plan with a\n  subset coverage test for planned requirements\n- cli: capabilities / doctor / models / nodes, table, JSON and Markdown output,\n  exit codes documented\n- tests: 29 cases with a fake ComfyUI and an offline directory fixture\n- docs: bilingual README, generated report for this machine\n\nThis is deliberately not a DSH plugin yet: a CLI is enough for an agent to run\nmid-conversation, and packaging can move `lib/` unchanged once the catalogue\nsettles.",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-08T01:07:16+08:00",
+      "files": [
+        {
+          "path": "comfy-tools/README.en.md",
+          "status": "A",
+          "added": 117,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/README.md",
+          "status": "A",
+          "added": 117,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/capabilities.json",
+          "status": "A",
+          "added": 3308,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/comfy.mjs",
+          "status": "A",
+          "added": 679,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/docs/report.md",
+          "status": "A",
+          "added": 133,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/lib/grade.mjs",
+          "status": "A",
+          "added": 430,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/lib/probe.mjs",
+          "status": "A",
+          "added": 496,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/test/cli.test.mjs",
+          "status": "A",
+          "added": 131,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/test/fixtures/spec.json",
+          "status": "A",
+          "added": 128,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/test/grade.test.mjs",
+          "status": "A",
+          "added": 160,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/test/mock-comfy.mjs",
+          "status": "A",
+          "added": 108,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/test/probe.test.mjs",
+          "status": "A",
+          "added": 79,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "comfy-tools/test/spec.test.mjs",
+          "status": "A",
+          "added": 108,
           "deleted": 0,
           "binary": false
         }
       ],
       "filesTruncated": false,
       "diff": {
-        "path": "dsh-director/production.js",
+        "path": "comfy-tools/test/probe.test.mjs",
         "lines": [
-          "diff --git a/dsh-director/production.js b/dsh-director/production.js",
-          "index 1d1688f..c6d5e8f 100644",
-          "--- a/dsh-director/production.js",
-          "+++ b/dsh-director/production.js",
-          "@@ -866,3 +866,14 @@ function readShotFields(input, limits, requireDuration) {",
-          "   if (input.audio !== undefined) out.audio = readShotAudioPartial(input.audio)",
-          "-  if (input.prompt !== undefined) out.prompt = readPromptPartial(input.prompt)",
-          "+  if (input.prompt !== undefined) {",
-          "+    out.prompt = readPromptPartial(input.prompt)",
-          "+    for (const key of ['text', 'negative']) {",
-          "+      const value = out.prompt[key]",
-          "+      if (typeof value === 'string' && value.length > limits.maxPromptChars) {",
-          "+        fail(",
-          "+          'VIDEO_LIMIT',",
-          "+          `prompt ${key} is ${value.length} characters; maxPromptChars is ${limits.maxPromptChars} — split the idea or trim it`,",
-          "+        )",
-          "+      }",
-          "+    }",
-          "+  }",
-          "   if (input.continuity !== undefined) out.continuity = readContinuityPartial(input.continuity)"
+          "diff --git a/comfy-tools/test/probe.test.mjs b/comfy-tools/test/probe.test.mjs",
+          "new file mode 100644",
+          "index 0000000..99659b2",
+          "--- /dev/null",
+          "+++ b/comfy-tools/test/probe.test.mjs",
+          "@@ -0,0 +1,79 @@",
+          "+/**",
+          "+ * Probe tests: a fake server for the online path, a temp directory for the",
+          "+ * offline path, and the \"unreachable is a finding\" contract.",
+          "+ */",
+          "+",
+          "+import assert from 'node:assert/strict'",
+          "+import { mkdir, mkdtemp, writeFile } from 'node:fs/promises'",
+          "+import { tmpdir } from 'node:os'",
+          "+import { join } from 'node:path'",
+          "+import test from 'node:test'",
+          "+",
+          "+import { probeAll, probeServer, scanInstallation } from '../lib/probe.mjs'",
+          "+import { startMock } from './mock-comfy.mjs'",
+          "+"
         ],
-        "truncated": false
+        "truncated": true
       }
     },
-    "b1ca7be235280616e1ed337b9f7c3551c1ca2bba": {
-      "message": "chore(site): refresh the graph after dsh-director",
+    "fcaeecac6e2538e437ab87ed8a50d78e68629e22": {
+      "message": "chore(site): refresh the graph after the director prompt bound",
       "author": {
         "name": "litingyes",
         "email": "luz.liting@gmail.com"
@@ -1169,13 +1592,13 @@
         "name": "litingyes",
         "email": "luz.liting@gmail.com"
       },
-      "committedAt": "2026-11-07T15:59:02+08:00",
+      "committedAt": "2026-11-07T16:03:55+08:00",
       "files": [
         {
           "path": "site/src/data/repo-graph.json",
           "status": "M",
-          "added": 515,
-          "deleted": 156,
+          "added": 183,
+          "deleted": 98,
           "binary": false
         }
       ],
@@ -1184,442 +1607,27 @@
         "path": "site/src/data/repo-graph.json",
         "lines": [
           "diff --git a/site/src/data/repo-graph.json b/site/src/data/repo-graph.json",
-          "index 103bf7f..79e3122 100644",
+          "index 79e3122..155b107 100644",
           "--- a/site/src/data/repo-graph.json",
           "+++ b/site/src/data/repo-graph.json",
           "@@ -2,7 +2,7 @@",
           "   \"source\": {",
-          "-    \"head\": \"f9b216129a61ff141650f683438720022d5ada97\",",
-          "-    \"headShort\": \"f9b2161\",",
-          "+    \"head\": \"ff4e216df3146069f9ec728711b51f8dcf2c385c\",",
-          "+    \"headShort\": \"ff4e216\",",
+          "-    \"head\": \"ff4e216df3146069f9ec728711b51f8dcf2c385c\",",
+          "-    \"headShort\": \"ff4e216\",",
+          "+    \"head\": \"92d574f4388c3f94ee2f13583eda409267c02770\",",
+          "+    \"headShort\": \"92d574f\",",
           "     \"headDate\": \"2026-11-07\",",
-          "-    \"currentBranch\": \"release\",",
-          "-    \"total\": 27,",
-          "+    \"currentBranch\": \"feature/dsh-director\",",
-          "+    \"total\": 30,",
+          "     \"currentBranch\": \"feature/dsh-director\",",
+          "-    \"total\": 30,",
+          "+    \"total\": 32,",
           "     \"limit\": 40,",
-          "@@ -12,5 +12,5 @@",
-          "     {",
-          "-      \"sha\": \"f9b216129a61ff141650f683438720022d5ada97\",",
-          "+      \"sha\": \"ff4e216df3146069f9ec728711b51f8dcf2c385c\","
+          "@@ -11,2 +11,31 @@",
+          "   \"commits\": [",
+          "+    {",
+          "+      \"sha\": \"92d574f4388c3f94ee2f13583eda409267c02770\",",
+          "+      \"parents\": ["
         ],
         "truncated": true
-      }
-    },
-    "ff4e216df3146069f9ec728711b51f8dcf2c385c": {
-      "message": "feat(director): add the AI video director plugin\n\nA production workspace for AI video: six agent tools keep the project,\nstoryboard, takes and audio under `video/`, an embedded skill carries the\ndirecting method (story structure, shot design, prompt recipe, sound), and a\nread-only right-sidebar board copies paste-ready prompts and shows the review.\n\nThe plugin never generates video or calls a generation API; its product is the\npositive prompt, negative prompt and parameters the user pastes into\nKling/Jimeng/Hailuo, plus the plan and take log around them.\n\n- domain: pure validation, ids, mutations and the deterministic review\n- host: ctx.fs store with optimistic version guards, six tool definitions,\n  the embedded skill and guidance, read-only /dsh-director/api/state\n- client: React board (storyboard, prompts, audio, review) built to client.js\n- repo: packages.mjs, publish workflow, release-gate test, root README,\n  AGENTS.md",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-07T15:58:31+08:00",
-      "files": [
-        {
-          "path": ".github/workflows/publish.yml",
-          "status": "M",
-          "added": 4,
-          "deleted": 1,
-          "binary": false
-        },
-        {
-          "path": "AGENTS.md",
-          "status": "M",
-          "added": 11,
-          "deleted": 8,
-          "binary": false
-        },
-        {
-          "path": "README.md",
-          "status": "M",
-          "added": 29,
-          "deleted": 8,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/LICENSE",
-          "status": "A",
-          "added": 21,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/README.en.md",
-          "status": "A",
-          "added": 178,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/README.md",
-          "status": "A",
-          "added": 178,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/api.js",
-          "status": "A",
-          "added": 244,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/client.js",
-          "status": "A",
-          "added": 148,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/cordis.patch.yml",
-          "status": "A",
-          "added": 49,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/icon.svg",
-          "status": "A",
-          "added": 8,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/index.js",
-          "status": "A",
-          "added": 253,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/locale/en.json",
-          "status": "A",
-          "added": 6,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/locale/zh.json",
-          "status": "A",
-          "added": 6,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/package-lock.json",
-          "status": "A",
-          "added": 503,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/package.json",
-          "status": "A",
-          "added": 92,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/production.js",
-          "status": "A",
-          "added": 1880,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/scripts/build-client.mjs",
-          "status": "A",
-          "added": 125,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/skill.js",
-          "status": "A",
-          "added": 59,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/skill.md",
-          "status": "A",
-          "added": 249,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/src/client/api-client.js",
-          "status": "A",
-          "added": 87,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/src/client/audio-view.jsx",
-          "status": "A",
-          "added": 118,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/src/client/copy-button.jsx",
-          "status": "A",
-          "added": 84,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/src/client/format.js",
-          "status": "A",
-          "added": 102,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/src/client/i18n.js",
-          "status": "A",
-          "added": 294,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/src/client/icons.jsx",
-          "status": "A",
-          "added": 138,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/src/client/index.jsx",
-          "status": "A",
-          "added": 140,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/src/client/panel.jsx",
-          "status": "A",
-          "added": 309,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/src/client/prompts-view.jsx",
-          "status": "A",
-          "added": 279,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/src/client/review-view.jsx",
-          "status": "A",
-          "added": 130,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/src/client/store.js",
-          "status": "A",
-          "added": 136,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/src/client/storyboard-view.jsx",
-          "status": "A",
-          "added": 210,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/src/client/styles.js",
-          "status": "A",
-          "added": 137,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/src/client/use-translate.js",
-          "status": "A",
-          "added": 26,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/src/shared/prompt.js",
-          "status": "A",
-          "added": 221,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/store.js",
-          "status": "A",
-          "added": 311,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/test/api.test.js",
-          "status": "A",
-          "added": 223,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/test/client-format.test.js",
-          "status": "A",
-          "added": 66,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/test/client-i18n.test.js",
-          "status": "A",
-          "added": 67,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/test/config.test.js",
-          "status": "A",
-          "added": 67,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/test/fake-fs.js",
-          "status": "A",
-          "added": 158,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/test/integration.test.js",
-          "status": "A",
-          "added": 114,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/test/production.test.js",
-          "status": "A",
-          "added": 365,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/test/prompt.test.js",
-          "status": "A",
-          "added": 117,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/test/skill.test.js",
-          "status": "A",
-          "added": 39,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/test/store.test.js",
-          "status": "A",
-          "added": 173,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/test/tools.test.js",
-          "status": "A",
-          "added": 376,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-director/tools.js",
-          "status": "A",
-          "added": 1022,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "scripts/check-release.test.mjs",
-          "status": "M",
-          "added": 5,
-          "deleted": 2,
-          "binary": false
-        },
-        {
-          "path": "scripts/packages.mjs",
-          "status": "M",
-          "added": 1,
-          "deleted": 1,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": "scripts/packages.mjs",
-        "lines": [
-          "diff --git a/scripts/packages.mjs b/scripts/packages.mjs",
-          "index 3c4583e..d0328f6 100644",
-          "--- a/scripts/packages.mjs",
-          "+++ b/scripts/packages.mjs",
-          "@@ -9,3 +9,3 @@",
-          " /** Plugin directories that ship to npm, in the order the docs list them. */",
-          "-export const PACKAGES = ['dsh-context7', 'dsh-git']",
-          "+export const PACKAGES = ['dsh-context7', 'dsh-git', 'dsh-director']"
-        ],
-        "truncated": false
-      }
-    },
-    "eb7be432e0b423ebaddd7a6cd3b24a27e2931cfb": {
-      "message": "docs: list the release gate in the directory map",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-07T15:10:49+08:00",
-      "files": [
-        {
-          "path": "README.md",
-          "status": "M",
-          "added": 6,
-          "deleted": 2,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": "README.md",
-        "lines": [
-          "diff --git a/README.md b/README.md",
-          "index 15338f6..784f619 100644",
-          "--- a/README.md",
-          "+++ b/README.md",
-          "@@ -73,4 +73,8 @@ dsh-plugins/",
-          " ├── README.md",
-          "-├── .github/workflows/      # 推 tag 触发 npm 发布",
-          "-├── scripts/release.mjs     # 打 tag / 推送",
-          "+├── AGENTS.md               # 仓库规范：发版、产物、双语、站点数据",
-          "+├── .github/workflows/      # push 到 release 跑版本门禁；推 tag 触发 npm 发布",
-          "+├── scripts/",
-          "+│   ├── release.mjs         # 发版：bump / 重建 / 改 pin / 提交 / 打 tag / 推送",
-          "+│   ├── check-release.mjs   # 门禁：每个 manifest 版本都必须有匹配 tag",
-          "+│   └── packages.mjs        # 两个脚本共用的包清单与 tag 命名",
-          " ├── site/                   # Astro 门户（独立 pnpm 包，Vercel 的 Root Directory）"
-        ],
-        "truncated": false
       }
     }
   }
