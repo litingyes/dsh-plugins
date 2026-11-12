@@ -15,6 +15,7 @@ on:
       - 'dsh-context7-v*'
       - 'dsh-git-v*'
       - 'dsh-director-v*'
+      - 'dsh-github-v*'
 
 permissions:
   contents: read
@@ -41,6 +42,7 @@ jobs:
             dsh-context7-v*) dir="dsh-context7" ;;
             dsh-git-v*) dir="dsh-git" ;;
             dsh-director-v*) dir="dsh-director" ;;
+            dsh-github-v*) dir="dsh-github" ;;
             *)
               echo "::error::unexpected release tag ${tag}"
               exit 1

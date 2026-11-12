@@ -1,0 +1,79 @@
+{
+  "name": "@litingyes/dsh-github",
+  "version": "0.1.0",
+  "description": "GitHub for DeepSeek Harness: the official GitHub MCP server as mcp__github__* tools the agent can query and change repos with, a right-sidebar tab that follows the Session workspace and lists its issues, pull requests and notifications, write-tool approvals through the harness, and one-click import of the gh CLI's OAuth token.",
+  "type": "module",
+  "license": "MIT",
+  "author": {
+    "name": "Liting",
+    "url": "https://github.com/litingyes"
+  },
+  "homepage": "https://dsh-plugins.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/litingyes/dsh-plugins.git",
+    "directory": "dsh-github"
+  },
+  "bugs": {
+    "url": "https://github.com/litingyes/dsh-plugins/issues"
+  },
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "github",
+    "mcp",
+    "issues",
+    "pull-requests",
+    "notifications"
+  ],
+  "engines": {
+    "dsh": ">=0.2.1-rc.5 <0.3.0-0"
+  },
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "github.js",
+    "auth.js",
+    "api.js",
+    "cordis.patch.yml",
+    "icon.svg",
+    "locale/*.json",
+    "src",
+    "scripts",
+    "README.md",
+    "README.en.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "manifestVersion": 1,
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-ui-sidebar-right"
+      ]
+    }
+  },
+  "scripts": {
+    "build": "node scripts/build-client.mjs",
+    "test": "node --test test/",
+    "check": "node scripts/build-client.mjs --check && node --check index.js && node --check github.js && node --check auth.js && node --check api.js && node --check client.js",
+    "prepublishOnly": "npm run build && npm run check"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.12"
+  }
+}

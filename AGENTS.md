@@ -1,11 +1,11 @@
 # AGENTS.md
 
-给在这个仓库里工作的 agent（以及维护者）的硬性规范。仓库是 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 的插件 monorepo：`dsh-context7/`、`dsh-git/`、`dsh-director/` 是三个独立的 npm 包，`site/` 是 Astro 门户。
+给在这个仓库里工作的 agent（以及维护者）的硬性规范。仓库是 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 的插件 monorepo：`dsh-context7/`、`dsh-git/`、`dsh-director/`、`dsh-github/` 是四个独立的 npm 包，`site/` 是 Astro 门户。
 
 ## 一、硬规则（CI 会拦，别绕）
 
-1. **`dsh-git/client.js` 与 `dsh-director/client.js` 是构建产物，必须提交。**
-   改过 `dsh-git/src/client/**` 或 `dsh-director/src/client/**`（或任何会进入浏览器半边的文件）之后，跑 `cd <插件> && npm run build` 并把 `client.js` 一起提交。
+1. **`dsh-git/client.js`、`dsh-director/client.js` 与 `dsh-github/client.js` 是构建产物，必须提交。**
+   改过 `dsh-git/src/client/**`、`dsh-director/src/client/**` 或 `dsh-github/src/client/**`（或任何会进入浏览器半边的文件）之后，跑 `cd <插件> && npm run build` 并把 `client.js` 一起提交。
    `npm run check` 会重建比对，产物过期直接失败；产物文件头的横幅里还带着版本号，所以**发版后也必须重建**。
 
 2. **不要手改 `<插件>/package.json` 的 `version`。**
@@ -29,6 +29,7 @@
 | `dsh-git/client.js` | 生成物，**提交** | 由 `scripts/build-client.mjs` 从 `dsh-git/src/client/` 打包；改源码不要改它 |
 | `dsh-context7/client.js` | 手写 | 无构建流程，直接编辑 |
 | `dsh-director/client.js` | 生成物，**提交** | 由 `scripts/build-client.mjs` 从 `dsh-director/src/client/` 打包；改源码不要改它 |
+| `dsh-github/client.js` | 生成物，**提交** | 由 `scripts/build-client.mjs` 从 `dsh-github/src/client/` 打包；改源码不要改它 |
 | `dsh-git/src/shared/graph.js` | 源码，两端共用 | 门户同步脚本也 import 它 |
 | `dsh-director/skill.md` | 源码，随包发布 | 内置导演技能的正文，`skill.js` 在挂载时读取 |
 | `site/src/data/*.json` | 生成物，**提交** | `pnpm sync` 产出；Vercel 浅克隆，构建时没有 git 历史 |
@@ -38,10 +39,10 @@
 
 ```bash
 # 插件（各自目录内）
-npm install            # dsh-git（esbuild、Base UI）与 dsh-director（esbuild）有开发依赖
-npm run build          # dsh-git / dsh-director：重建 client.js
+npm install            # dsh-git（esbuild、Base UI）、dsh-director 与 dsh-github（esbuild）有开发依赖
+npm run build          # dsh-git / dsh-director / dsh-github：重建 client.js
 npm test               # node --test test/
-npm run check          # 产物新鲜度 + 语法；两个带浏览器半边的插件先跑 build --check
+npm run check          # 产物新鲜度 + 语法；带浏览器半边的插件先跑 build --check
 
 # 仓库根
 node scripts/check-release.mjs            # 门禁：每个 manifest 版本都有 tag
@@ -75,7 +76,7 @@ Conventional Commits + scope：`feat(git): …`、`feat(director): …`、`fix(d
 
 ## 六、依赖纪律
 
-- Host 半边（`dsh-git` 的 `index.js` / `git.js` / `api.js`，`dsh-director` 的宿主模块）**零依赖**，只用 `node:` 内置模块，不需要构建。
+- Host 半边（`dsh-git` 的 `index.js` / `git.js` / `api.js`，`dsh-director` 的宿主模块，`dsh-github` 的 `index.js` / `github.js` / `auth.js` / `api.js`）**零依赖**，只用 `node:` 内置模块，不需要构建。
 - 浏览器半边除 `react` / `react-dom` / `react/jsx-runtime` 外**不得 external**，其余（含 Base UI）必须打进 bundle；构建脚本会断言这一点。
 - 引入第三方代码要更新 `THIRD_PARTY_NOTICES.md`；代码许可保持 MIT。
 
