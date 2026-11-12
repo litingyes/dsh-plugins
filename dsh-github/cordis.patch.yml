@@ -1,0 +1,66 @@
+# @litingyes/dsh-github — GitHub inside DeepSeek Harness.
+#
+# Two rows.
+#
+# The first mounts the DSH-shipped MCP client against GitHub's hosted MCP
+# server. Its tools appear as mcp__github__* and cover the whole REST surface a
+# person asks for: repos, issues, pull requests, reviews, checks, users,
+# notifications. `X-MCP-Toolsets` keeps the tool list to those sets instead of
+# the server's full catalogue.
+#
+# The second row mounts this package's Host half: the prompt section that names
+# those tools, the write-approval listener, the right-sidebar panel's route and
+# the credential bridge behind its import button.
+#
+# ## The token
+#
+# `Authorization` is a credential reference, not a value: with
+# `expandTemplates: true` the client resolves `${credential:GITHUB_TOKEN}` from
+# the credentials provider at runtime, redacts the resolved value from
+# diagnostics, and rebuilds the connection when the credential changes. Until a
+# token exists the row sits in `waiting-credentials` instead of failing the
+# Host, which is why `failOnStartupError` stays false.
+#
+# The token comes from one of two places, both writing the same credential:
+#
+#   - the panel's "Import the gh token" button, which reads the token the GitHub
+#     CLI already holds (an OAuth token, refreshed by gh) and stores it;
+#   - GITHUB_TOKEN in $DSH_HOME/.env, or in the launch environment.
+#
+# A Personal Access Token works exactly like the gh token here; the MCP
+# transport only ever sees `Authorization: Bearer <token>`.
+#
+# ## Why not OAuth
+#
+# GitHub's MCP endpoint does advertise OAuth, but its authorization server is
+# github.com's own and publishes no metadata and no dynamic client registration,
+# so a package cannot register itself. `@deepseek-ai/dsh-mcp-client` implements
+# no OAuth either — it only sets request headers. Importing the gh token gets the
+# same OAuth-issued credential without shipping a client secret.
+#
+# ## Overrides
+#
+# Change this row in the profile patch layer (by id `github-mcp` / `github`)
+# when you need another server name, a GitHub Enterprise API base, different
+# toolsets, or a read-only agent. A row override replaces `config` wholesale, so
+# restate every field the row needs — and keep `credentialRef` on the second row
+# equal to the name used in the header above.
+- insert:
+    - id: github-mcp
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: github
+        transport: streamable-http
+        url: https://api.githubcopilot.com/mcp/
+        expandTemplates: true
+        headers:
+          Authorization: 'Bearer ${credential:GITHUB_TOKEN}'
+          X-MCP-Toolsets: context,repos,issues,pull_requests,users,notifications
+        failOnStartupError: false
+    - id: github
+      name: '@litingyes/dsh-github'
+      config:
+        serverName: github
+        guidance: true
+        approval: true
+        credentialRef: GITHUB_TOKEN
