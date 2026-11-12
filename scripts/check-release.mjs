@@ -15,6 +15,12 @@
  *   4. the tagged commit is an ancestor of HEAD (so the tag is not stranded on
  *      an unmerged branch).
  *
+ * A package with no `<dir>-v*` tag at all is exempt from rule 2: it has never
+ * been published, so its first version is waiting for a release rather than
+ * lost. That exemption is what lets a new plugin merge before its first tag
+ * without painting the branch red. It does not outlast the first release —
+ * once any tag exists, every later version needs its own.
+ *
  * Deliberately offline: publishing happens only from tags, so a tag already
  * implies the version will ship. Asking npm would make the gate depend on the
  * registry being reachable at push time.
@@ -80,6 +86,8 @@ if (!gitOk(root, ['rev-parse', '--git-dir'])) {
 
 /** One line per package on success, a problem plus a fix per package otherwise. */
 const notes = []
+// Packages that have never been released: reported, never a problem.
+const pending = []
 const problems = []
 
 for (const dir of PACKAGES) {
@@ -102,6 +110,15 @@ for (const dir of PACKAGES) {
   const tag = tagName(dir, version)
   const commit = tryGit(root, ['rev-parse', '--verify', `refs/tags/${tag}^{commit}`])
   if (commit === null) {
+    // A package that has never been tagged has never been published: this
+    // version is waiting for its first release, not lost. Exempting only that
+    // case keeps the rule that matters — once a package has any tag, every
+    // later version must have its own, or the registry skips a number.
+    const released = tryGit(root, ['tag', '--list', `${dir}-v*`])
+    if (released === null || released.trim() === '') {
+      pending.push(`${name} ${version} → not published yet (no ${dir}-v* tag)`)
+      continue
+    }
     problems.push(
       `${name} declares ${version}, but no tag ${tag} exists — that version would never reach npm.`,
       `    fix: node scripts/release.mjs ${dir} --push      # tag HEAD and push branch + tag`,
@@ -146,4 +163,6 @@ if (problems.length > 0) {
 }
 
 for (const note of notes) console.log(`check-release: ${note}`)
-console.log(`check-release: ${PACKAGES.length} package(s) tagged; every manifest version is releasable`)
+for (const note of pending) console.log(`check-release: ${note}`)
+const exempt = pending.length === 0 ? '' : `, ${pending.length} not published yet`
+console.log(`check-release: ${notes.length} package(s) tagged${exempt}; every manifest version is releasable`)

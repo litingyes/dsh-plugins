@@ -7,6 +7,11 @@
 # current version is not tagged at an ancestor of HEAD, so the drift is caught
 # on the push that introduces it instead of at the next release.
 #
+# A package with no tag at all has never been published, so its first version
+# is waiting for a release rather than lost; the gate reports it as
+# "not published yet" and stays green. Once a package has any tag, every later
+# version needs its own.
+#
 # Make this workflow a required status check for `release` in the repository
 # settings, otherwise it only paints a red cross.
 name: CI

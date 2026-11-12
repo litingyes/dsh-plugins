@@ -52,6 +52,11 @@ function commitVersion(root, dir, version) {
   return git(root, ['rev-parse', 'HEAD'])
 }
 
+/** Tag one package at `commit` (defaults to HEAD). */
+function tag(root, dir, version, commit) {
+  git(root, ['tag', '-a', `${dir}-v${version}`, '-m', `release ${dir} ${version}`, ...(commit === undefined ? [] : [commit])])
+}
+
 /** A repository whose plugins are committed and tagged at HEAD. */
 function taggedRepo(t, gitVersion = '0.5.1', context7Version = '0.2.1', directorVersion = '0.1.0', githubVersion = '0.1.0') {
   const root = makeRepo(t)
@@ -59,10 +64,21 @@ function taggedRepo(t, gitVersion = '0.5.1', context7Version = '0.2.1', director
   commitVersion(root, 'dsh-context7', context7Version)
   commitVersion(root, 'dsh-director', directorVersion)
   commitVersion(root, 'dsh-github', githubVersion)
-  git(root, ['tag', '-a', `dsh-git-v${gitVersion}`, '-m', `release dsh-git ${gitVersion}`])
-  git(root, ['tag', '-a', `dsh-context7-v${context7Version}`, '-m', `release dsh-context7 ${context7Version}`])
-  git(root, ['tag', '-a', `dsh-director-v${directorVersion}`, '-m', `release dsh-director ${directorVersion}`])
-  git(root, ['tag', '-a', `dsh-github-v${githubVersion}`, '-m', `release dsh-github ${githubVersion}`])
+  tag(root, 'dsh-git', gitVersion)
+  tag(root, 'dsh-context7', context7Version)
+  tag(root, 'dsh-director', directorVersion)
+  tag(root, 'dsh-github', githubVersion)
+  return root
+}
+
+/** Every plugin committed, but `untagged` left without any tag at all. */
+function repoWithUntagged(root, untagged) {
+  const versions = { 'dsh-git': '0.5.1', 'dsh-context7': '0.2.1', 'dsh-director': '0.1.0', 'dsh-github': '0.1.0' }
+  for (const [dir, version] of Object.entries(versions)) commitVersion(root, dir, version)
+  for (const [dir, version] of Object.entries(versions)) {
+    if (dir === untagged) continue
+    tag(root, dir, version)
+  }
   return root
 }
 
@@ -89,6 +105,26 @@ test('passes when every manifest version is tagged', (t) => {
   assert.match(result.output, /dsh-github 0\.1\.0 → dsh-github-v0\.1\.0/)
 })
 
+test('a package that has never been released is exempt, not a failure', (t) => {
+  const root = repoWithUntagged(makeRepo(t), 'dsh-github')
+
+  const result = check(root)
+  assert.equal(result.code, 0, result.output)
+  assert.match(result.output, /dsh-github 0\.1\.0 → not published yet/)
+  // The released packages still report their tags.
+  assert.match(result.output, /dsh-director 0\.1\.0 → dsh-director-v0\.1\.0/)
+})
+
+test('the exemption ends at the first tag: a later untagged version still fails', (t) => {
+  const root = repoWithUntagged(makeRepo(t), 'dsh-github')
+  tag(root, 'dsh-github', '0.1.0')
+  commitVersion(root, 'dsh-github', '0.1.1')
+
+  const result = check(root)
+  assert.equal(result.code, 1, 'once a package has a tag, every later version needs its own')
+  assert.match(result.output, /declares 0\.1\.1, but no tag dsh-github-v0\.1\.1 exists/)
+})
+
 test('fails when a version was bumped without a tag', (t) => {
   const root = taggedRepo(t)
   commitVersion(root, 'dsh-git', '0.5.2')
@@ -104,7 +140,7 @@ test('fails when the tag points at a commit declaring a different version', (t) 
   const previous = git(root, ['rev-parse', 'HEAD'])
   commitVersion(root, 'dsh-git', '0.5.2')
   // The tag exists, but it was left on the 0.5.1 commit.
-  git(root, ['tag', '-a', 'dsh-git-v0.5.2', '-m', 'wrong commit', previous])
+  tag(root, 'dsh-git', '0.5.2', previous)
 
   const result = check(root)
   assert.equal(result.code, 1)
@@ -120,7 +156,7 @@ test('fails when the tag is stranded on an unmerged branch', (t) => {
   writeFileSync(join(root, 'side.txt'), 'side\n')
   git(root, ['add', '.'])
   git(root, ['commit', '-q', '-m', 'side work'])
-  git(root, ['tag', '-a', 'dsh-git-v0.5.1', '-m', 'tagged on the side branch'])
+  tag(root, 'dsh-git', '0.5.1')
   git(root, ['checkout', '-q', branch])
 
   const result = check(root)

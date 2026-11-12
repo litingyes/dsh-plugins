@@ -13,6 +13,7 @@
 
 3. **每个 tag 必须指向声明该版本的提交，且该提交在 `release` 的历史上。**
    `node scripts/check-release.mjs` 在每次推 `release` 时校验；不满足就红。
+   例外只有一种：**从未发过版的包**（一个 `<目录>-v*` tag 都没有）记为 `not published yet` 而不算失败；该包打过第一个 tag 之后，每个版本都得有自己的 tag。
 
 4. **不要推旧 tag。** 发布工作流拒绝低于 npm `latest` 的版本，避免把 `latest` 往回带。
 

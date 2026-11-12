@@ -55,7 +55,7 @@ Web 侧边栏的 **Plugins** 页面同样接受包名、Git 地址、压缩包�
 
 发布由 tag 触发 GitHub Actions（[`publish.yml`](./.github/workflows/publish.yml)），tag 名形如 `dsh-git-v0.5.1`、`dsh-context7-v0.2.1`、`dsh-director-v0.1.0`、`dsh-github-v0.1.0`。
 
-新增插件的首次发布：manifest 里写初始版本（如 `0.1.0`），合并到 `release` 后运行 `node scripts/release.mjs <目录> --push`（不带 `--bump`，用清单里的版本打 tag）。否则 `check-release.mjs` 会因为该版本没有 tag 让 `release` 的 CI 变红。
+新增插件的首次发布：manifest 里写初始版本（如 `0.1.0`），合并到 `release` 后运行 `node scripts/release.mjs <目录> --push`（不带 `--bump`，用清单里的版本打 tag）。首次发布前不必先打 tag：从来没有过 tag 的包会被 `check-release.mjs` 记为 `not published yet` 而不是失败。**这条豁免只到首次发布为止**——一旦这个包有过任何 tag，之后每个版本都必须有自己的 tag。
 
 **规则：版本号只在发版提交里改。** 功能提交不要顺手 bump `package.json`——发布只认 tag，改了版本却没打 tag，那个版本永远不会进 npm，registry 就会跳号（本仓库曾经从 0.2.0 直接跳到 0.5.0，0.3.0 / 0.4.0 只活在 manifest 里）。[`ci.yml`](./.github/workflows/ci.yml) 在每次推 `release` 时跑 `scripts/check-release.mjs`，manifest 版本没有匹配 tag 就变红。
 
