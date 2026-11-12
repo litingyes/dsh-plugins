@@ -9,6 +9,7 @@
 | [`dsh-context7`](./dsh-context7) | `@litingyes/dsh-context7` | 通过官方 MCP 服务接入 [Context7](https://context7.com)，为智能体提供库解析与最新文档查询 |
 | [`dsh-git`](./dsh-git) | `@litingyes/dsh-git` | 输入框下方状态行直接显示并切换 Git 分支；右侧栏 Git 页签跟着会话工作区走：多分支提交树（节点可展开看详情，右键 cherry-pick / revert / drop）、变更暂存与提交、分支右键 merge / rebase、分支与工作树管理 |
 | [`dsh-director`](./dsh-director) | `@litingyes/dsh-director` | 把想法变成分镜、可粘贴提示词与音画方案：六个工具维护工作区的 `video/` 项目，内置导演技能讲清剧情、分镜、音画与可灵/即梦/海螺提示词，右栏「导演」页签看故事板、复制提示词、下载清单并查看检查结果。不生成视频，只产出拿去平台粘贴的输入 |
+| [`dsh-github`](./dsh-github) | `@litingyes/dsh-github` | 把 GitHub 接进 DSH：官方 GitHub MCP 服务的一整套 `mcp__github__*` 工具（仓库、issue、PR、评审、代码搜索、通知，可读可写，写操作前弹 DSH 审批），右栏「GitHub」页签跟着会话工作区走，列出当前仓库的 issue / PR / 通知并可评论；令牌可一键导入 `gh` 已登录的 OAuth 令牌 |
 
 ## 门户网站
 
@@ -33,6 +34,7 @@ pnpm dev      # http://localhost:4321
 plugin_manager action=install_bundle target=@litingyes/dsh-context7@0.2.1
 plugin_manager action=install_bundle target=@litingyes/dsh-git@0.5.1
 plugin_manager action=install_bundle target=@litingyes/dsh-director@0.1.0
+plugin_manager action=install_bundle target=@litingyes/dsh-github@0.1.0
 ```
 
 本地开发时按目录安装：
@@ -51,7 +53,7 @@ Web 侧边栏的 **Plugins** 页面同样接受包名、Git 地址、压缩包�
 
 ## 发布
 
-发布由 tag 触发 GitHub Actions（[`publish.yml`](./.github/workflows/publish.yml)），tag 名形如 `dsh-git-v0.5.1`、`dsh-context7-v0.2.1`、`dsh-director-v0.1.0`。
+发布由 tag 触发 GitHub Actions（[`publish.yml`](./.github/workflows/publish.yml)），tag 名形如 `dsh-git-v0.5.1`、`dsh-context7-v0.2.1`、`dsh-director-v0.1.0`、`dsh-github-v0.1.0`。
 
 新增插件的首次发布：manifest 里写初始版本（如 `0.1.0`），合并到 `release` 后运行 `node scripts/release.mjs <目录> --push`（不带 `--bump`，用清单里的版本打 tag）。否则 `check-release.mjs` 会因为该版本没有 tag 让 `release` 的 CI 变红。
 
@@ -122,9 +124,24 @@ dsh-plugins/
     ├── locale/
     ├── README.md
     └── README.en.md
+└── dsh-github/             # Host + 浏览器半边（client.js 需构建提交）
+    ├── package.json        # bundle manifest（dsh.bundle.patch + dsh.client）
+    ├── cordis.patch.yml    # MCP 行（GitHub 远程服务）+ 插件行
+    ├── index.js            # Host 入口：引导、写操作审批、路由挂载
+    ├── github.js           # remote 解析、REST 客户端、写工具判定
+    ├── auth.js             # gh 令牌桥：验证后写入 DSH 凭据库
+    ├── api.js              # /dsh-github 前缀路由
+    ├── src/client/         # React 面板源码
+    ├── scripts/            # esbuild 构建脚本
+    ├── client.js           # 浏览器半边构建产物（必须提交）
+    ├── test/               # node --test
+    ├── icon.svg
+    ├── locale/
+    ├── README.md
+    └── README.en.md
 ```
 
-`dsh-git` 与 `dsh-director` 的浏览器半边需要构建：改动 `src/client/` 后在该目录运行 `npm install && npm run build`，并把生成的 `client.js` 一起提交（插件以目录链接方式安装，profile 内不会执行构建）。
+`dsh-git`、`dsh-director` 与 `dsh-github` 的浏览器半边需要构建：改动 `src/client/` 后在该目录运行 `npm install && npm run build`，并把生成的 `client.js` 一起提交（插件以目录链接方式安装，profile 内不会执行构建）。
 
 ## 许可
 

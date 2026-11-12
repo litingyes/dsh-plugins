@@ -7,7 +7,7 @@
  */
 
 /** Plugin directories that ship to npm, in the order the docs list them. */
-export const PACKAGES = ['dsh-context7', 'dsh-git', 'dsh-director']
+export const PACKAGES = ['dsh-context7', 'dsh-git', 'dsh-director', 'dsh-github']
 
 /**
  * The only tag name `.github/workflows/publish.yml` publishes from.
