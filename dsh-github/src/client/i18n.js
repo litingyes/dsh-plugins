@@ -24,6 +24,10 @@ export const zh = {
   'panel.empty': '这里没有内容。',
   'panel.noSessionDir': '这个会话还没有工作区目录。',
   'panel.loadMore': '加载更多',
+  'panel.crashedTitle': 'GitHub 面板出错了',
+  'panel.crashed': '错误信息：{message}',
+  'panel.crashedHint': '这行信息是定位问题的关键；页面刷新后会重新挂载面板。',
+  'panel.crashedRetry': '重试',
 
   'repo.private': '私有',
   'repo.stars': '星标',
@@ -130,6 +134,10 @@ export const en = {
   'panel.empty': 'Nothing here.',
   'panel.noSessionDir': 'This Session has no working directory yet.',
   'panel.loadMore': 'Load more',
+  'panel.crashedTitle': 'The GitHub panel hit an error',
+  'panel.crashed': 'Error: {message}',
+  'panel.crashedHint': 'This line is what identifies the failure; a page reload mounts the panel again.',
+  'panel.crashedRetry': 'Try again',
 
   'repo.private': 'Private',
   'repo.stars': 'Stars',

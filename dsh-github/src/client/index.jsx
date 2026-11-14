@@ -24,6 +24,7 @@
 
 import * as React from 'react'
 import { GithubPanel } from './panel.jsx'
+import { PanelBoundary } from './boundary.jsx'
 import { RepoIcon } from './icons.jsx'
 import { CSS } from './styles.js'
 import { DICTIONARIES, NS, resolveLanguage, translate } from './i18n.js'
@@ -102,7 +103,7 @@ export function tabDefinition(t) {
 export function apply(ctx) {
   const api = createGithubApi()
   const locale = ctx.locale
-  const t = key => translate(resolveLanguage(locale), key)
+  const t = (key, params) => translate(resolveLanguage(locale), key, params)
 
   ctx.effect(() => locale.register(NS, DICTIONARIES), 'dsh-github: dictionaries')
 
@@ -118,12 +119,16 @@ export function apply(ctx) {
 
   /** The panel, bound to the Session whose right Sidebar holds this tab. */
   function GithubTabBody(props) {
-    return React.createElement(GithubPanel, {
-      api,
-      locale,
-      sessionId: props?.sessionId,
-      useSessions: props?.useSessions,
-    })
+    return React.createElement(
+      PanelBoundary,
+      { t },
+      React.createElement(GithubPanel, {
+        api,
+        locale,
+        sessionId: props?.sessionId,
+        useSessions: props?.useSessions,
+      }),
+    )
   }
 
   // Every registration below lives exactly as long as the tab registry exists.
