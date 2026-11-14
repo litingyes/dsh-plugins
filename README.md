@@ -34,7 +34,7 @@ pnpm dev      # http://localhost:4321
 plugin_manager action=install_bundle target=@litingyes/dsh-context7@0.2.1
 plugin_manager action=install_bundle target=@litingyes/dsh-git@0.5.1
 plugin_manager action=install_bundle target=@litingyes/dsh-director@0.1.0
-plugin_manager action=install_bundle target=@litingyes/dsh-github@0.1.0
+plugin_manager action=install_bundle target=@litingyes/dsh-github@0.1.1
 ```
 
 本地开发时按目录安装：

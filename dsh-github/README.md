@@ -64,7 +64,7 @@ GitHub 的 MCP 端点确实支持 OAuth，实测：
 ## 安装
 
 ```text
-plugin_manager action=install_bundle target=@litingyes/dsh-github@0.1.0
+plugin_manager action=install_bundle target=@litingyes/dsh-github@0.1.1
 ```
 
 或以目录方式装本仓库：

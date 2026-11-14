@@ -64,7 +64,7 @@ In clients that implement MCP OAuth, `{"type":"http","url":"https://api.githubco
 ## Install
 
 ```text
-plugin_manager action=install_bundle target=@litingyes/dsh-github@0.1.0
+plugin_manager action=install_bundle target=@litingyes/dsh-github@0.1.1
 ```
 
 Or from this repository as a directory:
