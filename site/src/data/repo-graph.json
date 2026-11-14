@@ -1,14 +1,47 @@
 {
   "source": {
-    "head": "31e09aa018bfe3697bb3f92f5be6bf0db1ad4fdb",
-    "headShort": "31e09aa",
+    "head": "19c13da4c7ffddf9c146823b2c7c36309128db1c",
+    "headShort": "19c13da",
     "headDate": "2026-11-14",
     "currentBranch": "release",
-    "total": 53,
+    "total": 55,
     "limit": 40,
     "truncated": true
   },
   "commits": [
+    {
+      "sha": "19c13da4c7ffddf9c146823b2c7c36309128db1c",
+      "parents": [
+        "348cae48d51db9838463a22892e01f540cae0db2"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-14",
+      "subject": "release: dsh-github 0.1.1",
+      "refs": [
+        {
+          "name": "dsh-github-v0.1.1",
+          "kind": "tag"
+        },
+        {
+          "name": "origin/release",
+          "kind": "remote"
+        }
+      ],
+      "onCurrent": true
+    },
+    {
+      "sha": "348cae48d51db9838463a22892e01f540cae0db2",
+      "parents": [
+        "31e09aa018bfe3697bb3f92f5be6bf0db1ad4fdb"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-14",
+      "subject": "chore(site): drop the merged GitHub branch from the graph",
+      "refs": [],
+      "onCurrent": true
+    },
     {
       "sha": "31e09aa018bfe3697bb3f92f5be6bf0db1ad4fdb",
       "parents": [
@@ -18,12 +51,7 @@
       "email": "luz.liting@gmail.com",
       "date": "2026-11-14",
       "subject": "chore(site): refresh the graph after the panel boundary",
-      "refs": [
-        {
-          "name": "origin/release",
-          "kind": "remote"
-        }
-      ],
+      "refs": [],
       "onCurrent": true
     },
     {
@@ -504,40 +532,52 @@
         }
       ],
       "onCurrent": true
-    },
-    {
-      "sha": "c0e204c9e1662f3ea1e52f17ce0345d197fdcb45",
-      "parents": [
-        "265825218457a06817fee092312f2e6e63169dac"
-      ],
-      "author": "litingyes",
-      "email": "luz.liting@gmail.com",
-      "date": "2026-11-06",
-      "subject": "chore(site): refresh the repo graph after the dsh-git merge",
-      "refs": [],
-      "onCurrent": true
-    },
-    {
-      "sha": "265825218457a06817fee092312f2e6e63169dac",
-      "parents": [
-        "9dbfec8bf7850813acf7678a6017d3b52dac00cc"
-      ],
-      "author": "litingyes",
-      "email": "luz.liting@gmail.com",
-      "date": "2026-11-06",
-      "subject": "docs(git): keep the npm install note pre-release",
-      "refs": [],
-      "onCurrent": true
     }
   ],
   "layout": {
     "rows": [
       {
-        "sha": "31e09aa018bfe3697bb3f92f5be6bf0db1ad4fdb",
+        "sha": "19c13da4c7ffddf9c146823b2c7c36309128db1c",
         "lane": 0,
         "color": 0,
         "through": [],
         "incoming": [],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "348cae48d51db9838463a22892e01f540cae0db2",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "31e09aa018bfe3697bb3f92f5be6bf0db1ad4fdb",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
         "outgoing": [
           {
             "to": 0,
@@ -1292,42 +1332,6 @@
             "color": 0
           }
         ]
-      },
-      {
-        "sha": "c0e204c9e1662f3ea1e52f17ce0345d197fdcb45",
-        "lane": 0,
-        "color": 0,
-        "through": [],
-        "incoming": [
-          {
-            "from": 0,
-            "color": 0
-          }
-        ],
-        "outgoing": [
-          {
-            "to": 0,
-            "color": 0
-          }
-        ]
-      },
-      {
-        "sha": "265825218457a06817fee092312f2e6e63169dac",
-        "lane": 0,
-        "color": 0,
-        "through": [],
-        "incoming": [
-          {
-            "from": 0,
-            "color": 0
-          }
-        ],
-        "outgoing": [
-          {
-            "to": 0,
-            "color": 0
-          }
-        ]
       }
     ],
     "laneCount": 3,
@@ -1354,8 +1358,8 @@
     },
     {
       "name": "release",
-      "sha": "31e09aa018bfe3697bb3f92f5be6bf0db1ad4fdb",
-      "short": "31e09aa",
+      "sha": "19c13da4c7ffddf9c146823b2c7c36309128db1c",
+      "short": "19c13da",
       "upstream": "origin/release",
       "date": "2026-11-14",
       "current": true,
@@ -1363,6 +1367,119 @@
     }
   ],
   "details": {
+    "19c13da4c7ffddf9c146823b2c7c36309128db1c": {
+      "message": "release: dsh-github 0.1.1",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-14T20:57:37+08:00",
+      "files": [
+        {
+          "path": "README.md",
+          "status": "M",
+          "added": 1,
+          "deleted": 1,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/README.en.md",
+          "status": "M",
+          "added": 1,
+          "deleted": 1,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/README.md",
+          "status": "M",
+          "added": 1,
+          "deleted": 1,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/client.js",
+          "status": "M",
+          "added": 1,
+          "deleted": 1,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/package.json",
+          "status": "M",
+          "added": 1,
+          "deleted": 1,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "README.md",
+        "lines": [
+          "diff --git a/README.md b/README.md",
+          "index 95b46a5..b0099c9 100644",
+          "--- a/README.md",
+          "+++ b/README.md",
+          "@@ -36,3 +36,3 @@ plugin_manager action=install_bundle target=@litingyes/dsh-git@0.5.1",
+          " plugin_manager action=install_bundle target=@litingyes/dsh-director@0.1.0",
+          "-plugin_manager action=install_bundle target=@litingyes/dsh-github@0.1.0",
+          "+plugin_manager action=install_bundle target=@litingyes/dsh-github@0.1.1",
+          " ```"
+        ],
+        "truncated": false
+      }
+    },
+    "348cae48d51db9838463a22892e01f540cae0db2": {
+      "message": "chore(site): drop the merged GitHub branch from the graph",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-14T20:45:47+08:00",
+      "files": [
+        {
+          "path": "site/src/data/repo-graph.json",
+          "status": "M",
+          "added": 91,
+          "deleted": 110,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "site/src/data/repo-graph.json",
+        "lines": [
+          "diff --git a/site/src/data/repo-graph.json b/site/src/data/repo-graph.json",
+          "index 749db63..06e9538 100644",
+          "--- a/site/src/data/repo-graph.json",
+          "+++ b/site/src/data/repo-graph.json",
+          "@@ -2,7 +2,7 @@",
+          "   \"source\": {",
+          "-    \"head\": \"6fe7cef24bf71a251dfa11cd8450dbaed3fd4fa2\",",
+          "-    \"headShort\": \"6fe7cef\",",
+          "+    \"head\": \"31e09aa018bfe3697bb3f92f5be6bf0db1ad4fdb\",",
+          "+    \"headShort\": \"31e09aa\",",
+          "     \"headDate\": \"2026-11-14\",",
+          "     \"currentBranch\": \"release\",",
+          "-    \"total\": 52,",
+          "+    \"total\": 53,",
+          "     \"limit\": 40,",
+          "@@ -11,2 +11,19 @@",
+          "   \"commits\": [",
+          "+    {",
+          "+      \"sha\": \"31e09aa018bfe3697bb3f92f5be6bf0db1ad4fdb\",",
+          "+      \"parents\": ["
+        ],
+        "truncated": true
+      }
+    },
     "31e09aa018bfe3697bb3f92f5be6bf0db1ad4fdb": {
       "message": "chore(site): refresh the graph after the panel boundary",
       "author": {
@@ -1471,109 +1588,6 @@
           "+`;var $t=\"/dsh-github\",xe=class extends Error{constructor(a,t,l=null){super(t),this.name=\"ApiError\",this.code=a,this.detail=l}};async function T(e,a={}){let t=new URL(`${$t}${e}`,window.location.origin);for(let[c,h]of Object.entries(a.query??{}))h==null||h===\"\"||t.searchParams.set(c,typeof h==\"boolean\"?h?\"1\":\"0\":String(h));let l={method:a.method??\"GET\",credentials:\"same-origin\",cache:\"no-store\",signal:a.signal};a.body!==void 0&&(l.headers={\"content-type\":\"application/json\"},l.body=JSON.stringify(a.body));let r;try{r=await fetch(t,l)}catch(c){throw c instanceof DOMException&&c.name===\"AbortError\"?c:new xe(\"network\",`request to ${t.pathname} failed`)}let o=null;try{o=await r.json()}catch{o=null}if(!r.ok||o===null||o.ok!==!0){let c=typeof o?.error?.code==\"string\"?o.error.code:`http_${r.status}`,h=typeof o?.error?.message==\"string\"?o.error.message:`HTTP ${r.status}`,i=typeof o?.error==\"object\"&&o.error!==null?o.error:null;throw new xe(c,h,i)}return o}function ot(){return{auth(e={}){return T(\"/auth\",{signal:e.signal})},importGh(e={}){return T(\"/auth/import-gh\",{method:\"POST\",signal:e.signal})},saveToken(e){return T(\"/auth/token\",{method:\"POST\",body:{token:e.token},signal:e.signal})},context(e){return T(\"/context\",{query:{dir:e.dir,repo:e.repo},signal:e.signal})},issues(e){return T(\"/issues\",{query:{dir:e.dir,repo:e.repo,state:e.state,filter:e.filter,page:e.page},signal:e.signal})},pulls(e){return T(\"/pulls\",{query:{dir:e.dir,repo:e.repo,state:e.state,page:e.page},signal:e.signal})},notifications(e){return T(\"/notifications\",{query:{dir:e.dir,repo:e.repo,all:e.all,page:e.page},signal:e.signal})},item(e){return T(\"/item\",{query:{dir:e.dir,repo:e.repo,kind:e.kind,number:e.number},signal:e.signal})},action(e){return T(\"/action\",{method:\"POST\",query:{dir:e.dir,repo:e.repo},body:{action:e.action,number:e.number,body:e.body,title:e.title},signal:e.signal})}}}var _e=\"@litingyes/dsh-github\",qt=\"dsh-github\",Ot=[\"slots\",\"locale\"],Ft=\"dsh-github\";function lt({useTabInfo:e}){let{tab:a}=e();return z.createElement(z.Fragment,null,z.createElement(X,{size:14,className:\"dgh-title-icon\"}),a.title)}function jt(e){return z.createElement(X,{size:e?.size??20})}function it(e){return{id:_e,kind:qt,priority:\"extension\",title:()=>e(\"tab.title\"),guide:[{id:\"workspace\",order:30,title:()=>e(\"guide.title\"),description:()=>e(\"guide.description\"),icon:jt}]}}function Ut(e){let a=ot(),t=e.locale,l=(o,c)=>be(ye(t),o,c);e.effect(()=>t.register(Ie,tt),\"dsh-github: dictionaries\"),e.effect(()=>{if(typeof document>\"u\")return()=>{};let o=document.createElement(\"style\");return o.dataset.plugin=\"@litingyes/dsh-github\",o.textContent=nt,document.head.appendChild(o),()=>o.remove()},\"dsh-github: styles\");function r(o){return z.createElement(Re,{t:l},z.createElement(rt,{api:a,locale:t,sessionId:o?.sessionId,useSessions:o?.useSessions}))}e.inject([\"sidebarRightTabs\"],o=>{o.effect(()=>o.sidebarRightTabs.register(it(l)),\"dsh-github: right sidebar tab type\"),o.effect(()=>o.slots.inject(\"sidebar.right.pane.tab\",()=>o.slots.register({name:\"sidebar.right.pane.tab\",key:_e,locale:Ie},r)),\"dsh-github: right sidebar tab body\"),o.effect(()=>o.slots.inject(\"sidebar.right.pane.tab.title\",()=>o.slots.register({name:\"sidebar.right.pane.tab.title\",key:_e},lt)),\"dsh-github: right sidebar tab title\")})}"
         ],
         "truncated": false
-      }
-    },
-    "24c9bf9c112d6074170d810426393fecea815b81": {
-      "message": "chore(site): refresh the graph after the credential-store fix",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-14T13:22:04+08:00",
-      "files": [
-        {
-          "path": "site/src/data/repo-graph.json",
-          "status": "M",
-          "added": 175,
-          "deleted": 165,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": "site/src/data/repo-graph.json",
-        "lines": [
-          "diff --git a/site/src/data/repo-graph.json b/site/src/data/repo-graph.json",
-          "index be2847d..4fb3aa8 100644",
-          "--- a/site/src/data/repo-graph.json",
-          "+++ b/site/src/data/repo-graph.json",
-          "@@ -2,7 +2,7 @@",
-          "   \"source\": {",
-          "-    \"head\": \"fdaa252a061e27b93149c360661f95b27ce8c7fe\",",
-          "-    \"headShort\": \"fdaa252\",",
-          "+    \"head\": \"27f5a3ef23d5bdc10543ed998d12d44eabdc47b4\",",
-          "+    \"headShort\": \"27f5a3e\",",
-          "     \"headDate\": \"2026-11-14\",",
-          "     \"currentBranch\": \"release\",",
-          "-    \"total\": 48,",
-          "+    \"total\": 50,",
-          "     \"limit\": 40,",
-          "@@ -12,5 +12,5 @@",
-          "     {",
-          "-      \"sha\": \"fdaa252a061e27b93149c360661f95b27ce8c7fe\",",
-          "+      \"sha\": \"27f5a3ef23d5bdc10543ed998d12d44eabdc47b4\",",
-          "       \"parents\": ["
-        ],
-        "truncated": true
-      }
-    },
-    "27f5a3ef23d5bdc10543ed998d12d44eabdc47b4": {
-      "message": "fix(github): hold the credential store through an injection\n\nThe lazy lookup alone still asks `ctx.get`, which sees only services the\ncontext can already reach. The documented way to consume a service that may be\ncomposed around the plugin is to declare it: a `ctx.inject(['credentials'])`\ncallback fires once the provider mounts, clears the reference when it goes\naway, and both the auth bridge and the token reader share that one getter.\n\nA test drives the real route handler with a store in the injected context and\nchecks the panel is told the store is writable; the injection list assertion\nnow names `credentials` too.",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-14T13:21:47+08:00",
-      "files": [
-        {
-          "path": "dsh-github/index.js",
-          "status": "M",
-          "added": 21,
-          "deleted": 6,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/test/guidance.test.js",
-          "status": "M",
-          "added": 39,
-          "deleted": 1,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": "dsh-github/index.js",
-        "lines": [
-          "diff --git a/dsh-github/index.js b/dsh-github/index.js",
-          "index 6532056..43e8f7f 100644",
-          "--- a/dsh-github/index.js",
-          "+++ b/dsh-github/index.js",
-          "@@ -179,3 +179,3 @@ function sectionOrder(systemPrompt) {",
-          "  *",
-          "- * @param {(name: string) => unknown} getService guarded service lookup.",
-          "+ * @param {() => unknown} getCredentials live credential-store lookup.",
-          "  * @param {string} credentialRef credential name.",
-          "@@ -183,5 +183,5 @@ function sectionOrder(systemPrompt) {",
-          "  */",
-          "-function makeTokenReader(getService, credentialRef) {",
-          "+function makeTokenReader(getCredentials, credentialRef) {",
-          "   return async () => {",
-          "-    const credentials = getService('credentials')",
-          "+    const credentials = getCredentials()",
-          "     if (credentials !== undefined && typeof credentials.resolve === 'function') {",
-          "@@ -252,2 +252,17 @@ export function apply(ctx, rawConfig) {",
-          " ",
-          "+  /**"
-        ],
-        "truncated": true
       }
     }
   }
