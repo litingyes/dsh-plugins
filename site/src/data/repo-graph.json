@@ -1,14 +1,43 @@
 {
   "source": {
-    "head": "89b6b3f7dc8420abc0a85f8a6a05a6493b055cda",
-    "headShort": "89b6b3f",
-    "headDate": "2026-11-12",
+    "head": "fdaa252a061e27b93149c360661f95b27ce8c7fe",
+    "headShort": "fdaa252",
+    "headDate": "2026-11-14",
     "currentBranch": "release",
-    "total": 46,
+    "total": 48,
     "limit": 40,
     "truncated": true
   },
   "commits": [
+    {
+      "sha": "fdaa252a061e27b93149c360661f95b27ce8c7fe",
+      "parents": [
+        "9f3b06b14d18aaef68f48a0cd69ce4c03e738848"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-14",
+      "subject": "fix(github): accept a pasted token and resolve the store per call",
+      "refs": [],
+      "onCurrent": true
+    },
+    {
+      "sha": "9f3b06b14d18aaef68f48a0cd69ce4c03e738848",
+      "parents": [
+        "89b6b3f7dc8420abc0a85f8a6a05a6493b055cda"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-14",
+      "subject": "chore(site): refresh the graph after the dsh-github release",
+      "refs": [
+        {
+          "name": "origin/release",
+          "kind": "remote"
+        }
+      ],
+      "onCurrent": true
+    },
     {
       "sha": "89b6b3f7dc8420abc0a85f8a6a05a6493b055cda",
       "parents": [
@@ -142,12 +171,7 @@
       "email": "luz.liting@gmail.com",
       "date": "2026-11-09",
       "subject": "chore(site): refresh the graph after the dsh-director release",
-      "refs": [
-        {
-          "name": "origin/release",
-          "kind": "remote"
-        }
-      ],
+      "refs": [],
       "onCurrent": true
     },
     {
@@ -515,40 +539,52 @@
         }
       ],
       "onCurrent": true
-    },
-    {
-      "sha": "bf390414b1508431c0c276c113a147461f5fa304",
-      "parents": [
-        "b784bb859b81541f0bf7c79e49f8781a9dedcc9c"
-      ],
-      "author": "litingyes",
-      "email": "luz.liting@gmail.com",
-      "date": "2026-11-05",
-      "subject": "chore: ignore the local pnpm store",
-      "refs": [],
-      "onCurrent": true
-    },
-    {
-      "sha": "81cefd61527ae29cd5eab955931620d64992caea",
-      "parents": [
-        "f003889904b904e62f409bc8c3b7ad808c8d0629"
-      ],
-      "author": "litingyes",
-      "email": "luz.liting@gmail.com",
-      "date": "2026-11-05",
-      "subject": "feat(git): fold the branch sections and move worktrees above remote",
-      "refs": [],
-      "onCurrent": true
     }
   ],
   "layout": {
     "rows": [
       {
-        "sha": "89b6b3f7dc8420abc0a85f8a6a05a6493b055cda",
+        "sha": "fdaa252a061e27b93149c360661f95b27ce8c7fe",
         "lane": 0,
         "color": 0,
         "through": [],
         "incoming": [],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "9f3b06b14d18aaef68f48a0cd69ce4c03e738848",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "89b6b3f7dc8420abc0a85f8a6a05a6493b055cda",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
         "outgoing": [
           {
             "to": 0,
@@ -1327,52 +1363,6 @@
             "color": 0
           }
         ]
-      },
-      {
-        "sha": "bf390414b1508431c0c276c113a147461f5fa304",
-        "lane": 0,
-        "color": 0,
-        "through": [
-          {
-            "lane": 1,
-            "color": 3
-          }
-        ],
-        "incoming": [
-          {
-            "from": 0,
-            "color": 0
-          }
-        ],
-        "outgoing": [
-          {
-            "to": 0,
-            "color": 0
-          }
-        ]
-      },
-      {
-        "sha": "81cefd61527ae29cd5eab955931620d64992caea",
-        "lane": 1,
-        "color": 3,
-        "through": [
-          {
-            "lane": 0,
-            "color": 0
-          }
-        ],
-        "incoming": [
-          {
-            "from": 1,
-            "color": 3
-          }
-        ],
-        "outgoing": [
-          {
-            "to": 1,
-            "color": 3
-          }
-        ]
       }
     ],
     "laneCount": 3,
@@ -1408,15 +1398,205 @@
     },
     {
       "name": "release",
-      "sha": "89b6b3f7dc8420abc0a85f8a6a05a6493b055cda",
-      "short": "89b6b3f",
+      "sha": "fdaa252a061e27b93149c360661f95b27ce8c7fe",
+      "short": "fdaa252",
       "upstream": "origin/release",
-      "date": "2026-11-12",
+      "date": "2026-11-14",
       "current": true,
       "symref": ""
     }
   ],
   "details": {
+    "fdaa252a061e27b93149c360661f95b27ce8c7fe": {
+      "message": "fix(github): accept a pasted token and resolve the store per call\n\nThe setup card captured `ctx.credentials` while the plugin was applying: on a\nHost whose credential store mounted a moment later the capture was\n`undefined` for the life of the process, so `describe()` reported\n`importable: false` and the only button on the card was permanently disabled.\n\nThe bridge now reads the store on every call instead of once at mount, which\nis also what the token reader already did.\n\nThe same card showed `GITHUB_TOKEN=<令牌>` in a bordered `<code>` that read\nlike an input but could not be focused, and the only way in was the gh CLI.\nIt now holds a real password field: paste a classic or fine-grained token, the\nHost verifies it with `GET /user` before storing it (a rejected token never\noverwrites a working one), and the panel reports the login and its scopes.\n`POST /dsh-github/auth/token` carries the value, which never comes back to the\nbrowser.\n\nThe disabled state now says why it is disabled instead of going quiet.",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-14T13:00:35+08:00",
+      "files": [
+        {
+          "path": "dsh-github/README.en.md",
+          "status": "M",
+          "added": 7,
+          "deleted": 6,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/README.md",
+          "status": "M",
+          "added": 7,
+          "deleted": 6,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/api.js",
+          "status": "M",
+          "added": 11,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/auth.js",
+          "status": "M",
+          "added": 93,
+          "deleted": 41,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/client.js",
+          "status": "M",
+          "added": 4,
+          "deleted": 12,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/index.js",
+          "status": "M",
+          "added": 2,
+          "deleted": 1,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/locale/en.json",
+          "status": "M",
+          "added": 1,
+          "deleted": 1,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/locale/zh.json",
+          "status": "M",
+          "added": 1,
+          "deleted": 1,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/package.json",
+          "status": "M",
+          "added": 1,
+          "deleted": 1,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/src/client/api-client.js",
+          "status": "M",
+          "added": 14,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/src/client/controls.jsx",
+          "status": "M",
+          "added": 2,
+          "deleted": 2,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/src/client/i18n.js",
+          "status": "M",
+          "added": 18,
+          "deleted": 5,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/src/client/panel.jsx",
+          "status": "M",
+          "added": 59,
+          "deleted": 5,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/src/client/styles.js",
+          "status": "M",
+          "added": 2,
+          "deleted": 10,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/test/api.test.js",
+          "status": "M",
+          "added": 44,
+          "deleted": 4,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/test/auth.test.js",
+          "status": "M",
+          "added": 62,
+          "deleted": 8,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "dsh-github/locale/en.json",
+        "lines": [
+          "diff --git a/dsh-github/locale/en.json b/dsh-github/locale/en.json",
+          "index d970f6f..fc19994 100644",
+          "--- a/dsh-github/locale/en.json",
+          "+++ b/dsh-github/locale/en.json",
+          "@@ -3,3 +3,3 @@",
+          "     \"title\": \"GitHub\",",
+          "-    \"description\": \"GitHub inside DeepSeek Harness. The agent gets the official GitHub MCP server's full mcp__github__* tool set — repositories, issues, pull requests, reviews, checks, code search and notifications, readable and writable — and the right sidebar gains a GitHub tab that follows this Session's workspace repository and lists its issues, pull requests and notifications, with a detail view and a comment box. Write tools (create, update, merge, comment) ask for your approval before they run. The tab's import button copies the OAuth token the GitHub CLI already holds into the Harness credential store in one step; a GITHUB_TOKEN line in $DSH_HOME/.env works the same way. Requests carry your token straight to GitHub with no proxy in between. Only github.com is supported. Disabling the plugin removes the tools and the tab; the stored token stays where it is.\"",
+          "+    \"description\": \"GitHub inside DeepSeek Harness. The agent gets the official GitHub MCP server's full mcp__github__* tool set — repositories, issues, pull requests, reviews, checks, code search and notifications, readable and writable — and the right sidebar gains a GitHub tab that follows this Session's workspace repository and lists its issues, pull requests and notifications, with a detail view and a comment box. Write tools (create, update, merge, comment) ask for your approval before they run. The tab accepts a pasted personal access token and can also copy the OAuth token the GitHub CLI already holds into the Harness credential store in one step; a GITHUB_TOKEN line in $DSH_HOME/.env works the same way. Requests carry your token straight to GitHub with no proxy in between. Only github.com is supported. Disabling the plugin removes the tools and the tab; the stored token stays where it is.\"",
+          "   }"
+        ],
+        "truncated": false
+      }
+    },
+    "9f3b06b14d18aaef68f48a0cd69ce4c03e738848": {
+      "message": "chore(site): refresh the graph after the dsh-github release\n\nThe sync ran after the tag but before the publish workflow finished, and the\nsession timed out before the generated file was staged. Regenerating at the\nreleased head (89b6b3f) is idempotent, so this is the same graph the site\nwould build today: dsh-github's two feature commits, the merge and the gate\nfix, plus the tag node.",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-14T12:18:23+08:00",
+      "files": [
+        {
+          "path": "site/src/data/repo-graph.json",
+          "status": "M",
+          "added": 722,
+          "deleted": 483,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "site/src/data/repo-graph.json",
+        "lines": [
+          "diff --git a/site/src/data/repo-graph.json b/site/src/data/repo-graph.json",
+          "index fcdaa8b..23a2e7b 100644",
+          "--- a/site/src/data/repo-graph.json",
+          "+++ b/site/src/data/repo-graph.json",
+          "@@ -2,9 +2,9 @@",
+          "   \"source\": {",
+          "-    \"head\": \"fcaeecac6e2538e437ab87ed8a50d78e68629e22\",",
+          "-    \"headShort\": \"fcaeeca\",",
+          "-    \"headDate\": \"2026-11-07\",",
+          "+    \"head\": \"89b6b3f7dc8420abc0a85f8a6a05a6493b055cda\",",
+          "+    \"headShort\": \"89b6b3f\",",
+          "+    \"headDate\": \"2026-11-12\",",
+          "     \"currentBranch\": \"release\",",
+          "-    \"total\": 36,",
+          "+    \"total\": 46,",
+          "     \"limit\": 40,",
+          "-    \"truncated\": false",
+          "+    \"truncated\": true",
+          "   },",
+          "@@ -12,5 +12,64 @@"
+        ],
+        "truncated": true
+      }
+    },
     "89b6b3f7dc8420abc0a85f8a6a05a6493b055cda": {
       "message": "fix(repo): let a never-released package through the tag gate\n\nA new plugin has no tag until its first release, so the gate painted the\nmerge commit red for a version that was not lost — it simply had not\nshipped yet. The rule now exempts exactly that case: a package with no\n`<dir>-v*` tag at all is reported as \"not published yet\" and passes.\n\nThe exemption ends at the first tag, which is the case the gate exists\nfor: once a package has one, every later version needs its own, or npm\nskips a number. Both halves are covered by tests.",
       "author": {
@@ -1494,380 +1674,6 @@
       "files": [],
       "filesTruncated": false,
       "diff": null
-    },
-    "78174f2331fecdeb698f366987db08e6c0ad3d23": {
-      "message": "chore(repo): register dsh-github in release tooling, CI and docs\n\n- scripts/packages.mjs: the package joins the list both release scripts\n  and the branch gate read, so a new plugin cannot escape check-release.\n- scripts/check-release.test.mjs: the fixture now commits and tags a\n  fourth package, keeping the passing case honest about the list.\n- publish.yml: dsh-github-v* tags resolve to the dsh-github directory.\n- README.md and AGENTS.md: the plugin table, install pin, directory tree\n  and the build-artifact rules name the new package.",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-12T22:57:43+08:00",
-      "files": [
-        {
-          "path": ".github/workflows/publish.yml",
-          "status": "M",
-          "added": 2,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "AGENTS.md",
-          "status": "M",
-          "added": 8,
-          "deleted": 7,
-          "binary": false
-        },
-        {
-          "path": "README.md",
-          "status": "M",
-          "added": 19,
-          "deleted": 2,
-          "binary": false
-        },
-        {
-          "path": "scripts/check-release.test.mjs",
-          "status": "M",
-          "added": 4,
-          "deleted": 1,
-          "binary": false
-        },
-        {
-          "path": "scripts/packages.mjs",
-          "status": "M",
-          "added": 1,
-          "deleted": 1,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": ".github/workflows/publish.yml",
-        "lines": [
-          "diff --git a/.github/workflows/publish.yml b/.github/workflows/publish.yml",
-          "index 58f4338..c46a261 100644",
-          "--- a/.github/workflows/publish.yml",
-          "+++ b/.github/workflows/publish.yml",
-          "@@ -17,2 +17,3 @@ on:",
-          "       - 'dsh-director-v*'",
-          "+      - 'dsh-github-v*'",
-          " ",
-          "@@ -43,2 +44,3 @@ jobs:",
-          "             dsh-director-v*) dir=\"dsh-director\" ;;",
-          "+            dsh-github-v*) dir=\"dsh-github\" ;;",
-          "             *)"
-        ],
-        "truncated": false
-      }
-    },
-    "71a379a58529df06fd0ea071bca4302b0a8ccf91": {
-      "message": "feat(github): add the GitHub plugin\n\nThe agent side is GitHub's own remote MCP server, mounted through the\nDSH-shipped MCP client, so its tools arrive as mcp__github__*; the human\nside is a right-sidebar tab that follows the Session workspace.\n\n- github.js: origin -> owner/repo, a REST client with a closed set of\n  machine codes, and the write classification the approval relies on\n  (the MCP client keeps no readOnlyHint, so the tool name is the signal).\n- auth.js: imports the gh CLI's OAuth token into the credential store\n  after verifying it, so the row authenticates through\n  ${credential:GITHUB_TOKEN} without a hand-made PAT.\n- index.js: prompt guidance, a tools/pre-execute listener that turns\n  GitHub writes into `ask`, and the prefix route.\n- client: tab registration, repository block, three lists, detail with\n  comment/close/reopen/merge behind a confirm dialog.\n- 78 tests: remote forms, tool classification, REST error mapping, route\n  statuses, the credential bridge, dictionaries, and the built bundle.",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-12T22:57:37+08:00",
-      "files": [
-        {
-          "path": "dsh-github/LICENSE",
-          "status": "A",
-          "added": 21,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/README.en.md",
-          "status": "A",
-          "added": 138,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/README.md",
-          "status": "A",
-          "added": 138,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/api.js",
-          "status": "A",
-          "added": 316,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/auth.js",
-          "status": "A",
-          "added": 174,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/client.js",
-          "status": "A",
-          "added": 409,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/cordis.patch.yml",
-          "status": "A",
-          "added": 66,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/github.js",
-          "status": "A",
-          "added": 680,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/icon.svg",
-          "status": "A",
-          "added": 19,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/index.js",
-          "status": "A",
-          "added": 340,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/locale/en.json",
-          "status": "A",
-          "added": 6,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/locale/zh.json",
-          "status": "A",
-          "added": 6,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/package-lock.json",
-          "status": "A",
-          "added": 503,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/package.json",
-          "status": "A",
-          "added": 79,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/scripts/build-client.mjs",
-          "status": "A",
-          "added": 135,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/src/client/actions.js",
-          "status": "A",
-          "added": 95,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/src/client/api-client.js",
-          "status": "A",
-          "added": 172,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/src/client/controls.jsx",
-          "status": "A",
-          "added": 262,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/src/client/format.js",
-          "status": "A",
-          "added": 109,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/src/client/i18n.js",
-          "status": "A",
-          "added": 254,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/src/client/icons.jsx",
-          "status": "A",
-          "added": 156,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/src/client/index.jsx",
-          "status": "A",
-          "added": 149,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/src/client/item-detail.jsx",
-          "status": "A",
-          "added": 212,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/src/client/list-view.jsx",
-          "status": "A",
-          "added": 188,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/src/client/panel.jsx",
-          "status": "A",
-          "added": 539,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/src/client/repo-header.jsx",
-          "status": "A",
-          "added": 76,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/src/client/styles.js",
-          "status": "A",
-          "added": 398,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/src/client/use-translate.js",
-          "status": "A",
-          "added": 30,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/test/api.test.js",
-          "status": "A",
-          "added": 242,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/test/auth.test.js",
-          "status": "A",
-          "added": 146,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/test/client-actions.test.js",
-          "status": "A",
-          "added": 65,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/test/client-bundle.test.js",
-          "status": "A",
-          "added": 144,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/test/client-format.test.js",
-          "status": "A",
-          "added": 54,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/test/client-keys.test.js",
-          "status": "A",
-          "added": 72,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/test/github.test.js",
-          "status": "A",
-          "added": 270,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/test/guidance.test.js",
-          "status": "A",
-          "added": 213,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/test/i18n.test.js",
-          "status": "A",
-          "added": 52,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/test/repo.test.js",
-          "status": "A",
-          "added": 92,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "dsh-github/test/tools.test.js",
-          "status": "A",
-          "added": 68,
-          "deleted": 0,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": "dsh-github/locale/en.json",
-        "lines": [
-          "diff --git a/dsh-github/locale/en.json b/dsh-github/locale/en.json",
-          "new file mode 100644",
-          "index 0000000..d970f6f",
-          "--- /dev/null",
-          "+++ b/dsh-github/locale/en.json",
-          "@@ -0,0 +1,6 @@",
-          "+{",
-          "+  \"meta\": {",
-          "+    \"title\": \"GitHub\",",
-          "+    \"description\": \"GitHub inside DeepSeek Harness. The agent gets the official GitHub MCP server's full mcp__github__* tool set — repositories, issues, pull requests, reviews, checks, code search and notifications, readable and writable — and the right sidebar gains a GitHub tab that follows this Session's workspace repository and lists its issues, pull requests and notifications, with a detail view and a comment box. Write tools (create, update, merge, comment) ask for your approval before they run. The tab's import button copies the OAuth token the GitHub CLI already holds into the Harness credential store in one step; a GITHUB_TOKEN line in $DSH_HOME/.env works the same way. Requests carry your token straight to GitHub with no proxy in between. Only github.com is supported. Disabling the plugin removes the tools and the tab; the stored token stays where it is.\"",
-          "+  }",
-          "+}"
-        ],
-        "truncated": false
-      }
     }
   }
 }
