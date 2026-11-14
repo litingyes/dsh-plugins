@@ -1,14 +1,31 @@
 {
   "source": {
-    "head": "6fe7cef24bf71a251dfa11cd8450dbaed3fd4fa2",
-    "headShort": "6fe7cef",
+    "head": "31e09aa018bfe3697bb3f92f5be6bf0db1ad4fdb",
+    "headShort": "31e09aa",
     "headDate": "2026-11-14",
     "currentBranch": "release",
-    "total": 52,
+    "total": 53,
     "limit": 40,
     "truncated": true
   },
   "commits": [
+    {
+      "sha": "31e09aa018bfe3697bb3f92f5be6bf0db1ad4fdb",
+      "parents": [
+        "6fe7cef24bf71a251dfa11cd8450dbaed3fd4fa2"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-14",
+      "subject": "chore(site): refresh the graph after the panel boundary",
+      "refs": [
+        {
+          "name": "origin/release",
+          "kind": "remote"
+        }
+      ],
+      "onCurrent": true
+    },
     {
       "sha": "6fe7cef24bf71a251dfa11cd8450dbaed3fd4fa2",
       "parents": [
@@ -30,12 +47,7 @@
       "email": "luz.liting@gmail.com",
       "date": "2026-11-14",
       "subject": "chore(site): refresh the graph after the credential-store fix",
-      "refs": [
-        {
-          "name": "origin/release",
-          "kind": "remote"
-        }
-      ],
+      "refs": [],
       "onCurrent": true
     },
     {
@@ -125,12 +137,7 @@
       "email": "luz.liting@gmail.com",
       "date": "2026-11-12",
       "subject": "chore(repo): register dsh-github in release tooling, CI and docs",
-      "refs": [
-        {
-          "name": "feature/dsh-github",
-          "kind": "branch"
-        }
-      ],
+      "refs": [],
       "onCurrent": true
     },
     {
@@ -521,29 +528,34 @@
       "subject": "docs(git): keep the npm install note pre-release",
       "refs": [],
       "onCurrent": true
-    },
-    {
-      "sha": "9dbfec8bf7850813acf7678a6017d3b52dac00cc",
-      "parents": [
-        "0a297ec7fb6be9f294523e41edcaed6e86e85fc5",
-        "f9d31c39ee7948b5ea9e86ea5bc7a231e228962b"
-      ],
-      "author": "litingyes",
-      "email": "luz.liting@gmail.com",
-      "date": "2026-11-06",
-      "subject": "Merge branch 'feature/dsh-git' into release",
-      "refs": [],
-      "onCurrent": true
     }
   ],
   "layout": {
     "rows": [
       {
-        "sha": "6fe7cef24bf71a251dfa11cd8450dbaed3fd4fa2",
+        "sha": "31e09aa018bfe3697bb3f92f5be6bf0db1ad4fdb",
         "lane": 0,
         "color": 0,
         "through": [],
         "incoming": [],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "6fe7cef24bf71a251dfa11cd8450dbaed3fd4fa2",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
         "outgoing": [
           {
             "to": 0,
@@ -1316,28 +1328,6 @@
             "color": 0
           }
         ]
-      },
-      {
-        "sha": "9dbfec8bf7850813acf7678a6017d3b52dac00cc",
-        "lane": 0,
-        "color": 0,
-        "through": [],
-        "incoming": [
-          {
-            "from": 0,
-            "color": 0
-          }
-        ],
-        "outgoing": [
-          {
-            "to": 0,
-            "color": 0
-          },
-          {
-            "to": 1,
-            "color": 3
-          }
-        ]
       }
     ],
     "laneCount": 3,
@@ -1363,18 +1353,9 @@
       "symref": ""
     },
     {
-      "name": "feature/dsh-github",
-      "sha": "78174f2331fecdeb698f366987db08e6c0ad3d23",
-      "short": "78174f2",
-      "upstream": "",
-      "date": "2026-11-12",
-      "current": false,
-      "symref": ""
-    },
-    {
       "name": "release",
-      "sha": "6fe7cef24bf71a251dfa11cd8450dbaed3fd4fa2",
-      "short": "6fe7cef",
+      "sha": "31e09aa018bfe3697bb3f92f5be6bf0db1ad4fdb",
+      "short": "31e09aa",
       "upstream": "origin/release",
       "date": "2026-11-14",
       "current": true,
@@ -1382,6 +1363,54 @@
     }
   ],
   "details": {
+    "31e09aa018bfe3697bb3f92f5be6bf0db1ad4fdb": {
+      "message": "chore(site): refresh the graph after the panel boundary",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-14T20:28:43+08:00",
+      "files": [
+        {
+          "path": "site/src/data/repo-graph.json",
+          "status": "M",
+          "added": 176,
+          "deleted": 266,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "site/src/data/repo-graph.json",
+        "lines": [
+          "diff --git a/site/src/data/repo-graph.json b/site/src/data/repo-graph.json",
+          "index 4fb3aa8..749db63 100644",
+          "--- a/site/src/data/repo-graph.json",
+          "+++ b/site/src/data/repo-graph.json",
+          "@@ -2,7 +2,7 @@",
+          "   \"source\": {",
+          "-    \"head\": \"27f5a3ef23d5bdc10543ed998d12d44eabdc47b4\",",
+          "-    \"headShort\": \"27f5a3e\",",
+          "+    \"head\": \"6fe7cef24bf71a251dfa11cd8450dbaed3fd4fa2\",",
+          "+    \"headShort\": \"6fe7cef\",",
+          "     \"headDate\": \"2026-11-14\",",
+          "     \"currentBranch\": \"release\",",
+          "-    \"total\": 50,",
+          "+    \"total\": 52,",
+          "     \"limit\": 40,",
+          "@@ -12,5 +12,5 @@",
+          "     {",
+          "-      \"sha\": \"27f5a3ef23d5bdc10543ed998d12d44eabdc47b4\",",
+          "+      \"sha\": \"6fe7cef24bf71a251dfa11cd8450dbaed3fd4fa2\",",
+          "       \"parents\": ["
+        ],
+        "truncated": true
+      }
+    },
     "6fe7cef24bf71a251dfa11cd8450dbaed3fd4fa2": {
       "message": "fix(github): keep a panel crash inside the tab\n\nA plugin tab body renders inside the right Sidebar with no error boundary of\nits own, so one throw unmounts the subtree and the pane goes blank — the whole\nwindow when the failure reaches React's root — with nothing to read.\n\nWrap the panel in a boundary that names the thrown message, says it belongs to\nthis plugin, and offers a retry, so a rendering failure is diagnosable from the\npane instead of from a black screen.",
       "author": {
@@ -1543,54 +1572,6 @@
           "@@ -252,2 +252,17 @@ export function apply(ctx, rawConfig) {",
           " ",
           "+  /**"
-        ],
-        "truncated": true
-      }
-    },
-    "5bf6dc61f1329a139660e1135fb26de11f374d3c": {
-      "message": "chore(site): refresh the graph after the GitHub token fix",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-14T13:00:57+08:00",
-      "files": [
-        {
-          "path": "site/src/data/repo-graph.json",
-          "status": "M",
-          "added": 238,
-          "deleted": 432,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": "site/src/data/repo-graph.json",
-        "lines": [
-          "diff --git a/site/src/data/repo-graph.json b/site/src/data/repo-graph.json",
-          "index 23a2e7b..be2847d 100644",
-          "--- a/site/src/data/repo-graph.json",
-          "+++ b/site/src/data/repo-graph.json",
-          "@@ -2,7 +2,7 @@",
-          "   \"source\": {",
-          "-    \"head\": \"89b6b3f7dc8420abc0a85f8a6a05a6493b055cda\",",
-          "-    \"headShort\": \"89b6b3f\",",
-          "-    \"headDate\": \"2026-11-12\",",
-          "+    \"head\": \"fdaa252a061e27b93149c360661f95b27ce8c7fe\",",
-          "+    \"headShort\": \"fdaa252\",",
-          "+    \"headDate\": \"2026-11-14\",",
-          "     \"currentBranch\": \"release\",",
-          "-    \"total\": 46,",
-          "+    \"total\": 48,",
-          "     \"limit\": 40,",
-          "@@ -11,2 +11,31 @@",
-          "   \"commits\": [",
-          "+    {",
-          "+      \"sha\": \"fdaa252a061e27b93149c360661f95b27ce8c7fe\","
         ],
         "truncated": true
       }
