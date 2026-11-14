@@ -1,14 +1,43 @@
 {
   "source": {
-    "head": "fdaa252a061e27b93149c360661f95b27ce8c7fe",
-    "headShort": "fdaa252",
+    "head": "27f5a3ef23d5bdc10543ed998d12d44eabdc47b4",
+    "headShort": "27f5a3e",
     "headDate": "2026-11-14",
     "currentBranch": "release",
-    "total": 48,
+    "total": 50,
     "limit": 40,
     "truncated": true
   },
   "commits": [
+    {
+      "sha": "27f5a3ef23d5bdc10543ed998d12d44eabdc47b4",
+      "parents": [
+        "5bf6dc61f1329a139660e1135fb26de11f374d3c"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-14",
+      "subject": "fix(github): hold the credential store through an injection",
+      "refs": [],
+      "onCurrent": true
+    },
+    {
+      "sha": "5bf6dc61f1329a139660e1135fb26de11f374d3c",
+      "parents": [
+        "fdaa252a061e27b93149c360661f95b27ce8c7fe"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-14",
+      "subject": "chore(site): refresh the graph after the GitHub token fix",
+      "refs": [
+        {
+          "name": "origin/release",
+          "kind": "remote"
+        }
+      ],
+      "onCurrent": true
+    },
     {
       "sha": "fdaa252a061e27b93149c360661f95b27ce8c7fe",
       "parents": [
@@ -30,12 +59,7 @@
       "email": "luz.liting@gmail.com",
       "date": "2026-11-14",
       "subject": "chore(site): refresh the graph after the dsh-github release",
-      "refs": [
-        {
-          "name": "origin/release",
-          "kind": "remote"
-        }
-      ],
+      "refs": [],
       "onCurrent": true
     },
     {
@@ -510,45 +534,52 @@
       "subject": "fix(site): keep the data guard green after docs-only commits",
       "refs": [],
       "onCurrent": true
-    },
-    {
-      "sha": "dda11f14cf3673c16fbbc4c580e72a344867bd75",
-      "parents": [
-        "f66eabaece6e94e0ead680bf460c8299ad4f1565"
-      ],
-      "author": "litingyes",
-      "email": "luz.liting@gmail.com",
-      "date": "2026-11-06",
-      "subject": "feat(site): add the bilingual portal for the plugin collection",
-      "refs": [],
-      "onCurrent": true
-    },
-    {
-      "sha": "f66eabaece6e94e0ead680bf460c8299ad4f1565",
-      "parents": [
-        "bf390414b1508431c0c276c113a147461f5fa304"
-      ],
-      "author": "litingyes",
-      "email": "luz.liting@gmail.com",
-      "date": "2026-11-05",
-      "subject": "feat(context7): add always-on guidance so the tools actually get called",
-      "refs": [
-        {
-          "name": "dsh-context7-v0.2.0",
-          "kind": "tag"
-        }
-      ],
-      "onCurrent": true
     }
   ],
   "layout": {
     "rows": [
       {
-        "sha": "fdaa252a061e27b93149c360661f95b27ce8c7fe",
+        "sha": "27f5a3ef23d5bdc10543ed998d12d44eabdc47b4",
         "lane": 0,
         "color": 0,
         "through": [],
         "incoming": [],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "5bf6dc61f1329a139660e1135fb26de11f374d3c",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          }
+        ]
+      },
+      {
+        "sha": "fdaa252a061e27b93149c360661f95b27ce8c7fe",
+        "lane": 0,
+        "color": 0,
+        "through": [],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          }
+        ],
         "outgoing": [
           {
             "to": 0,
@@ -1317,52 +1348,6 @@
             "color": 0
           }
         ]
-      },
-      {
-        "sha": "dda11f14cf3673c16fbbc4c580e72a344867bd75",
-        "lane": 0,
-        "color": 0,
-        "through": [
-          {
-            "lane": 1,
-            "color": 3
-          }
-        ],
-        "incoming": [
-          {
-            "from": 0,
-            "color": 0
-          }
-        ],
-        "outgoing": [
-          {
-            "to": 0,
-            "color": 0
-          }
-        ]
-      },
-      {
-        "sha": "f66eabaece6e94e0ead680bf460c8299ad4f1565",
-        "lane": 0,
-        "color": 0,
-        "through": [
-          {
-            "lane": 1,
-            "color": 3
-          }
-        ],
-        "incoming": [
-          {
-            "from": 0,
-            "color": 0
-          }
-        ],
-        "outgoing": [
-          {
-            "to": 0,
-            "color": 0
-          }
-        ]
       }
     ],
     "laneCount": 3,
@@ -1398,8 +1383,8 @@
     },
     {
       "name": "release",
-      "sha": "fdaa252a061e27b93149c360661f95b27ce8c7fe",
-      "short": "fdaa252",
+      "sha": "27f5a3ef23d5bdc10543ed998d12d44eabdc47b4",
+      "short": "27f5a3e",
       "upstream": "origin/release",
       "date": "2026-11-14",
       "current": true,
@@ -1407,6 +1392,109 @@
     }
   ],
   "details": {
+    "27f5a3ef23d5bdc10543ed998d12d44eabdc47b4": {
+      "message": "fix(github): hold the credential store through an injection\n\nThe lazy lookup alone still asks `ctx.get`, which sees only services the\ncontext can already reach. The documented way to consume a service that may be\ncomposed around the plugin is to declare it: a `ctx.inject(['credentials'])`\ncallback fires once the provider mounts, clears the reference when it goes\naway, and both the auth bridge and the token reader share that one getter.\n\nA test drives the real route handler with a store in the injected context and\nchecks the panel is told the store is writable; the injection list assertion\nnow names `credentials` too.",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-14T13:21:47+08:00",
+      "files": [
+        {
+          "path": "dsh-github/index.js",
+          "status": "M",
+          "added": 21,
+          "deleted": 6,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/test/guidance.test.js",
+          "status": "M",
+          "added": 39,
+          "deleted": 1,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "dsh-github/index.js",
+        "lines": [
+          "diff --git a/dsh-github/index.js b/dsh-github/index.js",
+          "index 6532056..43e8f7f 100644",
+          "--- a/dsh-github/index.js",
+          "+++ b/dsh-github/index.js",
+          "@@ -179,3 +179,3 @@ function sectionOrder(systemPrompt) {",
+          "  *",
+          "- * @param {(name: string) => unknown} getService guarded service lookup.",
+          "+ * @param {() => unknown} getCredentials live credential-store lookup.",
+          "  * @param {string} credentialRef credential name.",
+          "@@ -183,5 +183,5 @@ function sectionOrder(systemPrompt) {",
+          "  */",
+          "-function makeTokenReader(getService, credentialRef) {",
+          "+function makeTokenReader(getCredentials, credentialRef) {",
+          "   return async () => {",
+          "-    const credentials = getService('credentials')",
+          "+    const credentials = getCredentials()",
+          "     if (credentials !== undefined && typeof credentials.resolve === 'function') {",
+          "@@ -252,2 +252,17 @@ export function apply(ctx, rawConfig) {",
+          " ",
+          "+  /**"
+        ],
+        "truncated": true
+      }
+    },
+    "5bf6dc61f1329a139660e1135fb26de11f374d3c": {
+      "message": "chore(site): refresh the graph after the GitHub token fix",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-14T13:00:57+08:00",
+      "files": [
+        {
+          "path": "site/src/data/repo-graph.json",
+          "status": "M",
+          "added": 238,
+          "deleted": 432,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": "site/src/data/repo-graph.json",
+        "lines": [
+          "diff --git a/site/src/data/repo-graph.json b/site/src/data/repo-graph.json",
+          "index 23a2e7b..be2847d 100644",
+          "--- a/site/src/data/repo-graph.json",
+          "+++ b/site/src/data/repo-graph.json",
+          "@@ -2,7 +2,7 @@",
+          "   \"source\": {",
+          "-    \"head\": \"89b6b3f7dc8420abc0a85f8a6a05a6493b055cda\",",
+          "-    \"headShort\": \"89b6b3f\",",
+          "-    \"headDate\": \"2026-11-12\",",
+          "+    \"head\": \"fdaa252a061e27b93149c360661f95b27ce8c7fe\",",
+          "+    \"headShort\": \"fdaa252\",",
+          "+    \"headDate\": \"2026-11-14\",",
+          "     \"currentBranch\": \"release\",",
+          "-    \"total\": 46,",
+          "+    \"total\": 48,",
+          "     \"limit\": 40,",
+          "@@ -11,2 +11,31 @@",
+          "   \"commits\": [",
+          "+    {",
+          "+      \"sha\": \"fdaa252a061e27b93149c360661f95b27ce8c7fe\","
+        ],
+        "truncated": true
+      }
+    },
     "fdaa252a061e27b93149c360661f95b27ce8c7fe": {
       "message": "fix(github): accept a pasted token and resolve the store per call\n\nThe setup card captured `ctx.credentials` while the plugin was applying: on a\nHost whose credential store mounted a moment later the capture was\n`undefined` for the life of the process, so `describe()` reported\n`importable: false` and the only button on the card was permanently disabled.\n\nThe bridge now reads the store on every call instead of once at mount, which\nis also what the token reader already did.\n\nThe same card showed `GITHUB_TOKEN=<令牌>` in a bordered `<code>` that read\nlike an input but could not be focused, and the only way in was the gh CLI.\nIt now holds a real password field: paste a classic or fine-grained token, the\nHost verifies it with `GET /user` before storing it (a rejected token never\noverwrites a working one), and the panel reports the login and its scopes.\n`POST /dsh-github/auth/token` carries the value, which never comes back to the\nbrowser.\n\nThe disabled state now says why it is disabled instead of going quiet.",
       "author": {
@@ -1596,84 +1684,6 @@
         ],
         "truncated": true
       }
-    },
-    "89b6b3f7dc8420abc0a85f8a6a05a6493b055cda": {
-      "message": "fix(repo): let a never-released package through the tag gate\n\nA new plugin has no tag until its first release, so the gate painted the\nmerge commit red for a version that was not lost — it simply had not\nshipped yet. The rule now exempts exactly that case: a package with no\n`<dir>-v*` tag at all is reported as \"not published yet\" and passes.\n\nThe exemption ends at the first tag, which is the case the gate exists\nfor: once a package has one, every later version needs its own, or npm\nskips a number. Both halves are covered by tests.",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-12T23:06:53+08:00",
-      "files": [
-        {
-          "path": ".github/workflows/ci.yml",
-          "status": "M",
-          "added": 5,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "AGENTS.md",
-          "status": "M",
-          "added": 1,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "README.md",
-          "status": "M",
-          "added": 1,
-          "deleted": 1,
-          "binary": false
-        },
-        {
-          "path": "scripts/check-release.mjs",
-          "status": "M",
-          "added": 20,
-          "deleted": 1,
-          "binary": false
-        },
-        {
-          "path": "scripts/check-release.test.mjs",
-          "status": "M",
-          "added": 42,
-          "deleted": 6,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": "AGENTS.md",
-        "lines": [
-          "diff --git a/AGENTS.md b/AGENTS.md",
-          "index 876e908..fb1ded4 100644",
-          "--- a/AGENTS.md",
-          "+++ b/AGENTS.md",
-          "@@ -15,2 +15,3 @@",
-          "    `node scripts/check-release.mjs` 在每次推 `release` 时校验；不满足就红。",
-          "+   例外只有一种：**从未发过版的包**（一个 `<目录>-v*` tag 都没有）记为 `not published yet` 而不算失败；该包打过第一个 tag 之后，每个版本都得有自己的 tag。"
-        ],
-        "truncated": false
-      }
-    },
-    "dbac354540a54bbb4bdc8561833d392da1a00637": {
-      "message": "Merge branch 'feature/dsh-github' into release",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-12T23:01:38+08:00",
-      "files": [],
-      "filesTruncated": false,
-      "diff": null
     }
   }
 }
