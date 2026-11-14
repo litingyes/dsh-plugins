@@ -1,14 +1,155 @@
 {
   "source": {
-    "head": "fcaeecac6e2538e437ab87ed8a50d78e68629e22",
-    "headShort": "fcaeeca",
-    "headDate": "2026-11-07",
+    "head": "89b6b3f7dc8420abc0a85f8a6a05a6493b055cda",
+    "headShort": "89b6b3f",
+    "headDate": "2026-11-12",
     "currentBranch": "release",
-    "total": 36,
+    "total": 46,
     "limit": 40,
-    "truncated": false
+    "truncated": true
   },
   "commits": [
+    {
+      "sha": "89b6b3f7dc8420abc0a85f8a6a05a6493b055cda",
+      "parents": [
+        "dbac354540a54bbb4bdc8561833d392da1a00637"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-12",
+      "subject": "fix(repo): let a never-released package through the tag gate",
+      "refs": [
+        {
+          "name": "dsh-github-v0.1.0",
+          "kind": "tag"
+        }
+      ],
+      "onCurrent": true
+    },
+    {
+      "sha": "dbac354540a54bbb4bdc8561833d392da1a00637",
+      "parents": [
+        "69b723b1e9e40b9bda4c02defed95647bb5ebb04",
+        "78174f2331fecdeb698f366987db08e6c0ad3d23"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-12",
+      "subject": "Merge branch 'feature/dsh-github' into release",
+      "refs": [],
+      "onCurrent": true
+    },
+    {
+      "sha": "78174f2331fecdeb698f366987db08e6c0ad3d23",
+      "parents": [
+        "71a379a58529df06fd0ea071bca4302b0a8ccf91"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-12",
+      "subject": "chore(repo): register dsh-github in release tooling, CI and docs",
+      "refs": [
+        {
+          "name": "feature/dsh-github",
+          "kind": "branch"
+        }
+      ],
+      "onCurrent": true
+    },
+    {
+      "sha": "71a379a58529df06fd0ea071bca4302b0a8ccf91",
+      "parents": [
+        "69b723b1e9e40b9bda4c02defed95647bb5ebb04"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-12",
+      "subject": "feat(github): add the GitHub plugin",
+      "refs": [],
+      "onCurrent": true
+    },
+    {
+      "sha": "4297b9ae0a24f79c3f3355673ddd1a9c3be26311",
+      "parents": [
+        "032f35cc2e2ac671b7f4fa81b66bb3eff4000a01"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-09",
+      "subject": "fix(comfy): show what was tried when the report runs offline",
+      "refs": [
+        {
+          "name": "feature/comfy",
+          "kind": "branch"
+        }
+      ],
+      "onCurrent": false
+    },
+    {
+      "sha": "032f35cc2e2ac671b7f4fa81b66bb3eff4000a01",
+      "parents": [
+        "fde3c0dd5e1f94f2c2ab69e5339b6afc4befc92b"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-09",
+      "subject": "docs(comfy): refresh the report after the first real generation",
+      "refs": [],
+      "onCurrent": false
+    },
+    {
+      "sha": "fde3c0dd5e1f94f2c2ab69e5339b6afc4befc92b",
+      "parents": [
+        "b0f069fc90f1e56a1271c86a5f7a0cbfc0c1f94c"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-09",
+      "subject": "fix(comfy): scan the desktop data directory alongside the checkout",
+      "refs": [],
+      "onCurrent": false
+    },
+    {
+      "sha": "b0f069fc90f1e56a1271c86a5f7a0cbfc0c1f94c",
+      "parents": [
+        "73fb036cf5fcf2ed009d3ed601afc34c0167108c"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-09",
+      "subject": "fix(comfy): send string node ids so the server accepts the graph",
+      "refs": [],
+      "onCurrent": false
+    },
+    {
+      "sha": "73fb036cf5fcf2ed009d3ed601afc34c0167108c",
+      "parents": [
+        "04dc528bef5407f96a714f9419b1fb6eda9a77e0"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-09",
+      "subject": "feat(comfy): discover the server and the install instead of assuming 8188",
+      "refs": [],
+      "onCurrent": false
+    },
+    {
+      "sha": "69b723b1e9e40b9bda4c02defed95647bb5ebb04",
+      "parents": [
+        "fcaeecac6e2538e437ab87ed8a50d78e68629e22"
+      ],
+      "author": "litingyes",
+      "email": "luz.liting@gmail.com",
+      "date": "2026-11-09",
+      "subject": "chore(site): refresh the graph after the dsh-director release",
+      "refs": [
+        {
+          "name": "origin/release",
+          "kind": "remote"
+        }
+      ],
+      "onCurrent": true
+    },
     {
       "sha": "04dc528bef5407f96a714f9419b1fb6eda9a77e0",
       "parents": [
@@ -18,12 +159,7 @@
       "email": "luz.liting@gmail.com",
       "date": "2026-11-09",
       "subject": "feat(comfy): show each loader's files and prove the image pipeline end to end",
-      "refs": [
-        {
-          "name": "feature/comfy",
-          "kind": "branch"
-        }
-      ],
+      "refs": [],
       "onCurrent": false
     },
     {
@@ -63,10 +199,6 @@
         {
           "name": "dsh-director-v0.1.0",
           "kind": "tag"
-        },
-        {
-          "name": "origin/release",
-          "kind": "remote"
         }
       ],
       "onCurrent": true
@@ -407,91 +539,12 @@
       "subject": "feat(git): fold the branch sections and move worktrees above remote",
       "refs": [],
       "onCurrent": true
-    },
-    {
-      "sha": "b784bb859b81541f0bf7c79e49f8781a9dedcc9c",
-      "parents": [
-        "e7198d0469065c31df47b0c254d47e800a54f238"
-      ],
-      "author": "litingyes",
-      "email": "luz.liting@gmail.com",
-      "date": "2026-11-05",
-      "subject": "chore(release): keep the tag probe from printing git errors",
-      "refs": [],
-      "onCurrent": true
-    },
-    {
-      "sha": "e7198d0469065c31df47b0c254d47e800a54f238",
-      "parents": [
-        "459979e05f70a97aa063356fa94559825b950d7a"
-      ],
-      "author": "litingyes",
-      "email": "luz.liting@gmail.com",
-      "date": "2026-11-05",
-      "subject": "chore(release): publish from npm through tag-triggered CI",
-      "refs": [
-        {
-          "name": "dsh-git-v0.2.0",
-          "kind": "tag"
-        },
-        {
-          "name": "dsh-context7-v0.1.0",
-          "kind": "tag"
-        }
-      ],
-      "onCurrent": true
-    },
-    {
-      "sha": "f003889904b904e62f409bc8c3b7ad808c8d0629",
-      "parents": [
-        "459979e05f70a97aa063356fa94559825b950d7a"
-      ],
-      "author": "litingyes",
-      "email": "luz.liting@gmail.com",
-      "date": "2026-11-05",
-      "subject": "feat(git)!: manage worktrees and stop clipping the right-sidebar rows",
-      "refs": [],
-      "onCurrent": true
-    },
-    {
-      "sha": "459979e05f70a97aa063356fa94559825b950d7a",
-      "parents": [
-        "0090429bf32ae7bf40e558eacf67ed50385eff16"
-      ],
-      "author": "litingyes",
-      "email": "luz.liting@gmail.com",
-      "date": "2026-11-05",
-      "subject": "feat(git): add right-sidebar workspace Git plugin",
-      "refs": [],
-      "onCurrent": true
-    },
-    {
-      "sha": "0090429bf32ae7bf40e558eacf67ed50385eff16",
-      "parents": [
-        "055d49493e9442aa706ff6328eb0022576b9d46b"
-      ],
-      "author": "litingyes",
-      "email": "luz.liting@gmail.com",
-      "date": "2026-11-04",
-      "subject": "feat(context7): add Context7 MCP documentation plugin",
-      "refs": [],
-      "onCurrent": true
-    },
-    {
-      "sha": "055d49493e9442aa706ff6328eb0022576b9d46b",
-      "parents": [],
-      "author": "Liting",
-      "email": "luz.liting@gmail.com",
-      "date": "2026-11-04",
-      "subject": "Initial commit",
-      "refs": [],
-      "onCurrent": true
     }
   ],
   "layout": {
     "rows": [
       {
-        "sha": "04dc528bef5407f96a714f9419b1fb6eda9a77e0",
+        "sha": "89b6b3f7dc8420abc0a85f8a6a05a6493b055cda",
         "lane": 0,
         "color": 0,
         "through": [],
@@ -504,7 +557,7 @@
         ]
       },
       {
-        "sha": "69b2db231a38f4046de4bcafd547c0279d208424",
+        "sha": "dbac354540a54bbb4bdc8561833d392da1a00637",
         "lane": 0,
         "color": 0,
         "through": [],
@@ -512,6 +565,213 @@
           {
             "from": 0,
             "color": 0
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 0,
+            "color": 0
+          },
+          {
+            "to": 1,
+            "color": 1
+          }
+        ]
+      },
+      {
+        "sha": "78174f2331fecdeb698f366987db08e6c0ad3d23",
+        "lane": 1,
+        "color": 1,
+        "through": [
+          {
+            "lane": 0,
+            "color": 0
+          }
+        ],
+        "incoming": [
+          {
+            "from": 1,
+            "color": 1
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 1,
+            "color": 1
+          }
+        ]
+      },
+      {
+        "sha": "71a379a58529df06fd0ea071bca4302b0a8ccf91",
+        "lane": 1,
+        "color": 1,
+        "through": [
+          {
+            "lane": 0,
+            "color": 0
+          }
+        ],
+        "incoming": [
+          {
+            "from": 1,
+            "color": 1
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 1,
+            "color": 1
+          }
+        ]
+      },
+      {
+        "sha": "4297b9ae0a24f79c3f3355673ddd1a9c3be26311",
+        "lane": 2,
+        "color": 2,
+        "through": [
+          {
+            "lane": 0,
+            "color": 0
+          },
+          {
+            "lane": 1,
+            "color": 1
+          }
+        ],
+        "incoming": [],
+        "outgoing": [
+          {
+            "to": 2,
+            "color": 2
+          }
+        ]
+      },
+      {
+        "sha": "032f35cc2e2ac671b7f4fa81b66bb3eff4000a01",
+        "lane": 2,
+        "color": 2,
+        "through": [
+          {
+            "lane": 0,
+            "color": 0
+          },
+          {
+            "lane": 1,
+            "color": 1
+          }
+        ],
+        "incoming": [
+          {
+            "from": 2,
+            "color": 2
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 2,
+            "color": 2
+          }
+        ]
+      },
+      {
+        "sha": "fde3c0dd5e1f94f2c2ab69e5339b6afc4befc92b",
+        "lane": 2,
+        "color": 2,
+        "through": [
+          {
+            "lane": 0,
+            "color": 0
+          },
+          {
+            "lane": 1,
+            "color": 1
+          }
+        ],
+        "incoming": [
+          {
+            "from": 2,
+            "color": 2
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 2,
+            "color": 2
+          }
+        ]
+      },
+      {
+        "sha": "b0f069fc90f1e56a1271c86a5f7a0cbfc0c1f94c",
+        "lane": 2,
+        "color": 2,
+        "through": [
+          {
+            "lane": 0,
+            "color": 0
+          },
+          {
+            "lane": 1,
+            "color": 1
+          }
+        ],
+        "incoming": [
+          {
+            "from": 2,
+            "color": 2
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 2,
+            "color": 2
+          }
+        ]
+      },
+      {
+        "sha": "73fb036cf5fcf2ed009d3ed601afc34c0167108c",
+        "lane": 2,
+        "color": 2,
+        "through": [
+          {
+            "lane": 0,
+            "color": 0
+          },
+          {
+            "lane": 1,
+            "color": 1
+          }
+        ],
+        "incoming": [
+          {
+            "from": 2,
+            "color": 2
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 2,
+            "color": 2
+          }
+        ]
+      },
+      {
+        "sha": "69b723b1e9e40b9bda4c02defed95647bb5ebb04",
+        "lane": 0,
+        "color": 0,
+        "through": [
+          {
+            "lane": 2,
+            "color": 2
+          }
+        ],
+        "incoming": [
+          {
+            "from": 0,
+            "color": 0
+          },
+          {
+            "from": 1,
+            "color": 1
           }
         ],
         "outgoing": [
@@ -522,20 +782,71 @@
         ]
       },
       {
-        "sha": "b2ecc649927f3bf37c89cceade57b50383a458c1",
-        "lane": 0,
-        "color": 0,
-        "through": [],
+        "sha": "04dc528bef5407f96a714f9419b1fb6eda9a77e0",
+        "lane": 2,
+        "color": 2,
+        "through": [
+          {
+            "lane": 0,
+            "color": 0
+          }
+        ],
         "incoming": [
           {
-            "from": 0,
-            "color": 0
+            "from": 2,
+            "color": 2
           }
         ],
         "outgoing": [
           {
-            "to": 0,
+            "to": 2,
+            "color": 2
+          }
+        ]
+      },
+      {
+        "sha": "69b2db231a38f4046de4bcafd547c0279d208424",
+        "lane": 2,
+        "color": 2,
+        "through": [
+          {
+            "lane": 0,
             "color": 0
+          }
+        ],
+        "incoming": [
+          {
+            "from": 2,
+            "color": 2
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 2,
+            "color": 2
+          }
+        ]
+      },
+      {
+        "sha": "b2ecc649927f3bf37c89cceade57b50383a458c1",
+        "lane": 2,
+        "color": 2,
+        "through": [
+          {
+            "lane": 0,
+            "color": 0
+          }
+        ],
+        "incoming": [
+          {
+            "from": 2,
+            "color": 2
+          }
+        ],
+        "outgoing": [
+          {
+            "to": 2,
+            "color": 2
           }
         ]
       },
@@ -548,6 +859,10 @@
           {
             "from": 0,
             "color": 0
+          },
+          {
+            "from": 2,
+            "color": 2
           }
         ],
         "outgoing": [
@@ -917,14 +1232,14 @@
           },
           {
             "to": 1,
-            "color": 1
+            "color": 3
           }
         ]
       },
       {
         "sha": "f9d31c39ee7948b5ea9e86ea5bc7a231e228962b",
         "lane": 1,
-        "color": 1,
+        "color": 3,
         "through": [
           {
             "lane": 0,
@@ -934,13 +1249,13 @@
         "incoming": [
           {
             "from": 1,
-            "color": 1
+            "color": 3
           }
         ],
         "outgoing": [
           {
             "to": 1,
-            "color": 1
+            "color": 3
           }
         ]
       },
@@ -951,7 +1266,7 @@
         "through": [
           {
             "lane": 1,
-            "color": 1
+            "color": 3
           }
         ],
         "incoming": [
@@ -974,7 +1289,7 @@
         "through": [
           {
             "lane": 1,
-            "color": 1
+            "color": 3
           }
         ],
         "incoming": [
@@ -997,7 +1312,7 @@
         "through": [
           {
             "lane": 1,
-            "color": 1
+            "color": 3
           }
         ],
         "incoming": [
@@ -1020,7 +1335,7 @@
         "through": [
           {
             "lane": 1,
-            "color": 1
+            "color": 3
           }
         ],
         "incoming": [
@@ -1039,7 +1354,7 @@
       {
         "sha": "81cefd61527ae29cd5eab955931620d64992caea",
         "lane": 1,
-        "color": 1,
+        "color": 3,
         "through": [
           {
             "lane": 0,
@@ -1049,149 +1364,27 @@
         "incoming": [
           {
             "from": 1,
-            "color": 1
+            "color": 3
           }
         ],
         "outgoing": [
           {
             "to": 1,
-            "color": 1
+            "color": 3
           }
         ]
-      },
-      {
-        "sha": "b784bb859b81541f0bf7c79e49f8781a9dedcc9c",
-        "lane": 0,
-        "color": 0,
-        "through": [
-          {
-            "lane": 1,
-            "color": 1
-          }
-        ],
-        "incoming": [
-          {
-            "from": 0,
-            "color": 0
-          }
-        ],
-        "outgoing": [
-          {
-            "to": 0,
-            "color": 0
-          }
-        ]
-      },
-      {
-        "sha": "e7198d0469065c31df47b0c254d47e800a54f238",
-        "lane": 0,
-        "color": 0,
-        "through": [
-          {
-            "lane": 1,
-            "color": 1
-          }
-        ],
-        "incoming": [
-          {
-            "from": 0,
-            "color": 0
-          }
-        ],
-        "outgoing": [
-          {
-            "to": 0,
-            "color": 0
-          }
-        ]
-      },
-      {
-        "sha": "f003889904b904e62f409bc8c3b7ad808c8d0629",
-        "lane": 1,
-        "color": 1,
-        "through": [
-          {
-            "lane": 0,
-            "color": 0
-          }
-        ],
-        "incoming": [
-          {
-            "from": 1,
-            "color": 1
-          }
-        ],
-        "outgoing": [
-          {
-            "to": 1,
-            "color": 1
-          }
-        ]
-      },
-      {
-        "sha": "459979e05f70a97aa063356fa94559825b950d7a",
-        "lane": 0,
-        "color": 0,
-        "through": [],
-        "incoming": [
-          {
-            "from": 0,
-            "color": 0
-          },
-          {
-            "from": 1,
-            "color": 1
-          }
-        ],
-        "outgoing": [
-          {
-            "to": 0,
-            "color": 0
-          }
-        ]
-      },
-      {
-        "sha": "0090429bf32ae7bf40e558eacf67ed50385eff16",
-        "lane": 0,
-        "color": 0,
-        "through": [],
-        "incoming": [
-          {
-            "from": 0,
-            "color": 0
-          }
-        ],
-        "outgoing": [
-          {
-            "to": 0,
-            "color": 0
-          }
-        ]
-      },
-      {
-        "sha": "055d49493e9442aa706ff6328eb0022576b9d46b",
-        "lane": 0,
-        "color": 0,
-        "through": [],
-        "incoming": [
-          {
-            "from": 0,
-            "color": 0
-          }
-        ],
-        "outgoing": []
       }
     ],
-    "laneCount": 2,
+    "laneCount": 3,
     "overflow": false
   },
   "branches": [
     {
       "name": "feature/comfy",
-      "sha": "04dc528bef5407f96a714f9419b1fb6eda9a77e0",
-      "short": "04dc528",
+      "sha": "4297b9ae0a24f79c3f3355673ddd1a9c3be26311",
+      "short": "4297b9a",
       "upstream": "",
-      "date": "2026-11-09",
+      "date": "2026-11-10",
       "current": false,
       "symref": ""
     },
@@ -1205,18 +1398,27 @@
       "symref": ""
     },
     {
+      "name": "feature/dsh-github",
+      "sha": "78174f2331fecdeb698f366987db08e6c0ad3d23",
+      "short": "78174f2",
+      "upstream": "",
+      "date": "2026-11-12",
+      "current": false,
+      "symref": ""
+    },
+    {
       "name": "release",
-      "sha": "fcaeecac6e2538e437ab87ed8a50d78e68629e22",
-      "short": "fcaeeca",
+      "sha": "89b6b3f7dc8420abc0a85f8a6a05a6493b055cda",
+      "short": "89b6b3f",
       "upstream": "origin/release",
-      "date": "2026-11-07",
+      "date": "2026-11-12",
       "current": true,
       "symref": ""
     }
   ],
   "details": {
-    "04dc528bef5407f96a714f9419b1fb6eda9a77e0": {
-      "message": "feat(comfy): show each loader's files and prove the image pipeline end to end\n\nTwo follow-ups the report itself raises.\n\n`可加载项`: `/object_info` already carries the enum every loader offers, and\nthose strings are exactly what a workflow must write. The report now lists them\nper loader node (`CheckpointLoaderSimple.ckpt_name → 2 files: …`) and mirrors\nthem under `server.loaders` in the JSON. This is also the most reliable\ninventory ComfyUI exposes: it works even when `/models/{folder}` does not.\n\n`comfy verify`: the report says a pipeline is *ready*, which only ever meant the\nparts are present. This command builds the smallest text-to-image graph from the\nlive object info — checkpoint, sampler and scheduler are read from the enums the\nserver offers, so a renamed dropdown cannot fake a failure — queues it, waits on\n`/history`, and downloads the output to `./comfy-verify/`. Failures carry stable\ncodes (MISSING_NODES, NO_CHECKPOINTS, MODEL_NOT_FOUND, NODE_ERROR,\nEXECUTION_ERROR, TIMEOUT, NO_IMAGE) and exit 1; `--json` returns them as JSON.\n\n- probe: `readLoaderOptions` extracts the per-loader dropdowns\n- verify: builder, submit, poll, download, all against the public HTTP API\n- mock: loader enums, `/prompt`, `/history/{id}`, `/view`, plus a real 1×1 PNG\n  and configurable history modes (immediate / never / error)\n- docs: bilingual README, exit code 1, five new tests (34 total)",
+    "89b6b3f7dc8420abc0a85f8a6a05a6493b055cda": {
+      "message": "fix(repo): let a never-released package through the tag gate\n\nA new plugin has no tag until its first release, so the gate painted the\nmerge commit red for a version that was not lost — it simply had not\nshipped yet. The rule now exempts exactly that case: a package with no\n`<dir>-v*` tag at all is reported as \"not published yet\" and passes.\n\nThe exemption ends at the first tag, which is the case the gate exists\nfor: once a package has one, every later version needs its own, or npm\nskips a number. Both halves are covered by tests.",
       "author": {
         "name": "litingyes",
         "email": "luz.liting@gmail.com"
@@ -1225,233 +1427,61 @@
         "name": "litingyes",
         "email": "luz.liting@gmail.com"
       },
-      "committedAt": "2026-11-09T22:48:20+08:00",
+      "committedAt": "2026-11-12T23:06:53+08:00",
       "files": [
         {
-          "path": "comfy-tools/README.en.md",
+          "path": ".github/workflows/ci.yml",
           "status": "M",
-          "added": 20,
-          "deleted": 3,
-          "binary": false
-        },
-        {
-          "path": "comfy-tools/README.md",
-          "status": "M",
-          "added": 20,
-          "deleted": 3,
-          "binary": false
-        },
-        {
-          "path": "comfy-tools/comfy.mjs",
-          "status": "M",
-          "added": 120,
-          "deleted": 2,
-          "binary": false
-        },
-        {
-          "path": "comfy-tools/docs/report.md",
-          "status": "M",
-          "added": 2,
-          "deleted": 2,
-          "binary": false
-        },
-        {
-          "path": "comfy-tools/lib/probe.mjs",
-          "status": "M",
-          "added": 28,
+          "added": 5,
           "deleted": 0,
           "binary": false
         },
         {
-          "path": "comfy-tools/lib/verify.mjs",
-          "status": "A",
-          "added": 223,
+          "path": "AGENTS.md",
+          "status": "M",
+          "added": 1,
           "deleted": 0,
           "binary": false
         },
         {
-          "path": "comfy-tools/test/cli.test.mjs",
+          "path": "README.md",
           "status": "M",
-          "added": 68,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "comfy-tools/test/mock-comfy.mjs",
-          "status": "M",
-          "added": 139,
-          "deleted": 11,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": "comfy-tools/docs/report.md",
-        "lines": [
-          "diff --git a/comfy-tools/docs/report.md b/comfy-tools/docs/report.md",
-          "index 9b07d69..8a0f170 100644",
-          "--- a/comfy-tools/docs/report.md",
-          "+++ b/comfy-tools/docs/report.md",
-          "@@ -2,6 +2,6 @@",
-          " ",
-          "-- 生成时间: 2026-11-09 22:37",
-          "+- 生成时间: 2026-11-09 22:48",
-          " - 服务: http://127.0.0.1:8188 — 不可达",
-          " - 安装: /Users/liting/Documents/ComfyUI",
-          "-- 硬件: Apple M2 · 16 GB · 磁盘剩余 63.1 GB",
-          "+- 硬件: Apple M2 · 16 GB · 磁盘剩余 60.7 GB"
-        ],
-        "truncated": false
-      }
-    },
-    "69b2db231a38f4046de4bcafd547c0279d208424": {
-      "message": "refactor(comfy): report what the install has instead of grading a fixed catalog\n\nThe first version carried an 83-entry `capabilities.json` that declared what\nComfyUI can do and graded the machine against it. That answered a question\nnobody asked and cost real maintenance: every entry duplicated knowledge that\nthe install itself already exposes, and adding a model family meant editing a\ndata file before the tool could see it.\n\nThis replaces the declaration with inspection. The tool now reports what is on\nthis machine and what that adds up to:\n\n- `classify`: guesses a weight's family from its folder and file name (SDXL,\n  WAN video, VAE, upscaler, LoRA, …) and buckets node classes by purpose. A file\n  that matches nothing stays unclassified rather than being forced into a family.\n- `pipelines`: ten common pipelines, each judged by the weights and node classes\n  found, with the evidence printed next to the verdict. States are ready /\n  needs weights / needs nodes / needs both / unknown — `unknown` is what an\n  offline scan reports for anything only its nodes could decide.\n- `report`: environment, weights by folder with sizes, custom nodes, node\n  buckets, then the pipeline table. `doctor`, `models` and `nodes` stay as the\n  follow-up questions. `--json` and `--md` carry the same facts.\n\nThe install is never written to, and the tool still decides everything from one\nprobe: no stored claims, no download, no process control.\n\nRemoved: capabilities.json, lib/grade.mjs, the catalog schema test and its\nfixture. Tests: 29 cases, including the fake ComfyUI and the offline scan.",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-09T22:38:08+08:00",
-      "files": [
-        {
-          "path": "comfy-tools/README.en.md",
-          "status": "M",
-          "added": 59,
-          "deleted": 76,
-          "binary": false
-        },
-        {
-          "path": "comfy-tools/README.md",
-          "status": "M",
-          "added": 60,
-          "deleted": 77,
-          "binary": false
-        },
-        {
-          "path": "comfy-tools/capabilities.json",
-          "status": "D",
-          "added": 0,
-          "deleted": 3308,
-          "binary": false
-        },
-        {
-          "path": "comfy-tools/comfy.mjs",
-          "status": "M",
-          "added": 424,
-          "deleted": 437,
-          "binary": false
-        },
-        {
-          "path": "comfy-tools/docs/report.md",
-          "status": "M",
-          "added": 18,
-          "deleted": 125,
-          "binary": false
-        },
-        {
-          "path": "comfy-tools/lib/classify.mjs",
-          "status": "A",
-          "added": 303,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "comfy-tools/lib/grade.mjs",
-          "status": "D",
-          "added": 0,
-          "deleted": 430,
-          "binary": false
-        },
-        {
-          "path": "comfy-tools/lib/pipelines.mjs",
-          "status": "A",
-          "added": 171,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "comfy-tools/lib/probe.mjs",
-          "status": "M",
-          "added": 10,
+          "added": 1,
           "deleted": 1,
           "binary": false
         },
         {
-          "path": "comfy-tools/test/classify.test.mjs",
-          "status": "A",
-          "added": 76,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "comfy-tools/test/cli.test.mjs",
+          "path": "scripts/check-release.mjs",
           "status": "M",
-          "added": 76,
-          "deleted": 58,
+          "added": 20,
+          "deleted": 1,
           "binary": false
         },
         {
-          "path": "comfy-tools/test/fixtures/spec.json",
-          "status": "D",
-          "added": 0,
-          "deleted": 128,
-          "binary": false
-        },
-        {
-          "path": "comfy-tools/test/grade.test.mjs",
-          "status": "D",
-          "added": 0,
-          "deleted": 160,
-          "binary": false
-        },
-        {
-          "path": "comfy-tools/test/pipelines.test.mjs",
-          "status": "A",
-          "added": 92,
-          "deleted": 0,
-          "binary": false
-        },
-        {
-          "path": "comfy-tools/test/spec.test.mjs",
-          "status": "D",
-          "added": 0,
-          "deleted": 108,
+          "path": "scripts/check-release.test.mjs",
+          "status": "M",
+          "added": 42,
+          "deleted": 6,
           "binary": false
         }
       ],
       "filesTruncated": false,
       "diff": {
-        "path": "comfy-tools/lib/probe.mjs",
+        "path": "AGENTS.md",
         "lines": [
-          "diff --git a/comfy-tools/lib/probe.mjs b/comfy-tools/lib/probe.mjs",
-          "index 4e5cf5d..ec901c2 100644",
-          "--- a/comfy-tools/lib/probe.mjs",
-          "+++ b/comfy-tools/lib/probe.mjs",
-          "@@ -204,2 +204,3 @@ export async function readModelInventory(base, objectInfo) {",
-          "  *   nodes: Set<string>|null,",
-          "+ *   nodeNames: string[]|null,",
-          "  *   models: Record<string, Array<{name: string, bytes?: number}>>,",
-          "@@ -218,2 +219,3 @@ export async function probeServer(base) {",
-          "     nodes: null,",
-          "+    nodeNames: null,",
-          "     models: {},",
-          "@@ -233,5 +235,9 @@ export async function probeServer(base) {",
-          "   let nodeNames = null",
-          "+  let nodeClasses = null",
-          "   try {",
-          "     objectInfo = await fetchJson(url, '/object_info')",
-          "-    if (objectInfo && typeof objectInfo === 'object') nodeNames = new Set(Object.keys(objectInfo))",
-          "+    if (objectInfo && typeof objectInfo === 'object') {",
-          "+      nodeClasses = Object.keys(objectInfo)"
+          "diff --git a/AGENTS.md b/AGENTS.md",
+          "index 876e908..fb1ded4 100644",
+          "--- a/AGENTS.md",
+          "+++ b/AGENTS.md",
+          "@@ -15,2 +15,3 @@",
+          "    `node scripts/check-release.mjs` 在每次推 `release` 时校验；不满足就红。",
+          "+   例外只有一种：**从未发过版的包**（一个 `<目录>-v*` tag 都没有）记为 `not published yet` 而不算失败；该包打过第一个 tag 之后，每个版本都得有自己的 tag。"
         ],
-        "truncated": true
+        "truncated": false
       }
     },
-    "b2ecc649927f3bf37c89cceade57b50383a458c1": {
-      "message": "feat(comfy): add a capability catalog and a local availability probe\n\nTwo questions, one data file: ComfyUI can do a lot, but which of it works on\nthis machine right now?\n\n`capabilities.json` lists 83 capabilities across eight families (text-to-image,\nediting, vision utilities, video, audio, 3D, LLM nodes, engine), each with the\nnode classes and weight files it needs, plus memory and disk thresholds and the\ncustom node worth installing. The file is machine-independent on purpose: it is\nthe catalogue of what ComfyUI can do, not what one laptop can.\n\n`comfy.mjs` grades that catalogue against one installation on two axes that are\nnever collapsed: install (ready / partial / blocked / unknown) and machine\n(recommended / tight / too big). It reads a running server through\n`/system_stats`, `/object_info` and `/models`, and falls back to scanning\n`models/`, `custom_nodes/` and `comfyui_version.py` when the server is down —\nreporting node-dependent entries as unknown instead of guessing. `--plan\n--budget` turns the grades into a download order: one step installs everything\na capability still lacks, ranked by the value of what it turns on.\n\n- probe: online inventory with an `/object_info` fallback, offline directory\n  scan, machine facts (chip, memory, free disk via df)\n- grade: two-axis verdicts, missing dependency detail, greedy plan with a\n  subset coverage test for planned requirements\n- cli: capabilities / doctor / models / nodes, table, JSON and Markdown output,\n  exit codes documented\n- tests: 29 cases with a fake ComfyUI and an offline directory fixture\n- docs: bilingual README, generated report for this machine\n\nThis is deliberately not a DSH plugin yet: a CLI is enough for an agent to run\nmid-conversation, and packaging can move `lib/` unchanged once the catalogue\nsettles.",
+    "dbac354540a54bbb4bdc8561833d392da1a00637": {
+      "message": "Merge branch 'feature/dsh-github' into release",
       "author": {
         "name": "litingyes",
         "email": "luz.liting@gmail.com"
@@ -1460,174 +1490,383 @@
         "name": "litingyes",
         "email": "luz.liting@gmail.com"
       },
-      "committedAt": "2026-11-08T01:07:16+08:00",
+      "committedAt": "2026-11-12T23:01:38+08:00",
+      "files": [],
+      "filesTruncated": false,
+      "diff": null
+    },
+    "78174f2331fecdeb698f366987db08e6c0ad3d23": {
+      "message": "chore(repo): register dsh-github in release tooling, CI and docs\n\n- scripts/packages.mjs: the package joins the list both release scripts\n  and the branch gate read, so a new plugin cannot escape check-release.\n- scripts/check-release.test.mjs: the fixture now commits and tags a\n  fourth package, keeping the passing case honest about the list.\n- publish.yml: dsh-github-v* tags resolve to the dsh-github directory.\n- README.md and AGENTS.md: the plugin table, install pin, directory tree\n  and the build-artifact rules name the new package.",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-12T22:57:43+08:00",
       "files": [
         {
-          "path": "comfy-tools/README.en.md",
-          "status": "A",
-          "added": 117,
+          "path": ".github/workflows/publish.yml",
+          "status": "M",
+          "added": 2,
           "deleted": 0,
           "binary": false
         },
         {
-          "path": "comfy-tools/README.md",
+          "path": "AGENTS.md",
+          "status": "M",
+          "added": 8,
+          "deleted": 7,
+          "binary": false
+        },
+        {
+          "path": "README.md",
+          "status": "M",
+          "added": 19,
+          "deleted": 2,
+          "binary": false
+        },
+        {
+          "path": "scripts/check-release.test.mjs",
+          "status": "M",
+          "added": 4,
+          "deleted": 1,
+          "binary": false
+        },
+        {
+          "path": "scripts/packages.mjs",
+          "status": "M",
+          "added": 1,
+          "deleted": 1,
+          "binary": false
+        }
+      ],
+      "filesTruncated": false,
+      "diff": {
+        "path": ".github/workflows/publish.yml",
+        "lines": [
+          "diff --git a/.github/workflows/publish.yml b/.github/workflows/publish.yml",
+          "index 58f4338..c46a261 100644",
+          "--- a/.github/workflows/publish.yml",
+          "+++ b/.github/workflows/publish.yml",
+          "@@ -17,2 +17,3 @@ on:",
+          "       - 'dsh-director-v*'",
+          "+      - 'dsh-github-v*'",
+          " ",
+          "@@ -43,2 +44,3 @@ jobs:",
+          "             dsh-director-v*) dir=\"dsh-director\" ;;",
+          "+            dsh-github-v*) dir=\"dsh-github\" ;;",
+          "             *)"
+        ],
+        "truncated": false
+      }
+    },
+    "71a379a58529df06fd0ea071bca4302b0a8ccf91": {
+      "message": "feat(github): add the GitHub plugin\n\nThe agent side is GitHub's own remote MCP server, mounted through the\nDSH-shipped MCP client, so its tools arrive as mcp__github__*; the human\nside is a right-sidebar tab that follows the Session workspace.\n\n- github.js: origin -> owner/repo, a REST client with a closed set of\n  machine codes, and the write classification the approval relies on\n  (the MCP client keeps no readOnlyHint, so the tool name is the signal).\n- auth.js: imports the gh CLI's OAuth token into the credential store\n  after verifying it, so the row authenticates through\n  ${credential:GITHUB_TOKEN} without a hand-made PAT.\n- index.js: prompt guidance, a tools/pre-execute listener that turns\n  GitHub writes into `ask`, and the prefix route.\n- client: tab registration, repository block, three lists, detail with\n  comment/close/reopen/merge behind a confirm dialog.\n- 78 tests: remote forms, tool classification, REST error mapping, route\n  statuses, the credential bridge, dictionaries, and the built bundle.",
+      "author": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committer": {
+        "name": "litingyes",
+        "email": "luz.liting@gmail.com"
+      },
+      "committedAt": "2026-11-12T22:57:37+08:00",
+      "files": [
+        {
+          "path": "dsh-github/LICENSE",
           "status": "A",
-          "added": 117,
+          "added": 21,
           "deleted": 0,
           "binary": false
         },
         {
-          "path": "comfy-tools/capabilities.json",
+          "path": "dsh-github/README.en.md",
           "status": "A",
-          "added": 3308,
+          "added": 138,
           "deleted": 0,
           "binary": false
         },
         {
-          "path": "comfy-tools/comfy.mjs",
+          "path": "dsh-github/README.md",
           "status": "A",
-          "added": 679,
+          "added": 138,
           "deleted": 0,
           "binary": false
         },
         {
-          "path": "comfy-tools/docs/report.md",
+          "path": "dsh-github/api.js",
           "status": "A",
-          "added": 133,
+          "added": 316,
           "deleted": 0,
           "binary": false
         },
         {
-          "path": "comfy-tools/lib/grade.mjs",
+          "path": "dsh-github/auth.js",
           "status": "A",
-          "added": 430,
+          "added": 174,
           "deleted": 0,
           "binary": false
         },
         {
-          "path": "comfy-tools/lib/probe.mjs",
+          "path": "dsh-github/client.js",
           "status": "A",
-          "added": 496,
+          "added": 409,
           "deleted": 0,
           "binary": false
         },
         {
-          "path": "comfy-tools/test/cli.test.mjs",
+          "path": "dsh-github/cordis.patch.yml",
           "status": "A",
-          "added": 131,
+          "added": 66,
           "deleted": 0,
           "binary": false
         },
         {
-          "path": "comfy-tools/test/fixtures/spec.json",
+          "path": "dsh-github/github.js",
           "status": "A",
-          "added": 128,
+          "added": 680,
           "deleted": 0,
           "binary": false
         },
         {
-          "path": "comfy-tools/test/grade.test.mjs",
+          "path": "dsh-github/icon.svg",
           "status": "A",
-          "added": 160,
+          "added": 19,
           "deleted": 0,
           "binary": false
         },
         {
-          "path": "comfy-tools/test/mock-comfy.mjs",
+          "path": "dsh-github/index.js",
           "status": "A",
-          "added": 108,
+          "added": 340,
           "deleted": 0,
           "binary": false
         },
         {
-          "path": "comfy-tools/test/probe.test.mjs",
+          "path": "dsh-github/locale/en.json",
+          "status": "A",
+          "added": 6,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/locale/zh.json",
+          "status": "A",
+          "added": 6,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/package-lock.json",
+          "status": "A",
+          "added": 503,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/package.json",
           "status": "A",
           "added": 79,
           "deleted": 0,
           "binary": false
         },
         {
-          "path": "comfy-tools/test/spec.test.mjs",
+          "path": "dsh-github/scripts/build-client.mjs",
           "status": "A",
-          "added": 108,
+          "added": 135,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/src/client/actions.js",
+          "status": "A",
+          "added": 95,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/src/client/api-client.js",
+          "status": "A",
+          "added": 172,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/src/client/controls.jsx",
+          "status": "A",
+          "added": 262,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/src/client/format.js",
+          "status": "A",
+          "added": 109,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/src/client/i18n.js",
+          "status": "A",
+          "added": 254,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/src/client/icons.jsx",
+          "status": "A",
+          "added": 156,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/src/client/index.jsx",
+          "status": "A",
+          "added": 149,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/src/client/item-detail.jsx",
+          "status": "A",
+          "added": 212,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/src/client/list-view.jsx",
+          "status": "A",
+          "added": 188,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/src/client/panel.jsx",
+          "status": "A",
+          "added": 539,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/src/client/repo-header.jsx",
+          "status": "A",
+          "added": 76,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/src/client/styles.js",
+          "status": "A",
+          "added": 398,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/src/client/use-translate.js",
+          "status": "A",
+          "added": 30,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/test/api.test.js",
+          "status": "A",
+          "added": 242,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/test/auth.test.js",
+          "status": "A",
+          "added": 146,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/test/client-actions.test.js",
+          "status": "A",
+          "added": 65,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/test/client-bundle.test.js",
+          "status": "A",
+          "added": 144,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/test/client-format.test.js",
+          "status": "A",
+          "added": 54,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/test/client-keys.test.js",
+          "status": "A",
+          "added": 72,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/test/github.test.js",
+          "status": "A",
+          "added": 270,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/test/guidance.test.js",
+          "status": "A",
+          "added": 213,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/test/i18n.test.js",
+          "status": "A",
+          "added": 52,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/test/repo.test.js",
+          "status": "A",
+          "added": 92,
+          "deleted": 0,
+          "binary": false
+        },
+        {
+          "path": "dsh-github/test/tools.test.js",
+          "status": "A",
+          "added": 68,
           "deleted": 0,
           "binary": false
         }
       ],
       "filesTruncated": false,
       "diff": {
-        "path": "comfy-tools/test/probe.test.mjs",
+        "path": "dsh-github/locale/en.json",
         "lines": [
-          "diff --git a/comfy-tools/test/probe.test.mjs b/comfy-tools/test/probe.test.mjs",
+          "diff --git a/dsh-github/locale/en.json b/dsh-github/locale/en.json",
           "new file mode 100644",
-          "index 0000000..99659b2",
+          "index 0000000..d970f6f",
           "--- /dev/null",
-          "+++ b/comfy-tools/test/probe.test.mjs",
-          "@@ -0,0 +1,79 @@",
-          "+/**",
-          "+ * Probe tests: a fake server for the online path, a temp directory for the",
-          "+ * offline path, and the \"unreachable is a finding\" contract.",
-          "+ */",
-          "+",
-          "+import assert from 'node:assert/strict'",
-          "+import { mkdir, mkdtemp, writeFile } from 'node:fs/promises'",
-          "+import { tmpdir } from 'node:os'",
-          "+import { join } from 'node:path'",
-          "+import test from 'node:test'",
-          "+",
-          "+import { probeAll, probeServer, scanInstallation } from '../lib/probe.mjs'",
-          "+import { startMock } from './mock-comfy.mjs'",
-          "+"
+          "+++ b/dsh-github/locale/en.json",
+          "@@ -0,0 +1,6 @@",
+          "+{",
+          "+  \"meta\": {",
+          "+    \"title\": \"GitHub\",",
+          "+    \"description\": \"GitHub inside DeepSeek Harness. The agent gets the official GitHub MCP server's full mcp__github__* tool set — repositories, issues, pull requests, reviews, checks, code search and notifications, readable and writable — and the right sidebar gains a GitHub tab that follows this Session's workspace repository and lists its issues, pull requests and notifications, with a detail view and a comment box. Write tools (create, update, merge, comment) ask for your approval before they run. The tab's import button copies the OAuth token the GitHub CLI already holds into the Harness credential store in one step; a GITHUB_TOKEN line in $DSH_HOME/.env works the same way. Requests carry your token straight to GitHub with no proxy in between. Only github.com is supported. Disabling the plugin removes the tools and the tab; the stored token stays where it is.\"",
+          "+  }",
+          "+}"
         ],
-        "truncated": true
-      }
-    },
-    "fcaeecac6e2538e437ab87ed8a50d78e68629e22": {
-      "message": "chore(site): refresh the graph after the director prompt bound",
-      "author": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committer": {
-        "name": "litingyes",
-        "email": "luz.liting@gmail.com"
-      },
-      "committedAt": "2026-11-07T16:03:55+08:00",
-      "files": [
-        {
-          "path": "site/src/data/repo-graph.json",
-          "status": "M",
-          "added": 183,
-          "deleted": 98,
-          "binary": false
-        }
-      ],
-      "filesTruncated": false,
-      "diff": {
-        "path": "site/src/data/repo-graph.json",
-        "lines": [
-          "diff --git a/site/src/data/repo-graph.json b/site/src/data/repo-graph.json",
-          "index 79e3122..155b107 100644",
-          "--- a/site/src/data/repo-graph.json",
-          "+++ b/site/src/data/repo-graph.json",
-          "@@ -2,7 +2,7 @@",
-          "   \"source\": {",
-          "-    \"head\": \"ff4e216df3146069f9ec728711b51f8dcf2c385c\",",
-          "-    \"headShort\": \"ff4e216\",",
-          "+    \"head\": \"92d574f4388c3f94ee2f13583eda409267c02770\",",
-          "+    \"headShort\": \"92d574f\",",
-          "     \"headDate\": \"2026-11-07\",",
-          "     \"currentBranch\": \"feature/dsh-director\",",
-          "-    \"total\": 30,",
-          "+    \"total\": 32,",
-          "     \"limit\": 40,",
-          "@@ -11,2 +11,31 @@",
-          "   \"commits\": [",
-          "+    {",
-          "+      \"sha\": \"92d574f4388c3f94ee2f13583eda409267c02770\",",
-          "+      \"parents\": ["
-        ],
-        "truncated": true
+        "truncated": false
       }
     }
   }
