@@ -185,10 +185,10 @@ export function TextArea({ value, onChange, placeholder, label, rows = 3, disabl
  *   label: string, disabled?: boolean}} props field props.
  * @returns {React.ReactElement} the field.
  */
-export function TextInput({ value, onChange, placeholder, label, disabled = false }) {
+export function TextInput({ value, onChange, placeholder, label, disabled = false, type = 'text' }) {
   return React.createElement('input', {
     className: 'dgh-input',
-    type: 'text',
+    type,
     value,
     placeholder,
     disabled,

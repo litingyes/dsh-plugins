@@ -1,6 +1,6 @@
 {
   "meta": {
     "title": "GitHub",
-    "description": "把 GitHub 接进 DeepSeek Harness。智能体拿到官方 GitHub MCP 服务的一整套 mcp__github__* 工具——仓库、issue、pull request、评审、检查、代码搜索、通知都能查，也能改；右侧栏新增一个跟着会话工作区走的 GitHub 页签，列出当前仓库的 issue、pull request 与通知，点开看详情并评论。写操作（新建、更新、合并、评论）执行前会请求你的批准。页签上的导入按钮把 GitHub CLI 已经登录的 OAuth 令牌一次写进 DSH 凭据库；在 $DSH_HOME/.env 里写一行 GITHUB_TOKEN=<令牌> 等效。请求带着你的令牌直接发往 GitHub，不经过任何中转；只支持 github.com。停用插件后工具与页签消失，已保存的令牌留在原处。"
+    "description": "把 GitHub 接进 DeepSeek Harness。智能体拿到官方 GitHub MCP 服务的一整套 mcp__github__* 工具——仓库、issue、pull request、评审、检查、代码搜索、通知都能查，也能改；右侧栏新增一个跟着会话工作区走的 GitHub 页签，列出当前仓库的 issue、pull request 与通知，点开看详情并评论。写操作（新建、更新、合并、评论）执行前会请求你的批准。页签里可以直接粘贴 personal access token 保存，也可以一键导入 GitHub CLI 已经登录的 OAuth 令牌；两者都写进 DSH 凭据库，在 $DSH_HOME/.env 里写一行 GITHUB_TOKEN=<令牌> 等效。请求带着你的令牌直接发往 GitHub，不经过任何中转；只支持 github.com。停用插件后工具与页签消失，已保存的令牌留在原处。"
   }
 }

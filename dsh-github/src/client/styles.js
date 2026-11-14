@@ -350,16 +350,8 @@ export const CSS = `
 .dgh-auth { display: flex; flex-direction: column; gap: 8px; }
 .dgh-auth-title { margin: 0; font-size: 13px; font-weight: 600; }
 .dgh-auth-body { margin: 0; color: var(--dsw-alias-label-secondary); font-size: 12px; }
-.dgh-code {
-  font-family: var(--dsw-font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-  font-size: 11.5px;
-  background: var(--dsw-alias-bg-layer-2);
-  border: 1px solid var(--dsw-alias-border-l1);
-  border-radius: 5px;
-  padding: 3px 6px;
-  user-select: all;
-  overflow-wrap: anywhere;
-}
+.dgh-auth-form { display: flex; gap: 6px; align-items: center; }
+.dgh-auth-form .dgh-input { flex: 1 1 auto; min-width: 0; }
 
 .dgh-overlay {
   position: fixed;

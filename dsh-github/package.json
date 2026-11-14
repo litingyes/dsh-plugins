@@ -1,7 +1,7 @@
 {
   "name": "@litingyes/dsh-github",
   "version": "0.1.0",
-  "description": "GitHub for DeepSeek Harness: the official GitHub MCP server as mcp__github__* tools the agent can query and change repos with, a right-sidebar tab that follows the Session workspace and lists its issues, pull requests and notifications, write-tool approvals through the harness, and one-click import of the gh CLI's OAuth token.",
+  "description": "GitHub for DeepSeek Harness: the official GitHub MCP server as mcp__github__* tools the agent can query and change repos with, a right-sidebar tab that follows the Session workspace and lists its issues, pull requests and notifications, write-tool approvals through the harness, and token setup by paste or one-click import from the gh CLI.",
   "type": "module",
   "license": "MIT",
   "author": {

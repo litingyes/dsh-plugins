@@ -2,7 +2,7 @@
 
 GitHub for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness): **the agent gets the official GitHub MCP server's whole tool set**, and **you get a right-sidebar tab that follows the Session's workspace**. Browse issues, pull requests and notifications in the tab; creating, merging and commenting run through the agent's `mcp__github__*` tools, and **every write asks for your approval first**.
 
-You configure a token once: the tab's import button copies the OAuth token the GitHub CLI already holds, or you put `GITHUB_TOKEN=<token>` in `$DSH_HOME/.env`.
+You configure a token once: paste a personal access token into the tab and save it, import the OAuth token the GitHub CLI already holds with one button, or put `GITHUB_TOKEN=<token>` in `$DSH_HOME/.env`.
 
 ## Three parts
 
@@ -41,10 +41,11 @@ Writes you start in the panel (comment, new issue, close, merge) happen when you
 
 ## The token
 
-One source: `GITHUB_TOKEN` in the DSH credential store. Two ways to fill it:
+One source: `GITHUB_TOKEN` in the DSH credential store. Three ways to fill it:
 
-1. **"Import the gh token" in the tab** — runs `gh auth token`, verifies it with `GET /user` (a revoked token never overwrites a working one), stores it, and reports the login and scopes.
-2. **`GITHUB_TOKEN=…` in `$DSH_HOME/.env`** — for a hand-made PAT. Minimal scopes: `public_repo` to read, `repo` to read and write private repositories.
+1. **Paste it in the tab** — paste a classic or fine-grained personal access token; the Host verifies it with `GET /user` (a rejected token never overwrites a working one) before storing it. No `gh` install needed.
+2. **"Import the gh token" in the tab** — runs `gh auth token`, verifies it the same way, stores it, and reports the login and scopes.
+3. **`GITHUB_TOKEN=…` in `$DSH_HOME/.env`** — for a hand-made PAT. Minimal scopes: `public_repo` to read, `repo` to read and write private repositories.
 
 The MCP row references it as `Authorization: 'Bearer ${credential:GITHUB_TOKEN}'` with `expandTemplates: true`: the resolved value is redacted from diagnostics, a missing token parks the row in `waiting-credentials` instead of failing the Host, and a credential update rebuilds the connection without a restart.
 
@@ -72,7 +73,7 @@ Or from this repository as a directory:
 plugin_manager action=install_bundle target=/absolute/path/to/dsh-plugins/dsh-github
 ```
 
-Open a new Session afterwards and the right sidebar offers the GitHub tab. If it says no token is configured, press "Import the gh token" (the machine needs `gh auth login` first).
+Open a new Session afterwards and the right sidebar offers the GitHub tab. If it says no token is configured, paste a token into the field and save it; if the machine is already signed in with `gh auth login`, press "Import the gh token" instead.
 
 ## Configuration
 
@@ -111,7 +112,7 @@ That leaves `pull_request_read`, `get_me`, `list_commits` and `search_code` on t
 - **No marking notifications read.** The list is read-only; `PATCH /notifications` is not wired to the UI.
 - **No floating count badges.** Paging uses the `Link` header instead of a separate count request.
 - **Pull request checks and reviews** belong to the forge panel that ships with DSH (`@deepseek-ai/dsh-experimental-forge-bundle`, via the `gh` CLI); this plugin's PR view is a read-only summary plus merge.
-- **The token lives on your machine.** An imported `gh` token is written to the DSH credential store under `$DSH_HOME` (mode 0600), as is a PAT in `.env`; requests carry it straight to GitHub with no proxy.
+- **The token lives on your machine.** A pasted or imported token is written to the DSH credential store under `$DSH_HOME` (mode 0600), as is a PAT in `.env`; requests carry it straight to GitHub with no proxy.
 - **No `gh` passthrough.** `gh` is invoked exactly once, when you import its token.
 
 ## Development

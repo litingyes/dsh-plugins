@@ -65,6 +65,7 @@ export function GithubPanel({ api, locale, sessionId, useSessions }) {
   const [createTitle, setCreateTitle] = React.useState('')
   const [createBody, setCreateBody] = React.useState('')
   const [importing, setImporting] = React.useState(false)
+  const [savingToken, setSavingToken] = React.useState(false)
   const [authNotice, setAuthNotice] = React.useState(undefined)
 
   const override = repoOverride === '' ? undefined : repoOverride
@@ -200,7 +201,7 @@ export function GithubPanel({ api, locale, sessionId, useSessions }) {
     setAuthNotice(undefined)
     try {
       const result = await api.importGh()
-      setAuthNotice({ kind: 'ok', login: result.login, scopes: result.scopes })
+      setAuthNotice({ kind: 'ok', via: 'import', login: result.login, scopes: result.scopes })
       await refreshAuth()
       await refreshContext()
     } catch (error) {
@@ -209,6 +210,24 @@ export function GithubPanel({ api, locale, sessionId, useSessions }) {
       setImporting(false)
     }
   }, [api, refreshAuth, refreshContext])
+
+  const saveToken = React.useCallback(
+    async token => {
+      setSavingToken(true)
+      setAuthNotice(undefined)
+      try {
+        const result = await api.saveToken({ token })
+        setAuthNotice({ kind: 'ok', via: 'save', login: result.login, scopes: result.scopes })
+        await refreshAuth()
+        await refreshContext()
+      } catch (error) {
+        setAuthNotice({ kind: 'error', error })
+      } finally {
+        setSavingToken(false)
+      }
+    },
+    [api, refreshAuth, refreshContext],
+  )
 
   const applyManualRepo = React.useCallback(() => {
     const value = manualDraft.trim()
@@ -230,7 +249,9 @@ export function GithubPanel({ api, locale, sessionId, useSessions }) {
       auth,
       notice: authNotice,
       importing,
+      saving: savingToken,
       onImport: importToken,
+      onSave: saveToken,
     })
   }
 
@@ -471,7 +492,15 @@ function DetailSwitch({ detail, t, language, busy, writeError, onBack, onComment
  * @param {object} props card props.
  * @returns {React.ReactElement} the card.
  */
-function AuthCard({ t, auth, notice, importing, onImport }) {
+function AuthCard({ t, auth, notice, importing, saving, onImport, onSave }) {
+  const [draft, setDraft] = React.useState('')
+  // `importable` answers "does this Host have a credential store", not "is gh
+  // installed": a Host without one can store neither a pasted nor an imported
+  // token, so both paths go quiet and the card says why.
+  const storeMissing = auth.importable === false
+  const token = draft.trim()
+  const canSave = !storeMissing && !saving && token !== ''
+
   return React.createElement(
     'div',
     { className: 'dgh-panel' },
@@ -480,13 +509,32 @@ function AuthCard({ t, auth, notice, importing, onImport }) {
       { className: 'dgh-auth' },
       React.createElement('h2', { className: 'dgh-auth-title' }, t('auth.title')),
       React.createElement('p', { className: 'dgh-auth-body' }, t('auth.body')),
-      React.createElement('code', { className: 'dgh-code' }, t('auth.envHint')),
+      React.createElement(
+        'div',
+        { className: 'dgh-auth-form' },
+        React.createElement(TextInput, {
+          value: draft,
+          onChange: setDraft,
+          placeholder: t('auth.tokenPlaceholder'),
+          label: t('auth.tokenLabel'),
+          disabled: storeMissing || saving,
+          type: 'password',
+        }),
+        React.createElement(
+          Button,
+          { variant: 'primary', onClick: () => onSave(token), disabled: !canSave },
+          saving ? t('auth.saving') : t('auth.save'),
+        ),
+      ),
+      React.createElement('p', { className: 'dgh-error-hint' }, t('auth.envHint')),
+      storeMissing ? React.createElement('p', { className: 'dgh-error-message' }, t('auth.noStore')) : null,
+      React.createElement('p', { className: 'dgh-error-hint' }, t('auth.importHint')),
       React.createElement(
         'div',
         { className: 'dgh-meta-row' },
         React.createElement(
           Button,
-          { variant: 'primary', onClick: onImport, disabled: importing || auth.importable === false },
+          { variant: 'secondary', onClick: onImport, disabled: importing || storeMissing },
           importing ? t('auth.importing') : t('auth.import'),
         ),
       ),
@@ -496,7 +544,13 @@ function AuthCard({ t, auth, notice, importing, onImport }) {
           ? React.createElement(
               'div',
               null,
-              React.createElement('p', { className: 'dgh-error-hint' }, t('auth.imported', { login: notice.login })),
+              React.createElement(
+                'p',
+                { className: 'dgh-error-hint' },
+                notice.via === 'save'
+                  ? t('auth.saved', { login: notice.login })
+                  : t('auth.imported', { login: notice.login }),
+              ),
               Array.isArray(notice.scopes) && notice.scopes.length > 0
                 ? React.createElement(
                     'p',

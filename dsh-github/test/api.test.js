@@ -72,10 +72,19 @@ function fakeGithub(overrides = {}) {
   }
 }
 
-const fakeAuth = () => ({
-  describe: async () => ({ configured: true, source: 'stored', writable: true, importable: true }),
-  importFromGh: async () => ({ login: 'me', scopes: ['repo'] }),
-})
+const fakeAuth = (overrides = {}) => {
+  const calls = []
+  return {
+    calls,
+    describe: async () => ({ configured: true, source: 'stored', writable: true, importable: true }),
+    importFromGh: async () => ({ login: 'me', scopes: ['repo'] }),
+    saveToken: async token => {
+      calls.push({ name: 'saveToken', token })
+      return { login: 'me', scopes: ['repo'] }
+    },
+    ...overrides,
+  }
+}
 
 test('a rejection from the connection service ends the request before any work', async () => {
   const handler = createApi({ github: fakeGithub(), auth: fakeAuth(), authorize: () => 401 })
@@ -116,6 +125,37 @@ test('/auth/import-gh drops the cached context so the new token is used', async 
   assert.equal(res.statusCode, 200)
   assert.deepEqual(JSON.parse(res.raw), { ok: true, login: 'me', scopes: ['repo'] })
   assert.deepEqual(github.calls.map(entry => entry.name), ['forget'])
+})
+
+test('/auth/token verifies the pasted value through the bridge and drops the cached context', async () => {
+  const github = fakeGithub()
+  const auth = fakeAuth()
+  const handler = createApi({ github, auth })
+  const res = await call(
+    handler,
+    makeReq({ method: 'POST', url: `${API_PREFIX}/auth/token`, body: { token: 'ghp_pasted' } }),
+  )
+  assert.equal(res.statusCode, 200)
+  assert.deepEqual(JSON.parse(res.raw), { ok: true, login: 'me', scopes: ['repo'] })
+  assert.deepEqual(auth.calls, [{ name: 'saveToken', token: 'ghp_pasted' }])
+  assert.deepEqual(github.calls.map(entry => entry.name), ['forget'])
+})
+
+test('a rejected pasted token maps to its status and writes nothing', async () => {
+  const github = fakeGithub()
+  const auth = fakeAuth({
+    saveToken: async () => {
+      throw new GithubError('invalid_token', 'GitHub rejected the token')
+    },
+  })
+  const handler = createApi({ github, auth })
+  const res = await call(
+    handler,
+    makeReq({ method: 'POST', url: `${API_PREFIX}/auth/token`, body: { token: 'bad' } }),
+  )
+  assert.equal(res.statusCode, 401)
+  assert.equal(JSON.parse(res.raw).error.code, 'invalid_token')
+  assert.deepEqual(github.calls, [])
 })
 
 test('/context passes the Session directory and the request signal', async () => {

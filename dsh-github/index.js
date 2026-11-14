@@ -305,7 +305,8 @@ export function apply(ctx, rawConfig) {
     })
 
     const auth = createAuth({
-      credentials: getService('credentials'),
+      // Resolved per call: the store may be mounted after this callback runs.
+      getCredentials: () => getService('credentials'),
       credentialRef: config.credentialRef,
       ghCommand: config.ghCommand,
       exec: runGh,

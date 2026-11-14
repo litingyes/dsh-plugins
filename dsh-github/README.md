@@ -2,7 +2,7 @@
 
 给 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 的 GitHub 插件：**智能体拿到官方 GitHub MCP 服务的一整套工具**，**人拿到一个跟着会话工作区走的右栏页签**。查 issue、看 PR、翻通知在页签里完成；新建、合并、评论由智能体通过 `mcp__github__*` 工具执行，**写操作执行前会请求你的批准**。
 
-令牌只填一次：页签上的按钮直接导入 GitHub CLI 已经登录的 OAuth 令牌，或者往 `$DSH_HOME/.env` 写一行 `GITHUB_TOKEN=<令牌>`。
+令牌只填一次：页签里直接粘贴一个 personal access token 保存，或者一键导入 GitHub CLI 已经登录的 OAuth 令牌，也可以往 `$DSH_HOME/.env` 写一行 `GITHUB_TOKEN=<令牌>`。
 
 ## 它由三部分组成
 
@@ -41,10 +41,11 @@
 
 ## 令牌
 
-只认一个来源：DSH 凭据库里的 `GITHUB_TOKEN`。写入它有两条路：
+只认一个来源：DSH 凭据库里的 `GITHUB_TOKEN`。写入它有三条路：
 
-1. **页签上的「从 gh 导入令牌」** —— 执行 `gh auth token`，先用 `GET /user` 验证令牌有效（无效就不覆盖已有的），再写进凭据库，并显示登录名与 scope。
-2. **`$DSH_HOME/.env` 里写 `GITHUB_TOKEN=…`** —— 适用于自建 PAT。最小权限：只读用 `public_repo`，要读写私有仓库用 `repo`。
+1. **页签里粘贴令牌** —— 贴一个 classic 或 fine-grained personal access token，先用 `GET /user` 验证它有效（无效就不覆盖已有的），再写进凭据库。不需要本机装 `gh`。
+2. **页签上的「从 gh 导入令牌」** —— 执行 `gh auth token`，同样先验证再写库，并显示登录名与 scope。
+3. **`$DSH_HOME/.env` 里写 `GITHUB_TOKEN=…`** —— 适用于自建 PAT。最小权限：只读用 `public_repo`，要读写私有仓库用 `repo`。
 
 MCP 行用 `Authorization: 'Bearer ${credential:GITHUB_TOKEN}'` 引用它（`expandTemplates: true`）：令牌值会被诊断日志脱敏；没有令牌时这一行停在 `waiting-credentials` 而不拖垮 Host；凭据一更新，连接自动重建，不必重启。
 
@@ -72,7 +73,7 @@ plugin_manager action=install_bundle target=@litingyes/dsh-github@0.1.0
 plugin_manager action=install_bundle target=/absolute/path/to/dsh-plugins/dsh-github
 ```
 
-装好后新开一个会话，右栏会多出「GitHub」页签。第一次打开如果提示没有令牌，点「从 gh 导入令牌」即可（本机需先 `gh auth login`）。
+装好后新开一个会话，右栏会多出「GitHub」页签。第一次打开如果提示没有令牌，把令牌贴进输入框保存即可；本机已经 `gh auth login` 过的话，也可以点「从 gh 导入令牌」直接导入。
 
 ## 配置
 
@@ -111,7 +112,7 @@ plugin_manager action=install_bundle target=/absolute/path/to/dsh-plugins/dsh-gi
 - **不做通知已读**。列表只读，`PATCH /notifications` 没有接到界面上。
 - **没有浮动计数徽标**。三个列表的分页靠 `Link` 头，不额外请求总数。
 - **PR 的检查与评审细节**交给已装的 forge 面板（`@deepseek-ai/dsh-experimental-forge-bundle`，走 `gh` CLI）；本插件的 PR 视图是只读汇总加合并。
-- **令牌落在你的机器上**。`gh` 导入的令牌写进 DSH 凭据库（`$DSH_HOME` 下，0600 权限），`.env` 里的 PAT 同理；请求带令牌直连 GitHub，不经过任何中转。
+- **令牌落在你的机器上**。页签里粘贴或 `gh` 导入的令牌写进 DSH 凭据库（`$DSH_HOME` 下，0600 权限），`.env` 里的 PAT 同理；请求带令牌直连 GitHub，不经过任何中转。
 - **插件不做 `gh` 命令转发**：`gh` 只在导入令牌时被调用一次。
 
 ## 开发

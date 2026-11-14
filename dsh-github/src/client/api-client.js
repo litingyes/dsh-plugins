@@ -105,6 +105,20 @@ export function createGithubApi() {
     },
 
     /**
+     * Hand a pasted token to the Host, which verifies it before storing it.
+     *
+     * @param {{token: string, signal?: AbortSignal}} options the pasted token.
+     * @returns {Promise<object>} `{ login, scopes }`.
+     */
+    saveToken(options) {
+      return request('/auth/token', {
+        method: 'POST',
+        body: { token: options.token },
+        signal: options.signal,
+      })
+    },
+
+    /**
      * @param {{dir: string, signal?: AbortSignal}} options Session directory.
      * @returns {Promise<object>} `{ repo, viewer }`.
      */

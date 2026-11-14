@@ -215,6 +215,17 @@ export function createApi(options) {
         return
       }
 
+      if (req.method === 'POST' && route === '/auth/token') {
+        // The pasted value never leaves this call: it is verified against
+        // GitHub, written to the credential store, and only the identity and
+        // scopes travel back to the browser.
+        const body = await readJsonBody(req)
+        const result = await auth.saveToken(body.token)
+        if (typeof github.forget === 'function') github.forget()
+        sendJson(res, 200, { ok: true, ...result })
+        return
+      }
+
       if (req.method === 'GET' && route === '/context') {
         sendJson(res, 200, { ok: true, ...(await github.context(dir, { repo, signal: abortSignalOf(req) })) })
         return

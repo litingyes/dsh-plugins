@@ -82,6 +82,7 @@ async function readGhToken({ exec, command, timeoutMs }) {
  * @returns {{describe: () => Promise<object>, importFromGh: () => Promise<object>}} bridge.
  */
 export function createAuth({
+  getCredentials,
   credentials,
   credentialRef = DEFAULT_CREDENTIAL_REF,
   ghCommand = 'gh',
@@ -92,8 +93,76 @@ export function createAuth({
 }) {
   const base = String(apiBase).replace(/\/+$/u, '')
 
-  /** True when this Host has both a credentials service and a gh executable. */
-  const usable = () => credentials !== undefined && credentials !== null && typeof credentials.set === 'function'
+  /**
+   * Read the store on every call instead of once at mount. Providers are
+   * composed in an order a plugin cannot see; capturing `undefined` during
+   * startup is what left the setup card with a dead button on a Host whose
+   * credential store was mounted a moment later.
+   */
+  const store = () => {
+    if (typeof getCredentials === 'function') {
+      try {
+        return getCredentials()
+      } catch {
+        return undefined
+      }
+    }
+    return credentials
+  }
+
+  /** True when this Host has a writable credentials service. */
+  const usable = () => {
+    const service = store()
+    return service !== undefined && service !== null && typeof service.set === 'function'
+  }
+
+  /**
+   * Ask GitHub who a candidate token belongs to.
+   *
+   * Verification runs before the write: a revoked or mistyped token must never
+   * replace one that works.
+   *
+   * @param {string} token candidate token.
+   * @returns {Promise<{login: string, scopes: string[]}>} who it belongs to.
+   */
+  async function verify(token) {
+    let response
+    try {
+      response = await fetchImpl(`${base}/user`, {
+        headers: {
+          authorization: `Bearer ${token}`,
+          accept: 'application/vnd.github+json',
+          'x-github-api-version': '2022-11-28',
+          'user-agent': 'dsh-github/auth',
+        },
+      })
+    } catch (error) {
+      throw new GithubError('network', 'GitHub could not be reached to verify the token', {
+        reason: typeof error?.message === 'string' ? error.message : 'network error',
+      })
+    }
+    if (response.status === 401) {
+      throw new GithubError('invalid_token', 'the token was rejected by GitHub')
+    }
+    if (!response.ok) {
+      throw new GithubError('github_error', `GitHub returned ${response.status} while verifying the token`)
+    }
+
+    let login = ''
+    try {
+      const body = await response.json()
+      login = typeof body?.login === 'string' ? body.login : ''
+    } catch {
+      login = ''
+    }
+
+    const scopes = (response.headers.get(SCOPES_HEADER) ?? '')
+      .split(',')
+      .map(scope => scope.trim())
+      .filter(Boolean)
+
+    return { login, scopes }
+  }
 
   return {
     /**
@@ -105,7 +174,7 @@ export function createAuth({
       if (!usable()) return { configured: false, writable: false, importable: false }
       let info
       try {
-        info = await credentials.describe(credentialRef)
+        info = await store().describe(credentialRef)
       } catch {
         info = undefined
       }
@@ -125,50 +194,33 @@ export function createAuth({
      * @returns {Promise<{login: string, scopes: string[]}>} who the token belongs to.
      */
     async importFromGh() {
-      if (!usable()) {
+      const service = store()
+      if (!usable() || service === undefined || service === null) {
         throw new GithubError('writes_disabled', 'this Host has no credentials service to store a token in')
       }
 
       const token = await readGhToken({ exec, command: ghCommand, timeoutMs })
+      const who = await verify(token)
+      await service.set(credentialRef, token)
+      return who
+    },
 
-      // Verify before storing: a revoked token must not overwrite a good one.
-      let response
-      try {
-        response = await fetchImpl(`${base}/user`, {
-          headers: {
-            authorization: `Bearer ${token}`,
-            accept: 'application/vnd.github+json',
-            'x-github-api-version': '2022-11-28',
-            'user-agent': 'dsh-github/auth',
-          },
-        })
-      } catch (error) {
-        throw new GithubError('network', 'GitHub could not be reached to verify the token', {
-          reason: typeof error?.message === 'string' ? error.message : 'network error',
-        })
+    /**
+     * Store a token the user pasted, after GitHub confirms it works.
+     *
+     * @param {unknown} token the pasted value.
+     * @returns {Promise<{login: string, scopes: string[]}>} who the token belongs to.
+     */
+    async saveToken(token) {
+      const service = store()
+      if (!usable() || service === undefined || service === null) {
+        throw new GithubError('writes_disabled', 'this Host has no credentials service to store a token in')
       }
-      if (response.status === 401) {
-        throw new GithubError('invalid_token', 'the gh token was rejected by GitHub')
-      }
-      if (!response.ok) {
-        throw new GithubError('github_error', `GitHub returned ${response.status} while verifying the token`)
-      }
-
-      let login = ''
-      try {
-        const body = await response.json()
-        login = typeof body?.login === 'string' ? body.login : ''
-      } catch {
-        login = ''
-      }
-
-      const scopes = (response.headers.get(SCOPES_HEADER) ?? '')
-        .split(',')
-        .map(scope => scope.trim())
-        .filter(Boolean)
-
-      await credentials.set(credentialRef, token)
-      return { login, scopes }
+      const value = typeof token === 'string' ? token.trim() : ''
+      if (value === '') throw new GithubError('bad_request', 'a GitHub token is required')
+      const who = await verify(value)
+      await service.set(credentialRef, value)
+      return who
     },
   }
 }
