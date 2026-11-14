@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { Readable } from 'node:stream'
 import test from 'node:test'
 import { DEFAULT_CONFIG, apply, guidanceText, resolveConfig } from '../index.js'
 
@@ -41,6 +42,7 @@ function fakeContext(options = {}) {
         return () => {}
       },
     },
+    credentials: services.credentials,
     get(name) {
       return services[name]
     },
@@ -113,13 +115,49 @@ test('the plugin registers guidance, one approval listener and one route', () =>
   const { ctx, injected, routes, effects, listeners } = fakeContext()
   apply(ctx)
 
-  assert.deepEqual(injected, [['systemPrompt', 'tools'], ['webServer']])
+  assert.deepEqual(injected, [['credentials'], ['systemPrompt', 'tools'], ['webServer']])
   assert.equal(routes.length, 1)
   assert.equal(routes[0].kind, 'prefix')
   assert.equal(routes[0].path, '/dsh-github')
   assert.equal(typeof routes[0].handler, 'function')
   assert.deepEqual(effects, ['dsh-github: write approval', 'dsh-github: api route'])
   assert.equal(typeof listeners['tools/pre-execute'], 'function')
+})
+
+/** Drive one prefix-route handler and return its JSON answer. */
+function callRoute(handler, url, method = 'GET') {
+  return new Promise((resolve, reject) => {
+    const req = Readable.from([])
+    req.method = method
+    req.url = url
+    req.headers = {}
+    req.complete = true
+    const res = {
+      statusCode: 0,
+      headers: {},
+      headersSent: false,
+      setHeader(name, value) {
+        this.headers[name] = value
+      },
+      end(payload) {
+        resolve({ statusCode: this.statusCode, body: JSON.parse(payload) })
+      },
+    }
+    handler(req, res).catch(reject)
+  })
+}
+
+test('the store injected after mount is the one the panel reports', async () => {
+  const store = {
+    describe: async () => ({ configured: false, writable: true }),
+    set: async () => {},
+  }
+  const { ctx, routes } = fakeContext({ services: { credentials: store } })
+  apply(ctx)
+
+  const answer = await callRoute(routes[0].handler, '/dsh-github/auth')
+  assert.equal(answer.statusCode, 200)
+  assert.equal(answer.body.importable, true)
 })
 
 test('guidance sits one step below the MCP client section and follows the server name', () => {

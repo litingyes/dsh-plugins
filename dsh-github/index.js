@@ -177,13 +177,13 @@ function sectionOrder(systemPrompt) {
  * Read per request rather than captured at mount: the user can import a token
  * without restarting the Host, and a revoked one is picked up immediately.
  *
- * @param {(name: string) => unknown} getService guarded service lookup.
+ * @param {() => unknown} getCredentials live credential-store lookup.
  * @param {string} credentialRef credential name.
  * @returns {() => Promise<string | undefined>} token reader.
  */
-function makeTokenReader(getService, credentialRef) {
+function makeTokenReader(getCredentials, credentialRef) {
   return async () => {
-    const credentials = getService('credentials')
+    const credentials = getCredentials()
     if (credentials !== undefined && typeof credentials.resolve === 'function') {
       try {
         const hit = await credentials.resolve(credentialRef)
@@ -250,6 +250,21 @@ export function apply(ctx, rawConfig) {
     }
   }
 
+  /**
+   * The credential store, held by an injection rather than a one-shot `get`:
+   * `inject` waits for the provider to mount, while `ctx.get` can run before it
+   * exists — and a capture made at that moment is `undefined` for the life of
+   * the process. The panel's "import" button was dead for exactly that reason.
+   */
+  let credentialStore
+  ctx.inject(['credentials'], scoped => {
+    credentialStore = scoped.credentials
+    return () => {
+      credentialStore = undefined
+    }
+  })
+  const getCredentials = () => credentialStore ?? getService('credentials')
+
   if (config.guidance) {
     const queryTool = `mcp__${config.serverName}__get_me`
     const text = guidanceText(config.serverName)
@@ -297,7 +312,7 @@ export function apply(ctx, rawConfig) {
   ctx.inject(['webServer'], scoped => {
     const github = createGithub({
       run: runGit,
-      tokenFor: makeTokenReader(getService, config.credentialRef),
+      tokenFor: makeTokenReader(getCredentials, config.credentialRef),
       apiBase: config.apiBase,
       timeoutMs: config.requestTimeoutMs,
       maxItems: config.maxItems,
@@ -305,8 +320,8 @@ export function apply(ctx, rawConfig) {
     })
 
     const auth = createAuth({
-      // Resolved per call: the store may be mounted after this callback runs.
-      getCredentials: () => getService('credentials'),
+      // Resolved per call; the injection above supplies it once mounted.
+      getCredentials,
       credentialRef: config.credentialRef,
       ghCommand: config.ghCommand,
       exec: runGh,
